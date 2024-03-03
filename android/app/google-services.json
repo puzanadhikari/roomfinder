@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "667214389765",
+    "project_id": "meroapp-45a36",
+    "storage_bucket": "meroapp-45a36.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:667214389765:android:9515707f526cefa832b26c",
+        "android_client_info": {
+          "package_name": "com.example.meroapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDsXiZKYK1nv2LIYXg5K8-LmVeb2mlCQJM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

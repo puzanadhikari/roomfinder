@@ -112,10 +112,29 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     kHeightMedium,
-                    Text(
-                      "or login with",
-                      style:
-                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Divider(
+                            color: Colors.black,
+                            height: 1.5,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Text(
+                            "or login with",
+                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Expanded(
+                          child: Divider(
+                            color: Colors.black,
+                            height: 1.5,
+                          ),
+                        ),
+                      ],
                     ),
                     kHeightMedium,
                     Row(
