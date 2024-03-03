@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:meroapp/Constants/styleConsts.dart';
+import 'package:meroapp/registerPage.dart';
+
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -8,13 +11,198 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  bool _obscureText = true;
+
+  Future<bool> _onBackPressed() async {
+    return await showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('Do you want to exit the app?'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text('No'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: Text('Yes'),
+              ),
+            ],
+          ),
+        ) ??
+        false;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: appBarColor,
-        title: (
-        Text("Login Page")
+    return WillPopScope(
+      onWillPop: _onBackPressed,
+      child: Scaffold(
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height / 4,
+                color: kThemeColor,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 20.0, top: 80),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text("Sign in to your Account", style: kTextStyleWhite),
+                      Text("Sign in to your Account",
+                          style: TextStyle(fontSize: 15, color: Colors.grey)),
+                    ],
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(30.0),
+                child: Column(
+                  children: [
+                    TextFormField(
+                      decoration:
+                          KFormFieldDecoration.copyWith(labelText: "Email"),
+                    ),
+                    kHeightSmall,
+                    kHeightSmall,
+                    TextFormField(
+                      obscureText: _obscureText,
+                      decoration: KFormFieldDecoration.copyWith(
+                          labelText: "Password",
+                          suffixIcon: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _obscureText = !_obscureText;
+                              });
+                            },
+                            child: Icon(
+                              _obscureText
+                                  ? Icons.visibility
+                                  : Icons.visibility_outlined,
+                              color: kThemeColor,
+                            ),
+                          )),
+                    ),
+                    kHeightSmall,
+                    Align(
+                        alignment: Alignment.bottomRight,
+                        child: TextButton(
+                            onPressed: () {},
+                            child: Text(
+                              "Forgot Password ?",
+                              style: TextStyle(color: appBarColor),
+                            ))),
+                    kHeightMedium,
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 50,
+                      child: ElevatedButton(
+                        onPressed: () {},
+                        child: Text("Login",
+                            style:
+                                TextStyle(color: Colors.black, fontSize: 18)),
+                        style: ElevatedButton.styleFrom(
+                          primary: appBarColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                          ),
+                        ),
+                      ),
+                    ),
+                    kHeightMedium,
+                    Text(
+                      "or login with",
+                      style:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                    ),
+                    kHeightMedium,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        SizedBox(
+                          height: 45,
+                          width: 150,
+                          child: ElevatedButton(
+                              onPressed: () {},
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/google.svg',
+                                    height: 30,
+                                  ),
+                                  Text("Google",
+                                      style: TextStyle(color: Colors.black)),
+                                ],
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    side: BorderSide(
+                                        color: Colors.grey.shade300)),
+                                primary: Colors.white,
+                                elevation: 0,
+                              )),
+                        ),
+                        SizedBox(
+                          height: 45,
+                          width: 150,
+                          child: ElevatedButton(
+                              onPressed: () {},
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/facebook.svg',
+                                    height: 30,
+                                  ),
+                                  Text("Facebook",
+                                      style: TextStyle(color: Colors.black)),
+                                ],
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    side: BorderSide(
+                                        color: Colors.grey.shade300)),
+                                primary: Colors.white,
+                                elevation: 0,
+                              )),
+                        ),
+                      ],
+                    ),
+                    kHeightMedium,
+                    kHeightMedium,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Don't have an account?",
+                          style: TextStyle(fontSize: 15),
+                        ),
+                        TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => RegisterPage()));
+                            },
+                            child: Text(
+                              "Register",
+                              style:
+                                  TextStyle(color: appBarColor, fontSize: 15),
+                            ))
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
