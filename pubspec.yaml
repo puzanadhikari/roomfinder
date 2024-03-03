@@ -29,7 +29,13 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   flutter_svg:
+  firebase_auth:
+  firebase_core:
   cloud_firestore:
+  shared_preferences:
+  fluttertoast:
+  flutter_facebook_auth: ^4.0.0
+  loading_animation_widget:
   flutter:
     sdk: flutter
 
