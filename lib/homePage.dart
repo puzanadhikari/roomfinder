@@ -2,6 +2,7 @@ import 'package:animated_notch_bottom_bar/animated_notch_bottom_bar/animated_not
 import 'package:flutter/material.dart';
 
 import 'Constants/styleConsts.dart';
+import 'dashBoard.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -22,7 +23,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   final List<Widget> bottomBarPages = [
-    const Page1(),
+    const DashBoard(),
     const Page2(),
     const Page3(),
     const Page4(),
@@ -101,22 +102,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
-class Page1 extends StatelessWidget {
-  const Page1({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: kThemeColor,
-        title: Text("Home"),
-        centerTitle: true,
-      ),
-    );
-  }
-}
-
 class Page2 extends StatelessWidget {
   const Page2({Key? key}) : super(key: key);
 
