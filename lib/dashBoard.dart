@@ -33,6 +33,7 @@ class _DashBoardState extends State<DashBoard> {
             child: TextFormField(
               decoration: KFormFieldDecoration.copyWith(
                 prefixIcon: Icon(Icons.search_outlined,color: kThemeColor),
+                suffixIcon: Icon(Icons.ac_unit_rounded,color: kThemeColor,),
                 focusColor: kThemeColor
               ),
             ),
