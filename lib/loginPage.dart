@@ -22,6 +22,8 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool _obscureText = true;
+  final TextEditingController _phoneController = TextEditingController();
+  String _verificationId = '';
 
   Future<bool> _onBackPressed() async {
     return await showDialog(
@@ -270,12 +272,73 @@ class _LoginPageState extends State<LoginPage> {
                         ],
                       ),
                     ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal:20.0),
+                      child: TextFormField(
+                        keyboardType: TextInputType.number,
+                        controller: _phoneController,
+                        decoration: KFormFieldDecoration.copyWith(
+                            labelText: "Phone Number"),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal:25.0,vertical: 20),
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 50,
+                        child: ElevatedButton(
+                          onPressed:  _sendOTP,
+                          child: Text("Send OTP",
+                              style: TextStyle(
+                                  color: Colors.black, fontSize: 18)),
+                          style: ElevatedButton.styleFrom(
+                            primary: appBarColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15.0),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
       ),
     );
   }
+  void _sendOTP() async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    await auth.verifyPhoneNumber(
+      phoneNumber: '+1' + _phoneController.text, // Include your country code
+      verificationCompleted: (PhoneAuthCredential credential) async {
+        // Auto-retrieval or instant verification
+        await auth.signInWithCredential(credential);
+        print('Phone number automatically verified and user signed in: ${auth.currentUser}');
+      },
+      verificationFailed: (FirebaseAuthException e) {
+        if (e.code == 'invalid-phone-number') {
+          print('The provided phone number is not valid.');
+        } else {
+          print('Phone number verification failed. Code: ${e.code}. Message: ${e.message}');
+        }
+      },
+      codeSent: (String verificationId, int? resendToken) async {
+        // Save the verification id for later use
+        setState(() {
+          _verificationId = verificationId;
+        });
+        print('Code sent to ${_phoneController.text}');
+      },
+      codeAutoRetrievalTimeout: (String verificationId) {
+        setState(() {
+          _verificationId = verificationId;
+        });
+        print('Verification code: $verificationId');
+      },
+    );
+  }
+
   Future<void> signInWithFacebook() async {
     try {
       final LoginResult result = await FacebookAuth.instance.login();
