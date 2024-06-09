@@ -8,6 +8,7 @@ import 'package:meroapp/registerPage.dart';
 
 import 'firebase_auth.dart';
 import 'homePage.dart';
+import 'otpPage.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -273,9 +274,9 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal:20.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
                       child: TextFormField(
-                        keyboardType: TextInputType.number,
+                        keyboardType: TextInputType.emailAddress,
                         controller: _phoneController,
                         decoration: KFormFieldDecoration.copyWith(
                             labelText: "Phone Number"),
@@ -283,15 +284,16 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     SizedBox(height: 20),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal:25.0,vertical: 20),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 25.0, vertical: 20),
                       child: Container(
                         width: MediaQuery.of(context).size.width,
                         height: 50,
                         child: ElevatedButton(
-                          onPressed:  _sendOTP,
+                          onPressed: _sendOTP,
                           child: Text("Send OTP",
-                              style: TextStyle(
-                                  color: Colors.black, fontSize: 18)),
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 18)),
                           style: ElevatedButton.styleFrom(
                             primary: appBarColor,
                             shape: RoundedRectangleBorder(
@@ -307,36 +309,57 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
+
   void _sendOTP() async {
     FirebaseAuth auth = FirebaseAuth.instance;
-    await auth.verifyPhoneNumber(
-      phoneNumber: '+1' + _phoneController.text, // Include your country code
-      verificationCompleted: (PhoneAuthCredential credential) async {
-        // Auto-retrieval or instant verification
-        await auth.signInWithCredential(credential);
-        print('Phone number automatically verified and user signed in: ${auth.currentUser}');
-      },
-      verificationFailed: (FirebaseAuthException e) {
-        if (e.code == 'invalid-phone-number') {
-          print('The provided phone number is not valid.');
-        } else {
-          print('Phone number verification failed. Code: ${e.code}. Message: ${e.message}');
-        }
-      },
-      codeSent: (String verificationId, int? resendToken) async {
-        // Save the verification id for later use
-        setState(() {
-          _verificationId = verificationId;
-        });
-        print('Code sent to ${_phoneController.text}');
-      },
-      codeAutoRetrievalTimeout: (String verificationId) {
-        setState(() {
-          _verificationId = verificationId;
-        });
-        print('Verification code: $verificationId');
-      },
-    );
+    String phoneNumber = '+977' + _phoneController.text.trim();
+    print('Sending OTP to $phoneNumber');
+
+    try {
+      await auth.verifyPhoneNumber(
+        phoneNumber: phoneNumber,
+        verificationCompleted: (PhoneAuthCredential credential) async {
+          await auth.signInWithCredential(credential);
+          print('Phone number automatically verified and user signed in: ${auth.currentUser}');
+        },
+        verificationFailed: (FirebaseAuthException e) {
+          print('Verification failed with error code: ${e.code}, message: ${e.message}');
+          if (e.code == 'invalid-phone-number') {
+            print('The provided phone number is not valid.');
+          } else if (e.code == 'quota-exceeded') {
+            print('SMS quota for the project has been exceeded.');
+          } else if (e.code == 'missing-client-identifier') {
+            print('This request is missing a valid app identifier.');
+          } else if (e.code == 'invalid-play-integrity-token') {
+            print('Invalid Play Integrity token; app not recognized by Play Store.');
+          } else if (e.code == 'internal-error') {
+            print('An internal error occurred.');
+          } else {
+            print('Unknown error: ${e.code}');
+          }
+        },
+        codeSent: (String verificationId, int? resendToken) async {
+          print('Code sent to $phoneNumber');
+          setState(() {
+            _verificationId = verificationId;
+          });
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => OTPPage(verificationId: verificationId),
+            ),
+          );
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {
+          print('Auto retrieval timeout with verification ID: $verificationId');
+          setState(() {
+            _verificationId = verificationId;
+          });
+        },
+      );
+    } catch (e) {
+      print('Error during phone number verification: $e');
+    }
   }
 
   Future<void> signInWithFacebook() async {
@@ -344,18 +367,18 @@ class _LoginPageState extends State<LoginPage> {
       final LoginResult result = await FacebookAuth.instance.login();
       if (result.status == LoginStatus.success) {
         final AccessToken accessToken = result.accessToken!;
-        final OAuthCredential credential = FacebookAuthProvider.credential(accessToken.token);
-        final UserCredential firebaseResult = await FirebaseAuth.instance.signInWithCredential(credential);
+        final OAuthCredential credential =
+            FacebookAuthProvider.credential(accessToken.token);
+        final UserCredential firebaseResult =
+            await FirebaseAuth.instance.signInWithCredential(credential);
         User? user = firebaseResult.user;
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => HomePage()));
         // Proceed with your app logic after successful sign-in
         // For example, navigate to a new screen or update UI
-      } else {
-      }
+      } else {}
     } catch (e) {
       print('Error signing in with Facebook: $e');
     }
   }
-
 }
