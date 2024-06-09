@@ -276,7 +276,7 @@ class _LoginPageState extends State<LoginPage> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20.0),
                       child: TextFormField(
-                        keyboardType: TextInputType.emailAddress,
+                        keyboardType: TextInputType.number,
                         controller: _phoneController,
                         decoration: KFormFieldDecoration.copyWith(
                             labelText: "Phone Number"),
