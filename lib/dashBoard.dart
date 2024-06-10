@@ -1,5 +1,5 @@
 import 'dart:developer';
-
+import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -13,7 +13,7 @@ class DashBoard extends StatefulWidget {
 
 class _DashBoardState extends State<DashBoard> {
   String fileName = '';
-  String filePath = '';
+  List<String> filePaths = [];
   TextEditingController searchController = TextEditingController();
   final _advancedDrawerController = AdvancedDrawerController();
 
@@ -146,6 +146,82 @@ class _DashBoardState extends State<DashBoard> {
                 ],
               ),
             ),
+            Positioned(
+              top: 450,
+              left: 0,
+              right: 0,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Change your Style",
+                      style: TextStyle(
+                        color: kThemeColor,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        pickFile();
+                      },
+                      child: Container(
+                        child: Row(
+                          children: [
+                            Text(
+                              "See More",
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 15,
+                              ),
+                            ),
+                            Icon(
+                              Icons.arrow_forward_ios_sharp,
+                              color: Colors.grey,
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+              top: 500,
+              left: 0,
+              right: 0,
+              child: Container(
+                height: 200,
+                child: NotificationListener<OverscrollIndicatorNotification>(
+                  onNotification: (overscroll) {
+                    overscroll.disallowGlow(); // This disables the glow effect
+                    return true;
+                  },
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: filePaths.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.only(left: 20.0),
+                        child: Container(
+                          // height: 200,
+                          // width: 100,
+                          child: filePaths[index].isNotEmpty && File(filePaths[index]).existsSync()
+                              ? Image.file(
+                            File(filePaths[index]),
+                            fit: BoxFit.fill,
+                          )
+                              : Container(), // Display an empty container if file path is invalid
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ),
+            )
           ],
         ),
       ),
@@ -162,7 +238,7 @@ class _DashBoardState extends State<DashBoard> {
           mainAxisSize: MainAxisSize.max,
           children: [
             Padding(
-              padding: const EdgeInsets.only(left:20,top: 10,bottom:20.0),
+              padding: const EdgeInsets.only(left: 20, top: 10, bottom: 20.0),
               child: Container(
                 width: 128.0,
                 height: 128.0,
@@ -175,8 +251,14 @@ class _DashBoardState extends State<DashBoard> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(left:20,bottom:60.0),
-              child: Text("Pujan Adhikari",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 20),),
+              padding: const EdgeInsets.only(left: 20, bottom: 60.0),
+              child: Text(
+                "Pujan Adhikari",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20),
+              ),
             ),
             ListTile(
               onTap: () {},
@@ -230,7 +312,7 @@ class _DashBoardState extends State<DashBoard> {
       PlatformFile file = result.files.first;
       setState(() {
         fileName = file.name;
-        filePath = file.path!;
+        filePaths.add(file.path!); // Add new file path to the list
       });
       // Access file properties
       log('File name: ${file.name}');
@@ -244,4 +326,3 @@ class _DashBoardState extends State<DashBoard> {
     }
   }
 }
-
