@@ -1,11 +1,10 @@
 import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:meroapp/Constants/styleConsts.dart';
-import 'package:meroapp/homePage.dart';
+import 'package:meroapp/dashBoard.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'loginPage.dart';
 
@@ -94,7 +93,7 @@ class FirebaseAuthService {
             fontSize: 16.0);
 
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => HomePage()));
+            context, MaterialPageRoute(builder: (context) => DashBoard()));
         return credential.user;
       } else {
         print('Email not verified. Please check your email for verification.');

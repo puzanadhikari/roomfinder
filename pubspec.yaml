@@ -37,6 +37,7 @@ dependencies:
   fluttertoast:
   flutter_facebook_auth: ^4.0.0
   loading_animation_widget:
+  carousel_slider: ^4.2.1
   pin_code_fields:
   flutter:
     sdk: flutter

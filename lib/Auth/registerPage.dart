@@ -3,9 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:meroapp/loginPage.dart';
+import 'package:meroapp/Auth/loginPage.dart';
 
-import 'Constants/styleConsts.dart';
+import '../Constants/styleConsts.dart';
 import 'firebase_auth.dart';
 
 class RegisterPage extends StatefulWidget {

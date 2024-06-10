@@ -4,12 +4,11 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:meroapp/Constants/styleConsts.dart';
-import 'package:meroapp/loginViaNumber.dart';
-import 'package:meroapp/registerPage.dart';
+import 'package:meroapp/Auth/loginViaNumber.dart';
+import 'package:meroapp/Auth/registerPage.dart';
 
+import '../dashBoard.dart';
 import 'firebase_auth.dart';
-import 'homePage.dart';
-import 'otpPage.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -321,7 +320,7 @@ class _LoginPageState extends State<LoginPage> {
             await FirebaseAuth.instance.signInWithCredential(credential);
         User? user = firebaseResult.user;
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => HomePage()));
+            context, MaterialPageRoute(builder: (context) => DashBoard()));
         // Proceed with your app logic after successful sign-in
         // For example, navigate to a new screen or update UI
       } else {}
