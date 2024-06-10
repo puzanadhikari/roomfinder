@@ -127,7 +127,7 @@ class _LoginVIaNumberState extends State<LoginVIaNumber> {
             isLoading=false;
             _verificationId = verificationId;
           });
-          Navigator.push(
+          Navigator.pushReplacement(
             context,
             MaterialPageRoute(
               builder: (context) => OTPPage(verificationId: verificationId),
