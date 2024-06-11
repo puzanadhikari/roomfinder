@@ -364,7 +364,9 @@ class _DashBoardState extends State<DashBoard> {
   }
 
   void pickFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.image,
+    );
 
     if (result != null) {
       PlatformFile file = result.files.first;
