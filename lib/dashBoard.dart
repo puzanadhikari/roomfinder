@@ -215,16 +215,28 @@ class _DashBoardState extends State<DashBoard> {
                     itemBuilder: (context, index) {
                       return Padding(
                         padding: const EdgeInsets.only(left: 20.0),
-                        child: Container(
-                          // height: 200,
-                          // width: 100,
-                          child: filePaths[index].isNotEmpty &&
-                                  File(filePaths[index]).existsSync()
-                              ? Image.file(
-                                  File(filePaths[index]),
-                                  fit: BoxFit.fill,
-                                )
-                              : Container(), // Display an empty container if file path is invalid
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => FullScreenImage(
+                                  imagePath: filePaths[index],
+                                ),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            // height: 200,
+                            // width: 100,
+                            child: filePaths[index].isNotEmpty &&
+                                    File(filePaths[index]).existsSync()
+                                ? Image.file(
+                                    File(filePaths[index]),
+                                    fit: BoxFit.fill,
+                                  )
+                                : Container(), // Display an empty container if file path is invalid
+                          ),
                         ),
                       );
                     },
@@ -404,6 +416,7 @@ class _DashBoardState extends State<DashBoard> {
   }
 }
 
+
 void openFile(BuildContext context, String? filePath) {
   if (filePath != null) {
     File file = File(filePath);
@@ -420,5 +433,27 @@ void openFile(BuildContext context, String? filePath) {
         print('File does not exist');
       }
     });
+  }
+}
+class FullScreenImage extends StatelessWidget {
+  final String imagePath;
+
+  FullScreenImage({required this.imagePath});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
+      body: Center(
+        child: Image.file(File(imagePath)),
+      ),
+    );
   }
 }
