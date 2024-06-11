@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import '../Constants/styleConsts.dart';
@@ -133,6 +134,13 @@ class _LoginVIaNumberState extends State<LoginVIaNumber> {
               builder: (context) => OTPPage(verificationId: verificationId),
             ),
           );
+          Fluttertoast.showToast(
+              msg: 'OTP sent to the phone number: ${_phoneController.text.trim()}',
+              backgroundColor: appBarColor,
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.TOP_RIGHT,
+              textColor: Colors.white,
+              fontSize: 16.0);
         },
         codeAutoRetrievalTimeout: (String verificationId) {
           print('Auto retrieval timeout with verification ID: $verificationId');

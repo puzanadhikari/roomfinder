@@ -41,6 +41,7 @@ dependencies:
   flutter_advanced_drawer:
   carousel_slider: ^4.2.1
   pin_code_fields:
+  flutter_pdfview:
   flutter:
     sdk: flutter
 

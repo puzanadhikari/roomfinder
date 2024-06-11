@@ -4,7 +4,9 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
+import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:meroapp/Constants/styleConsts.dart';
+import 'package:meroapp/test.dart';
 
 class DashBoard extends StatefulWidget {
   @override
@@ -14,6 +16,7 @@ class DashBoard extends StatefulWidget {
 class _DashBoardState extends State<DashBoard> {
   String fileName = '';
   List<String> filePaths = [];
+  String? pdfFilePath;
   TextEditingController searchController = TextEditingController();
   final _advancedDrawerController = AdvancedDrawerController();
 
@@ -33,124 +36,133 @@ class _DashBoardState extends State<DashBoard> {
       ),
       drawer: _buildDrawer(),
       child: Scaffold(
-        body: Stack(
-          children: [
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: Container(
-                height: MediaQuery.of(context).size.height / 4,
-                decoration: BoxDecoration(
-                  color: kThemeColor,
-                  borderRadius: BorderRadius.only(
-                    bottomRight: Radius.circular(50.0),
-                    bottomLeft: Radius.circular(50.0),
-                  ),
-                ),
-              ),
-            ),
-            Positioned(
-              top: 40,
-              left: 20,
-              child: IconButton(
-                icon: ValueListenableBuilder<AdvancedDrawerValue>(
-                  valueListenable: _advancedDrawerController,
-                  builder: (_, value, __) {
-                    return AnimatedSwitcher(
-                      duration: Duration(milliseconds: 250),
-                      child: Icon(
-                        value.visible ? Icons.clear : Icons.menu_open_outlined,
-                        key: ValueKey<bool>(value.visible),
-                        color: Colors.white,
-                        size: 30,
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              Container(
+                height: MediaQuery.of(context).size.height/2,
+                child: Stack(
+                  children: [
+                    Positioned(
+                      top:0,
+                        left: 0,
+                        right: 0,
+                        child:Container(
+                          height: MediaQuery.of(context).size.height / 4,
+                          decoration: BoxDecoration(
+                            color: kThemeColor,
+                            borderRadius: BorderRadius.only(
+                              bottomRight: Radius.circular(50.0),
+                              bottomLeft: Radius.circular(50.0),
+                            ),
+                          ),
+                        )
+                    ),
+                    Positioned(
+                      top: 40,
+                      left: 20,
+                      child: IconButton(
+                        icon: ValueListenableBuilder<AdvancedDrawerValue>(
+                          valueListenable: _advancedDrawerController,
+                          builder: (_, value, __) {
+                            return AnimatedSwitcher(
+                              duration: Duration(milliseconds: 250),
+                              child: Icon(
+                                value.visible
+                                    ? Icons.clear
+                                    : Icons.menu_open_outlined,
+                                key: ValueKey<bool>(value.visible),
+                                color: Colors.white,
+                                size: 30,
+                              ),
+                            );
+                          },
+                        ),
+                        onPressed: () => _advancedDrawerController.showDrawer(),
                       ),
-                    );
-                  },
+                    ),
+                    Positioned(
+                      top: 40,
+                      right: 0,
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.shopping_cart,
+                          color: Colors.white,
+                          size: 30,
+                        ),
+                        onPressed: () {},
+                      ),
+                    ),
+                    Positioned(
+                      top: 90,
+                      left: 0,
+                      right: 0,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                        child: Text(
+                          "Discover",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      top: 120,
+                      left: 0,
+                      right: 0,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                        child: TextFormField(
+                          controller: searchController,
+                          decoration: KFormFieldDecoration.copyWith(
+                            suffixIcon: Icon(Icons.search, size: 30),
+                            hintText: "search",
+                            labelStyle: TextStyle(color: Colors.grey, fontSize: 20),
+                            fillColor: Colors.white,
+                            filled: true,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      top: 200,
+                      left: 0,
+                      right: 0,
+                      child: CarouselSlider(
+                        options: CarouselOptions(
+                          enlargeCenterPage: true,
+                          autoPlay: true,
+                          aspectRatio: 16 / 9,
+                          autoPlayCurve: Curves.fastOutSlowIn,
+                          autoPlayAnimationDuration: Duration(milliseconds: 400),
+                          viewportFraction: 0.8,
+                        ),
+                        items: [
+                          Container(
+                            margin: EdgeInsets.symmetric(horizontal: 5.0),
+                            child:
+                            Image.asset('assets/pic1.jpg', fit: BoxFit.cover),
+                          ),
+                          Container(
+                            margin: EdgeInsets.symmetric(horizontal: 5.0),
+                            child:
+                            Image.asset('assets/pic2.jpg', fit: BoxFit.cover),
+                          ),
+                          Container(
+                            margin: EdgeInsets.symmetric(horizontal: 5.0),
+                            child:
+                            Image.asset('assets/pic3.jpg', fit: BoxFit.cover),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-                onPressed: () => _advancedDrawerController.showDrawer(),
               ),
-            ),
-            Positioned(
-              top: 40,
-              right: 0,
-              child: IconButton(
-                icon: Icon(
-                  Icons.shopping_cart,
-                  color: Colors.white,
-                  size: 30,
-                ),
-                onPressed: () {},
-              ),
-            ),
-            Positioned(
-              top: 90,
-              left: 0,
-              right: 0,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                child: Text(
-                  "Discover",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-            Positioned(
-              top: 120,
-              left: 0,
-              right: 0,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                child: TextFormField(
-                  controller: searchController,
-                  decoration: KFormFieldDecoration.copyWith(
-                    suffixIcon: Icon(Icons.search, size: 30),
-                    hintText: "search",
-                    labelStyle: TextStyle(color: Colors.grey, fontSize: 20),
-                    fillColor: Colors.white,
-                    filled: true,
-                  ),
-                ),
-              ),
-            ),
-            Positioned(
-              top: 200,
-              left: 0,
-              right: 0,
-              child: CarouselSlider(
-                options: CarouselOptions(
-                  enlargeCenterPage: true,
-                  autoPlay: true,
-                  aspectRatio: 16 / 9,
-                  autoPlayCurve: Curves.fastOutSlowIn,
-                  autoPlayAnimationDuration: Duration(milliseconds: 400),
-                  viewportFraction: 0.8,
-                ),
-                items: [
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 5.0),
-                    child: Image.asset('assets/pic1.jpg', fit: BoxFit.cover),
-                  ),
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 5.0),
-                    child: Image.asset('assets/pic2.jpg', fit: BoxFit.cover),
-                  ),
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 5.0),
-                    child: Image.asset('assets/pic3.jpg', fit: BoxFit.cover),
-                  ),
-                ],
-              ),
-            ),
-            Positioned(
-              top: 450,
-              left: 0,
-              right: 0,
-              child: Padding(
+              Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -188,12 +200,8 @@ class _DashBoardState extends State<DashBoard> {
                   ],
                 ),
               ),
-            ),
-            Positioned(
-              top: 500,
-              left: 0,
-              right: 0,
-              child: Container(
+              SizedBox(height: 20),
+              Container(
                 height: 200,
                 child: NotificationListener<OverscrollIndicatorNotification>(
                   onNotification: (overscroll) {
@@ -209,11 +217,12 @@ class _DashBoardState extends State<DashBoard> {
                         child: Container(
                           // height: 200,
                           // width: 100,
-                          child: filePaths[index].isNotEmpty && File(filePaths[index]).existsSync()
+                          child: filePaths[index].isNotEmpty &&
+                                  File(filePaths[index]).existsSync()
                               ? Image.file(
-                            File(filePaths[index]),
-                            fit: BoxFit.fill,
-                          )
+                                  File(filePaths[index]),
+                                  fit: BoxFit.fill,
+                                )
                               : Container(), // Display an empty container if file path is invalid
                         ),
                       );
@@ -221,8 +230,46 @@ class _DashBoardState extends State<DashBoard> {
                   ),
                 ),
               ),
-            )
-          ],
+              SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Choose Pdf",
+                      style: TextStyle(
+                        color: kThemeColor,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    IconButton(
+                      color: Colors.grey,
+                      onPressed: () {
+                        pickPdf();
+                      },
+                      icon: Icon(Icons.picture_as_pdf),
+                    )
+                  ],
+                ),
+              ),
+              ElevatedButton(
+                  onPressed: () {
+                    log("yes");
+                    openFile(context, pdfFilePath!);
+                  },
+                  child: Text('Open')),
+              if (pdfFilePath != null)
+                Container(
+                  width: 100,
+                  height: 150,
+                  child: PDFView(
+                    filePath: pdfFilePath,
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );
@@ -324,5 +371,41 @@ class _DashBoardState extends State<DashBoard> {
     } else {
       // User canceled the file picker
     }
+  }
+
+  void pickPdf() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf'],
+    );
+    if (result != null) {
+      PlatformFile file = result.files.first;
+      setState(() {
+        pdfFilePath = file.path;
+      });
+      log('PDF name: ${file.name}');
+      log('PDF path: ${file.path}');
+      log('PDF size: ${file.size} bytes');
+      log('PDF extension: ${file.extension}');
+    } else {}
+  }
+}
+
+void openFile(BuildContext context, String? filePath) {
+  if (filePath != null) {
+    File file = File(filePath);
+    file.exists().then((exists) {
+      if (exists) {
+        // Navigate to the PDFViewerPage passing the file path
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => PDFViewerPage(pdfFilePath: filePath),
+          ),
+        );
+      } else {
+        print('File does not exist');
+      }
+    });
   }
 }
