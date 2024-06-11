@@ -40,14 +40,14 @@ class _DashBoardState extends State<DashBoard> {
           child: Column(
             children: [
               Container(
-                height: MediaQuery.of(context).size.height/2,
+                height: MediaQuery.of(context).size.height / 2,
                 child: Stack(
                   children: [
                     Positioned(
-                      top:0,
+                        top: 0,
                         left: 0,
                         right: 0,
-                        child:Container(
+                        child: Container(
                           height: MediaQuery.of(context).size.height / 4,
                           decoration: BoxDecoration(
                             color: kThemeColor,
@@ -56,8 +56,7 @@ class _DashBoardState extends State<DashBoard> {
                               bottomLeft: Radius.circular(50.0),
                             ),
                           ),
-                        )
-                    ),
+                        )),
                     Positioned(
                       top: 40,
                       left: 20,
@@ -120,7 +119,8 @@ class _DashBoardState extends State<DashBoard> {
                           decoration: KFormFieldDecoration.copyWith(
                             suffixIcon: Icon(Icons.search, size: 30),
                             hintText: "search",
-                            labelStyle: TextStyle(color: Colors.grey, fontSize: 20),
+                            labelStyle:
+                                TextStyle(color: Colors.grey, fontSize: 20),
                             fillColor: Colors.white,
                             filled: true,
                           ),
@@ -137,24 +137,25 @@ class _DashBoardState extends State<DashBoard> {
                           autoPlay: true,
                           aspectRatio: 16 / 9,
                           autoPlayCurve: Curves.fastOutSlowIn,
-                          autoPlayAnimationDuration: Duration(milliseconds: 400),
+                          autoPlayAnimationDuration:
+                              Duration(milliseconds: 400),
                           viewportFraction: 0.8,
                         ),
                         items: [
                           Container(
                             margin: EdgeInsets.symmetric(horizontal: 5.0),
-                            child:
-                            Image.asset('assets/pic1.jpg', fit: BoxFit.cover),
+                            child: Image.asset('assets/pic1.jpg',
+                                fit: BoxFit.cover),
                           ),
                           Container(
                             margin: EdgeInsets.symmetric(horizontal: 5.0),
-                            child:
-                            Image.asset('assets/pic2.jpg', fit: BoxFit.cover),
+                            child: Image.asset('assets/pic2.jpg',
+                                fit: BoxFit.cover),
                           ),
                           Container(
                             margin: EdgeInsets.symmetric(horizontal: 5.0),
-                            child:
-                            Image.asset('assets/pic3.jpg', fit: BoxFit.cover),
+                            child: Image.asset('assets/pic3.jpg',
+                                fit: BoxFit.cover),
                           ),
                         ],
                       ),
@@ -254,12 +255,22 @@ class _DashBoardState extends State<DashBoard> {
                   ],
                 ),
               ),
-              ElevatedButton(
+              Visibility(
+                visible: pdfFilePath != null,
+                child: ElevatedButton(
                   onPressed: () {
                     log("yes");
                     openFile(context, pdfFilePath!);
                   },
-                  child: Text('Open')),
+                  child: Text('Open'),
+                  style: ElevatedButton.styleFrom(
+                    primary: kThemeColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                  ),
+                ),
+              ),
               if (pdfFilePath != null)
                 Container(
                   width: 100,
