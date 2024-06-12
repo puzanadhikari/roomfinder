@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:meroapp/Constants/styleConsts.dart';
 import 'package:meroapp/splashScreen.dart';
@@ -117,14 +118,23 @@ class _ProfilePageState extends State<ProfilePage> {
                 leading: Icon(Icons.logout),
                 title: Text('Logout'),
                 trailing: Icon(Icons.chevron_right,color: appBarColor),
-                onTap: () {
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>SplashScreen()));
-                },
+                onTap: _signOut
               ),
             ),
           ],
         ),
       ),
     );
+  }
+  void _signOut() async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => SplashScreen()),
+      );
+    } catch (e) {
+      print("Error signing out: $e");
+    }
   }
 }

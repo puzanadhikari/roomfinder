@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
@@ -375,9 +376,7 @@ class _DashBoardState extends State<DashBoard> {
             ),
             Spacer(),
             ListTile(
-              onTap: () {
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>SplashScreen()));
-              },
+              onTap: _signOut,
               leading: Icon(Icons.logout),
               title: Text('Logout'),
             ),
@@ -386,6 +385,18 @@ class _DashBoardState extends State<DashBoard> {
         ),
       ),
     );
+  }
+
+  void _signOut() async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => SplashScreen()),
+      );
+    } catch (e) {
+      print("Error signing out: $e");
+    }
   }
 
   void pickFile() async {
