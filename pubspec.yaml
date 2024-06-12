@@ -42,6 +42,7 @@ dependencies:
   carousel_slider: ^4.2.1
   pin_code_fields:
   flutter_pdfview:
+  curved_navigation_bar:
   flutter:
     sdk: flutter
 

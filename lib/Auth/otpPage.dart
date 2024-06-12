@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:meroapp/Constants/styleConsts.dart';
+import 'package:meroapp/homePage.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 import '../dashBoard.dart';
@@ -100,7 +101,7 @@ class _OTPPageState extends State<OTPPage> {
       // OTP verification successful, navigate to the next screen
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => DashBoard()),
+        MaterialPageRoute(builder: (context) => HomePage()),
       );
     } catch (e) {
       setState(() {

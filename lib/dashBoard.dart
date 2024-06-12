@@ -35,263 +35,268 @@ class _DashBoardState extends State<DashBoard> {
         borderRadius: BorderRadius.all(Radius.circular(16)),
       ),
       drawer: _buildDrawer(),
-      child: Scaffold(
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                height: MediaQuery.of(context).size.height / 2,
-                child: Stack(
-                  children: [
-                    Positioned(
-                        top: 0,
+      child: GestureDetector(
+        onTap: (){
+          FocusScope.of(context).unfocus();
+        },
+        child: Scaffold(
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                Container(
+                  height: MediaQuery.of(context).size.height / 2,
+                  child: Stack(
+                    children: [
+                      Positioned(
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          child: Container(
+                            height: MediaQuery.of(context).size.height / 4,
+                            decoration: BoxDecoration(
+                              color: kThemeColor,
+                              borderRadius: BorderRadius.only(
+                                bottomRight: Radius.circular(50.0),
+                                bottomLeft: Radius.circular(50.0),
+                              ),
+                            ),
+                          )),
+                      Positioned(
+                        top: 20,
+                        left: 20,
+                        child: IconButton(
+                          icon: ValueListenableBuilder<AdvancedDrawerValue>(
+                            valueListenable: _advancedDrawerController,
+                            builder: (_, value, __) {
+                              return AnimatedSwitcher(
+                                duration: Duration(milliseconds: 250),
+                                child: Icon(
+                                  value.visible
+                                      ? Icons.clear
+                                      : Icons.menu_open_outlined,
+                                  key: ValueKey<bool>(value.visible),
+                                  color: Colors.white,
+                                  size: 30,
+                                ),
+                              );
+                            },
+                          ),
+                          onPressed: () => _advancedDrawerController.showDrawer(),
+                        ),
+                      ),
+                      Positioned(
+                        top: 20,
+                        right: 0,
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.shopping_cart,
+                            color: Colors.white,
+                            size: 30,
+                          ),
+                          onPressed: () {},
+                        ),
+                      ),
+                      Positioned(
+                        top: 90,
                         left: 0,
                         right: 0,
-                        child: Container(
-                          height: MediaQuery.of(context).size.height / 4,
-                          decoration: BoxDecoration(
-                            color: kThemeColor,
-                            borderRadius: BorderRadius.only(
-                              bottomRight: Radius.circular(50.0),
-                              bottomLeft: Radius.circular(50.0),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                          child: Text(
+                            "Discover",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                        )),
-                    Positioned(
-                      top: 40,
-                      left: 20,
-                      child: IconButton(
-                        icon: ValueListenableBuilder<AdvancedDrawerValue>(
-                          valueListenable: _advancedDrawerController,
-                          builder: (_, value, __) {
-                            return AnimatedSwitcher(
-                              duration: Duration(milliseconds: 250),
-                              child: Icon(
-                                value.visible
-                                    ? Icons.clear
-                                    : Icons.menu_open_outlined,
-                                key: ValueKey<bool>(value.visible),
-                                color: Colors.white,
-                                size: 30,
-                              ),
-                            );
-                          },
-                        ),
-                        onPressed: () => _advancedDrawerController.showDrawer(),
-                      ),
-                    ),
-                    Positioned(
-                      top: 40,
-                      right: 0,
-                      child: IconButton(
-                        icon: Icon(
-                          Icons.shopping_cart,
-                          color: Colors.white,
-                          size: 30,
-                        ),
-                        onPressed: () {},
-                      ),
-                    ),
-                    Positioned(
-                      top: 90,
-                      left: 0,
-                      right: 0,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                        child: Text(
-                          "Discover",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 25,
-                            fontWeight: FontWeight.bold,
-                          ),
                         ),
                       ),
-                    ),
-                    Positioned(
-                      top: 120,
-                      left: 0,
-                      right: 0,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                        child: TextFormField(
-                          controller: searchController,
-                          decoration: KFormFieldDecoration.copyWith(
-                            suffixIcon: Icon(Icons.search, size: 30),
-                            hintText: "search",
-                            labelStyle:
-                                TextStyle(color: Colors.grey, fontSize: 20),
-                            fillColor: Colors.white,
-                            filled: true,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      top: 200,
-                      left: 0,
-                      right: 0,
-                      child: CarouselSlider(
-                        options: CarouselOptions(
-                          enlargeCenterPage: true,
-                          autoPlay: true,
-                          aspectRatio: 16 / 9,
-                          autoPlayCurve: Curves.fastOutSlowIn,
-                          autoPlayAnimationDuration:
-                              Duration(milliseconds: 400),
-                          viewportFraction: 0.8,
-                        ),
-                        items: [
-                          Container(
-                            margin: EdgeInsets.symmetric(horizontal: 5.0),
-                            child: Image.asset('assets/pic1.jpg',
-                                fit: BoxFit.cover),
-                          ),
-                          Container(
-                            margin: EdgeInsets.symmetric(horizontal: 5.0),
-                            child: Image.asset('assets/pic2.jpg',
-                                fit: BoxFit.cover),
-                          ),
-                          Container(
-                            margin: EdgeInsets.symmetric(horizontal: 5.0),
-                            child: Image.asset('assets/pic3.jpg',
-                                fit: BoxFit.cover),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Change your Style",
-                      style: TextStyle(
-                        color: kThemeColor,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        pickFile();
-                      },
-                      child: Container(
-                        child: Row(
-                          children: [
-                            Text(
-                              "See More",
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 15,
-                              ),
+                      Positioned(
+                        top: 120,
+                        left: 0,
+                        right: 0,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                          child: TextFormField(
+                            controller: searchController,
+                            decoration: KFormFieldDecoration.copyWith(
+                              suffixIcon: Icon(Icons.search, size: 30),
+                              hintText: "search",
+                              labelStyle:
+                                  TextStyle(color: Colors.grey, fontSize: 20),
+                              fillColor: Colors.white,
+                              filled: true,
                             ),
-                            Icon(
-                              Icons.arrow_forward_ios_sharp,
-                              color: Colors.grey,
-                            )
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        top: 200,
+                        left: 0,
+                        right: 0,
+                        child: CarouselSlider(
+                          options: CarouselOptions(
+                            enlargeCenterPage: true,
+                            autoPlay: true,
+                            aspectRatio: 16 / 9,
+                            autoPlayCurve: Curves.fastOutSlowIn,
+                            autoPlayAnimationDuration:
+                                Duration(milliseconds: 400),
+                            viewportFraction: 0.8,
+                          ),
+                          items: [
+                            Container(
+                              margin: EdgeInsets.symmetric(horizontal: 5.0),
+                              child: Image.asset('assets/pic1.jpg',
+                                  fit: BoxFit.cover),
+                            ),
+                            Container(
+                              margin: EdgeInsets.symmetric(horizontal: 5.0),
+                              child: Image.asset('assets/pic2.jpg',
+                                  fit: BoxFit.cover),
+                            ),
+                            Container(
+                              margin: EdgeInsets.symmetric(horizontal: 5.0),
+                              child: Image.asset('assets/pic3.jpg',
+                                  fit: BoxFit.cover),
+                            ),
                           ],
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(height: 20),
-              Container(
-                height: 200,
-                child: NotificationListener<OverscrollIndicatorNotification>(
-                  onNotification: (overscroll) {
-                    overscroll.disallowGlow(); // This disables the glow effect
-                    return true;
-                  },
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: filePaths.length,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.only(left: 20.0),
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => FullScreenImage(
-                                  imagePath: filePaths[index],
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Change your Style",
+                        style: TextStyle(
+                          color: kThemeColor,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          pickFile();
+                        },
+                        child: Container(
+                          child: Row(
+                            children: [
+                              Text(
+                                "See More",
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 15,
                                 ),
                               ),
-                            );
-                          },
-                          child: Container(
-                            // height: 200,
-                            // width: 100,
-                            child: filePaths[index].isNotEmpty &&
-                                    File(filePaths[index]).existsSync()
-                                ? Image.file(
-                                    File(filePaths[index]),
-                                    fit: BoxFit.fill,
-                                  )
-                                : Container(), // Display an empty container if file path is invalid
+                              Icon(
+                                Icons.arrow_forward_ios_sharp,
+                                color: Colors.grey,
+                              )
+                            ],
                           ),
                         ),
-                      );
-                    },
+                      ),
+                    ],
                   ),
                 ),
-              ),
-              SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Choose Pdf",
-                      style: TextStyle(
-                        color: kThemeColor,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                SizedBox(height: 20),
+                Container(
+                  height: 200,
+                  child: NotificationListener<OverscrollIndicatorNotification>(
+                    onNotification: (overscroll) {
+                      overscroll.disallowGlow(); // This disables the glow effect
+                      return true;
+                    },
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: filePaths.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.only(left: 20.0),
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => FullScreenImage(
+                                    imagePath: filePaths[index],
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Container(
+                              // height: 200,
+                              // width: 100,
+                              child: filePaths[index].isNotEmpty &&
+                                      File(filePaths[index]).existsSync()
+                                  ? Image.file(
+                                      File(filePaths[index]),
+                                      fit: BoxFit.fill,
+                                    )
+                                  : Container(), // Display an empty container if file path is invalid
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Choose Pdf",
+                        style: TextStyle(
+                          color: kThemeColor,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      IconButton(
+                        color: Colors.grey,
+                        onPressed: () {
+                          pickPdf();
+                        },
+                        icon: Icon(Icons.picture_as_pdf),
+                      )
+                    ],
+                  ),
+                ),
+                Visibility(
+                  visible: pdfFilePath != null,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      log("yes");
+                      openFile(context, pdfFilePath!);
+                    },
+                    child: Text('Open'),
+                    style: ElevatedButton.styleFrom(
+                      primary: kThemeColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0),
                       ),
                     ),
-                    IconButton(
-                      color: Colors.grey,
-                      onPressed: () {
-                        pickPdf();
-                      },
-                      icon: Icon(Icons.picture_as_pdf),
-                    )
-                  ],
+                  ),
                 ),
-              ),
-              Visibility(
-                visible: pdfFilePath != null,
-                child: ElevatedButton(
-                  onPressed: () {
-                    log("yes");
-                    openFile(context, pdfFilePath!);
-                  },
-                  child: Text('Open'),
-                  style: ElevatedButton.styleFrom(
-                    primary: kThemeColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
+                if (pdfFilePath != null)
+                  Container(
+                    width: 100,
+                    height: 150,
+                    child: PDFView(
+                      filePath: pdfFilePath,
                     ),
                   ),
-                ),
-              ),
-              if (pdfFilePath != null)
-                Container(
-                  width: 100,
-                  height: 150,
-                  child: PDFView(
-                    filePath: pdfFilePath,
-                  ),
-                ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

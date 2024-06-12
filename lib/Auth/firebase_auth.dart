@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:meroapp/Constants/styleConsts.dart';
 import 'package:meroapp/dashBoard.dart';
+import 'package:meroapp/homePage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'loginPage.dart';
 
@@ -93,7 +94,7 @@ class FirebaseAuthService {
             fontSize: 16.0);
 
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => DashBoard()));
+            context, MaterialPageRoute(builder: (context) => HomePage()));
         return credential.user;
       } else {
         print('Email not verified. Please check your email for verification.');
