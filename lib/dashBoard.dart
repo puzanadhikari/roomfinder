@@ -6,7 +6,11 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:meroapp/Constants/styleConsts.dart';
+import 'package:meroapp/profilePage.dart';
+import 'package:meroapp/splashScreen.dart';
 import 'package:meroapp/test.dart';
+
+import 'cartPage.dart';
 
 class DashBoard extends StatefulWidget {
   @override
@@ -62,7 +66,7 @@ class _DashBoardState extends State<DashBoard> {
                             ),
                           )),
                       Positioned(
-                        top: 20,
+                        top: 40,
                         left: 20,
                         child: IconButton(
                           icon: ValueListenableBuilder<AdvancedDrawerValue>(
@@ -85,7 +89,7 @@ class _DashBoardState extends State<DashBoard> {
                         ),
                       ),
                       Positioned(
-                        top: 20,
+                        top: 40,
                         right: 0,
                         child: IconButton(
                           icon: Icon(
@@ -93,7 +97,9 @@ class _DashBoardState extends State<DashBoard> {
                             color: Colors.white,
                             size: 30,
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage()));
+                          },
                         ),
                       ),
                       Positioned(
@@ -356,7 +362,9 @@ class _DashBoardState extends State<DashBoard> {
               title: Text('Favourites'),
             ),
             ListTile(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>ProfilePage()));
+              },
               leading: Icon(Icons.account_balance_wallet_sharp),
               title: Text('Accounts'),
             ),
@@ -368,7 +376,7 @@ class _DashBoardState extends State<DashBoard> {
             Spacer(),
             ListTile(
               onTap: () {
-                Navigator.pop(context);
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>SplashScreen()));
               },
               leading: Icon(Icons.logout),
               title: Text('Logout'),

@@ -26,11 +26,12 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return WillPopScope(
+      onWillPop: _onBackPressed,
       child: Scaffold(
         bottomNavigationBar: CurvedNavigationBar(
           backgroundColor: Colors.transparent,
-          buttonBackgroundColor: appBarColor,
+          buttonBackgroundColor: kThemeColor,
           color:kThemeColor,
           height: 50,
           animationDuration: const Duration(milliseconds: 300),
@@ -49,6 +50,25 @@ class _HomePageState extends State<HomePage> {
         body: _pages[_page],
       ),
     );
+  }
+  Future<bool> _onBackPressed() async {
+    return await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Do you want to exit the app?'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text('No',style: TextStyle(color: Colors.red),),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text('Yes',style: TextStyle(color: Colors.green),),
+          ),
+        ],
+      ),
+    ) ??
+        false;
   }
 }
 
