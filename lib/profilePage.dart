@@ -11,8 +11,10 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+
   @override
   Widget build(BuildContext context) {
+    User? user = FirebaseAuth.instance.currentUser;
     return Scaffold(
       appBar: AppBar(
         title: Text("Profile"),
@@ -34,7 +36,10 @@ class _ProfilePageState extends State<ProfilePage> {
                   )
               ),
             ),
-            Text("PUJAN ADHIKARI",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold)),
+            Text(
+              user?.displayName ?? "Loading...",
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+            ),
             SizedBox(height: 20),
             Divider(
               color: Colors.grey,

@@ -311,6 +311,7 @@ class _DashBoardState extends State<DashBoard> {
   }
 
   Widget _buildDrawer() {
+    User? user = FirebaseAuth.instance.currentUser;
     return SafeArea(
       child: ListTileTheme(
         textColor: Colors.white,
@@ -335,7 +336,7 @@ class _DashBoardState extends State<DashBoard> {
             Padding(
               padding: const EdgeInsets.only(left: 20, bottom: 60.0),
               child: Text(
-                "Pujan Adhikari",
+                user?.displayName ?? "Guest",
                 style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
