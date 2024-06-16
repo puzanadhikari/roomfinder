@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:meroapp/Constants/styleConsts.dart';
 import 'package:meroapp/splashScreen.dart';
+import 'package:meroapp/wishlistPage.dart';
 
 import 'informationDetail.dart';
 
@@ -86,7 +87,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 title: Text('Wishlist'),
                 trailing: Icon(Icons.chevron_right, color: appBarColor),
                 onTap: () {
-                  // Navigator.push(context, MaterialPageRoute(builder: (context)=>InformationPage()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>WishlistPage()));
                 },
               ),
             ),

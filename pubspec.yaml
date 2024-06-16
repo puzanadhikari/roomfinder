@@ -43,6 +43,8 @@ dependencies:
   pin_code_fields:
   flutter_pdfview:
   curved_navigation_bar:
+  animated_toggle_switch: ^0.8.2
+  lite_rolling_switch: ^1.0.1
   flutter:
     sdk: flutter
 

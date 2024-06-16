@@ -1,8 +1,10 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:meroapp/Constants/styleConsts.dart';
 import 'package:meroapp/dashBoard.dart';
 import 'package:meroapp/profilePage.dart';
+import 'package:meroapp/splashScreen.dart';
 import 'package:meroapp/wishlistPage.dart';
 
 import 'cartPage.dart';
@@ -62,7 +64,13 @@ class _HomePageState extends State<HomePage> {
             child: Text('No',style: TextStyle(color: Colors.red),),
           ),
           TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
+            onPressed: () async {
+              await FirebaseAuth.instance.signOut();
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => SplashScreen()),
+              );
+            },
             child: Text('Yes',style: TextStyle(color: Colors.green),),
           ),
         ],
