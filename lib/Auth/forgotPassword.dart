@@ -16,20 +16,25 @@ class _ForgotPasswordState extends State<ForgotPassword> {
 
   void _sendPasswordResetEmail() async {
     String email = _forgotPassword.text.trim();
-    if (email.isEmpty) {
+    if (!_isValidEmail(email)) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please enter your email address')),
+        SnackBar(content: Text('Please enter a valid email address')),
       );
       return;
     }
     try {
-      _auth.forgotPassword(context, email);
+      await _auth.forgotPassword(context, email);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: ${e.toString()}')),
       );
     }
   }
+
+  bool _isValidEmail(String email) {
+    return email.contains('@') && email.contains('.');
+  }
+
 
   @override
   Widget build(BuildContext context) {
