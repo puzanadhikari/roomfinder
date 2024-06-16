@@ -44,66 +44,68 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         centerTitle: true,
         backgroundColor: kThemeColor,
       ),
-      body: Padding(
-        padding: const EdgeInsets.only(top: 40.0),
-        child: Column(
-          children: [
-         CircleAvatar(
-          radius: 70,
-          backgroundColor: kThemeColor,
-          backgroundImage: NetworkImage(
-              "https://media.licdn.com/dms/image/D5603AQFD6ld3NWc2HQ/profile-displayphoto-shrink_200_200/0/1684164054868?e=2147483647&v=beta&t=cwQoyfhgAl_91URX5FTEXLwLDEHWe1H337EMebpgntQ"),
-        ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                height: MediaQuery.of(context).size.height / 3,
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0),
-                  ),
-                  shadowColor: Colors.black,
-                  elevation: 16.0,
-                  child: ListTile(
-                    title: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Forgot Password ?',
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                        ),
-                        Text(
-                          'Enter the email address associated with your account'
-                        ),
-                        SizedBox(height: 20),
-                        TextFormField(
-                          controller: _forgotPassword,
-                          decoration: KFormFieldDecoration.copyWith(
-                              labelText: "Recovery Email"),
-                        ),
-                        SizedBox(height: 20),
-                        Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: 50,
-                          child: ElevatedButton(
-                            onPressed: _sendPasswordResetEmail,
-                            child: Text("Reset Password",
-                                style: TextStyle(color: Colors.black, fontSize: 18)),
-                            style: ElevatedButton.styleFrom(
-                              primary: appBarColor,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15.0),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 40.0),
+          child: Column(
+            children: [
+           CircleAvatar(
+            radius: 70,
+            backgroundColor: kThemeColor,
+            backgroundImage: NetworkImage(
+                "https://media.licdn.com/dms/image/D5603AQFD6ld3NWc2HQ/profile-displayphoto-shrink_200_200/0/1684164054868?e=2147483647&v=beta&t=cwQoyfhgAl_91URX5FTEXLwLDEHWe1H337EMebpgntQ"),
+          ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  height: MediaQuery.of(context).size.height / 3,
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    shadowColor: Colors.black,
+                    elevation: 16.0,
+                    child: ListTile(
+                      title: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Forgot Password ?',
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                          ),
+                          Text(
+                            'Enter the email address associated with your account'
+                          ),
+                          SizedBox(height: 20),
+                          TextFormField(
+                            controller: _forgotPassword,
+                            decoration: KFormFieldDecoration.copyWith(
+                                labelText: "Recovery Email"),
+                          ),
+                          SizedBox(height: 20),
+                          Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: 50,
+                            child: ElevatedButton(
+                              onPressed: _sendPasswordResetEmail,
+                              child: Text("Reset Password",
+                                  style: TextStyle(color: Colors.black, fontSize: 18)),
+                              style: ElevatedButton.styleFrom(
+                                primary: appBarColor,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
