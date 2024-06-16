@@ -155,18 +155,57 @@ class _DashBoardState extends State<DashBoard> {
                           items: [
                             Container(
                               margin: EdgeInsets.symmetric(horizontal: 5.0),
-                              child: Image.asset('assets/pic1.jpg',
-                                  fit: BoxFit.cover),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(40),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black26,
+                                    spreadRadius: 1,
+                                    blurRadius: 10,
+                                    offset: Offset(0, 5),
+                                  ),
+                                ],
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(40),
+                                child: Image.asset('assets/pic1.jpg', fit: BoxFit.cover),
+                              ),
                             ),
                             Container(
                               margin: EdgeInsets.symmetric(horizontal: 5.0),
-                              child: Image.asset('assets/pic2.jpg',
-                                  fit: BoxFit.cover),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(40),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black26,
+                                    spreadRadius: 1,
+                                    blurRadius: 10,
+                                    offset: Offset(0, 5),
+                                  ),
+                                ],
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(40),
+                                child: Image.asset('assets/pic2.jpg', fit: BoxFit.cover),
+                              ),
                             ),
                             Container(
                               margin: EdgeInsets.symmetric(horizontal: 5.0),
-                              child: Image.asset('assets/pic3.jpg',
-                                  fit: BoxFit.cover),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(40),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black26,
+                                    spreadRadius: 1,
+                                    blurRadius: 10,
+                                    offset: Offset(0, 5),
+                                  ),
+                                ],
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(40),
+                                child: Image.asset('assets/pic3.jpg', fit: BoxFit.cover),
+                              ),
                             ),
                           ],
                         ),

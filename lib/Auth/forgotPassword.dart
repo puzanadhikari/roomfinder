@@ -57,7 +57,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
-                height: MediaQuery.of(context).size.height / 4,
+                height: MediaQuery.of(context).size.height / 3,
                 child: Card(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0),
@@ -72,6 +72,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                           'Forgot Password ?',
                           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                         ),
+                        Text(
+                          'Enter the email address associated with your account'
+                        ),
                         SizedBox(height: 20),
                         TextFormField(
                           controller: _forgotPassword,
@@ -84,7 +87,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                           height: 50,
                           child: ElevatedButton(
                             onPressed: _sendPasswordResetEmail,
-                            child: Text("Send",
+                            child: Text("Reset Password",
                                 style: TextStyle(color: Colors.black, fontSize: 18)),
                             style: ElevatedButton.styleFrom(
                               primary: appBarColor,
