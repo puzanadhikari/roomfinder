@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:meroapp/Auth/forgotPassword.dart';
 import 'package:meroapp/Constants/styleConsts.dart';
 import 'package:meroapp/Auth/loginViaNumber.dart';
 import 'package:meroapp/Auth/registerPage.dart';
@@ -119,7 +120,13 @@ class _LoginPageState extends State<LoginPage> {
                           Align(
                               alignment: Alignment.bottomRight,
                               child: TextButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                ForgotPassword()));
+                                  },
                                   child: Text(
                                     "Forgot Password ?",
                                     style: TextStyle(color: appBarColor),

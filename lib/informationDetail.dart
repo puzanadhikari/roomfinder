@@ -65,7 +65,7 @@ class _InformationDetailsState extends State<InformationDetails> {
                           'Email:',
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
-                        subtitle: Text(user?.email ?? ''),
+                        subtitle: Text(user?.email ?? 'Email not received yet'),
                       ),
                       Divider(),
                       ListTile(
@@ -73,7 +73,7 @@ class _InformationDetailsState extends State<InformationDetails> {
                           'Phone:',
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
-                        subtitle: Text(user?.phoneNumber ?? ''),
+                        subtitle: Text(user?.phoneNumber ?? '9841100460'),
                       ),
                     ],
                   ),

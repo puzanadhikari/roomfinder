@@ -58,7 +58,7 @@ class FirebaseAuthService {
     }
   }
 
-  Future addUserData(String email,String name,String password) async {
+  Future addUserData(String email, String name, String password) async {
     try {
       User? user = FirebaseAuth.instance.currentUser;
 
@@ -71,9 +71,11 @@ class FirebaseAuthService {
           "password": password,
         };
 
-        DocumentReference userRef = FirebaseFirestore.instance.collection('users').doc(uid);
+        DocumentReference userRef =
+            FirebaseFirestore.instance.collection('users').doc(uid);
         await userRef.set(userData);
-      }} catch (e) {
+      }
+    } catch (e) {
       log('Error storing user data: $e'); // Add this line to print the error
     }
   }
@@ -117,5 +119,28 @@ class FirebaseAuthService {
           fontSize: 16.0);
     }
     return null;
+  }
+
+  Future<void> forgotPassword(BuildContext context, String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      Navigator.pop(context);
+      Fluttertoast.showToast(
+          msg: 'Password reset email sent',
+          backgroundColor: appBarColor,
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.TOP_RIGHT,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    } catch (e) {
+      log("Error during password reset: $e");
+      Fluttertoast.showToast(
+          msg: 'Error sending password reset email',
+          backgroundColor: Color(0xff283E50),
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.TOP_RIGHT,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    }
   }
 }
