@@ -10,6 +10,7 @@ import 'package:meroapp/Constants/styleConsts.dart';
 import 'package:meroapp/profilePage.dart';
 import 'package:meroapp/splashScreen.dart';
 import 'package:meroapp/test.dart';
+import 'package:meroapp/wishlistPage.dart';
 
 import 'cartPage.dart';
 
@@ -19,6 +20,30 @@ class DashBoard extends StatefulWidget {
 }
 
 class _DashBoardState extends State<DashBoard> {
+  final List<String> imageUrls = [
+    "https://econtent.o2.co.uk/o/econtent/media/get/43f82c83-69ec-480d-82b5-3fef330f2a0b",
+    "https://m.media-amazon.com/images/I/61voYsPhFTL._AC_SL1500_.jpg",
+    "https://i02.appmifile.com/504_operatorx_operatorx_xm/08/01/2024/fb199e5433ffcbcc38eeff0042fe0fbe.jpg",
+    "https://images-cdn.ubuy.co.in/633b88f09d0e14619a371557-oneplus-nord-n200-5g-unlocked-android.jpg",
+    "https://www.apple.com/v/iphone/home/bu/images/meta/iphone__ky2k6x5u6vue_og.png",
+    "https://images.samsung.com/is/image/samsung/p6pim/uk/2401/gallery/uk-galaxy-s24-ultra-491396-sm-s928bztpeub-thumb-539464063",
+    "https://image.oppo.com/content/dam/oppo/product-asset-library/specs/a78-4g/a78-bg.png",
+    "https://asia-exstatic-vivofs.vivo.com/PSee2l50xoirPK7y/1687938111308/4347f794c401b874b7a314efe168da68.png",
+    "https://i05.appmifile.com/175_item_fr/12/05/2023/deca984ab02cfffd8e52cb58683005da!400x400!85.png",
+    "https://m.media-amazon.com/images/I/61jJeZBliWL._AC_SL1000_.jpg",
+  ];
+  final List<String> names = [
+    "iPhone 13",
+    "Redmi",
+    "Poco",
+    "One Plus",
+    "iPhone 14",
+    "Samsung",
+    "Motorola",
+    "Huwaei",
+    "Oppo",
+    "Vivo",
+  ];
   String fileName = '';
   List<String> filePaths = [];
   String? pdfFilePath;
@@ -146,7 +171,7 @@ class _DashBoardState extends State<DashBoard> {
                           options: CarouselOptions(
                             enlargeCenterPage: true,
                             autoPlay: true,
-                            aspectRatio: 16 / 9,
+                            aspectRatio: 16 / 10,
                             autoPlayCurve: Curves.fastOutSlowIn,
                             autoPlayAnimationDuration:
                                 Duration(milliseconds: 400),
@@ -168,7 +193,7 @@ class _DashBoardState extends State<DashBoard> {
                               ),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(40),
-                                child: Image.asset('assets/pic1.jpg', fit: BoxFit.cover),
+                                child: Image.network('https://econtent.o2.co.uk/o/econtent/media/get/43f82c83-69ec-480d-82b5-3fef330f2a0b', fit: BoxFit.cover),
                               ),
                             ),
                             Container(
@@ -186,7 +211,7 @@ class _DashBoardState extends State<DashBoard> {
                               ),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(40),
-                                child: Image.asset('assets/pic2.jpg', fit: BoxFit.cover),
+                                child: Image.network('https://i02.appmifile.com/504_operatorx_operatorx_xm/08/01/2024/fb199e5433ffcbcc38eeff0042fe0fbe.jpg', fit: BoxFit.cover),
                               ),
                             ),
                             Container(
@@ -204,7 +229,7 @@ class _DashBoardState extends State<DashBoard> {
                               ),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(40),
-                                child: Image.asset('assets/pic3.jpg', fit: BoxFit.cover),
+                                child: Image.network('https://images.samsung.com/is/image/samsung/p6pim/uk/2401/gallery/uk-galaxy-s24-ultra-491396-sm-s928bztpeub-thumb-539464063', fit: BoxFit.cover),
                               ),
                             ),
                           ],
@@ -215,11 +240,50 @@ class _DashBoardState extends State<DashBoard> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      "Categories",
+                      style: TextStyle(
+                        color: kThemeColor,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
+                Container(
+                  height: 100.0,
+                  margin: EdgeInsets.symmetric(vertical:.0),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: List.generate(10, (index) {
+                        return Container(
+                          margin: EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Column(
+                            children: [
+                              CircleAvatar(
+                                radius: 30.0,
+                                backgroundColor: Colors.green.shade300,
+                                backgroundImage: NetworkImage(imageUrls[index]),
+                              ),
+                              Text(names[index]),
+                            ],
+                          ),
+                        );
+                      }),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        "Change your Style",
+                        "Popular",
                         style: TextStyle(
                           color: kThemeColor,
                           fontSize: 18,
@@ -398,7 +462,9 @@ class _DashBoardState extends State<DashBoard> {
               title: Text('Categories'),
             ),
             ListTile(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>WishlistPage()));
+              },
               leading: Icon(Icons.favorite_outlined),
               title: Text('Favourites'),
             ),

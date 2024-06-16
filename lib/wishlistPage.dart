@@ -26,7 +26,7 @@ class _WishlistPageState extends State<WishlistPage> {
             child: Align(
               alignment: Alignment.topRight,
               child: LiteRollingSwitch(
-                value: true,
+                value: false,
                 width: 100,
                 textOn: 'On',
                 textOff: 'Off',
