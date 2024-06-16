@@ -292,7 +292,7 @@ class _DashBoardState extends State<DashBoard> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          pickFile();
+                          // pickFile();
                         },
                         child: Container(
                           child: Row(
@@ -317,94 +317,117 @@ class _DashBoardState extends State<DashBoard> {
                 ),
                 SizedBox(height: 20),
                 Container(
-                  height: 200,
-                  child: NotificationListener<OverscrollIndicatorNotification>(
-                    onNotification: (overscroll) {
-                      overscroll.disallowGlow(); // This disables the glow effect
-                      return true;
-                    },
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: filePaths.length,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.only(left: 20.0),
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => FullScreenImage(
-                                    imagePath: filePaths[index],
-                                  ),
-                                ),
-                              );
-                            },
-                            child: Container(
-                              // height: 200,
-                              // width: 100,
-                              child: filePaths[index].isNotEmpty &&
-                                      File(filePaths[index]).existsSync()
-                                  ? Image.file(
-                                      File(filePaths[index]),
-                                      fit: BoxFit.fill,
-                                    )
-                                  : Container(), // Display an empty container if file path is invalid
-                            ),
+                  height: 200.0,
+                  margin: EdgeInsets.symmetric(vertical:.0),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: List.generate(10, (index) {
+                        return Container(
+                          margin: EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Column(
+                            children: [
+                              Container(
+                                height:200,
+                                child:Image.network((imageUrls[index])),
+                              ),
+                            ],
                           ),
                         );
-                      },
+                      }),
                     ),
                   ),
                 ),
                 SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Choose Pdf",
-                        style: TextStyle(
-                          color: kThemeColor,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      IconButton(
-                        color: Colors.grey,
-                        onPressed: () {
-                          pickPdf();
-                        },
-                        icon: Icon(Icons.picture_as_pdf),
-                      )
-                    ],
-                  ),
-                ),
-                Visibility(
-                  visible: pdfFilePath != null,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      log("yes");
-                      openFile(context, pdfFilePath!);
-                    },
-                    child: Text('Open'),
-                    style: ElevatedButton.styleFrom(
-                      primary: kThemeColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0),
-                      ),
-                    ),
-                  ),
-                ),
-                if (pdfFilePath != null)
-                  Container(
-                    width: 100,
-                    height: 150,
-                    child: PDFView(
-                      filePath: pdfFilePath,
-                    ),
-                  ),
+                // Container(
+                //   height: 200,
+                //   child: NotificationListener<OverscrollIndicatorNotification>(
+                //     onNotification: (overscroll) {
+                //       overscroll.disallowGlow(); // This disables the glow effect
+                //       return true;
+                //     },
+                //     child: ListView.builder(
+                //       scrollDirection: Axis.horizontal,
+                //       itemCount: filePaths.length,
+                //       itemBuilder: (context, index) {
+                //         return Padding(
+                //           padding: const EdgeInsets.only(left: 20.0),
+                //           child: GestureDetector(
+                //             onTap: () {
+                //               Navigator.push(
+                //                 context,
+                //                 MaterialPageRoute(
+                //                   builder: (context) => FullScreenImage(
+                //                     imagePath: filePaths[index],
+                //                   ),
+                //                 ),
+                //               );
+                //             },
+                //             child: Container(
+                //               // height: 200,
+                //               // width: 100,
+                //               child: filePaths[index].isNotEmpty &&
+                //                       File(filePaths[index]).existsSync()
+                //                   ? Image.file(
+                //                       File(filePaths[index]),
+                //                       fit: BoxFit.fill,
+                //                     )
+                //                   : Container(), // Display an empty container if file path is invalid
+                //             ),
+                //           ),
+                //         );
+                //       },
+                //     ),
+                //   ),
+                // ),
+                SizedBox(height: 20),
+                // Padding(
+                //   padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                //   child: Row(
+                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //     children: [
+                //       Text(
+                //         "Choose Pdf",
+                //         style: TextStyle(
+                //           color: kThemeColor,
+                //           fontSize: 18,
+                //           fontWeight: FontWeight.bold,
+                //         ),
+                //       ),
+                //       IconButton(
+                //         color: Colors.grey,
+                //         onPressed: () {
+                //           pickPdf();
+                //         },
+                //         icon: Icon(Icons.picture_as_pdf),
+                //       )
+                //     ],
+                //   ),
+                // ),
+                // Visibility(
+                //   visible: pdfFilePath != null,
+                //   child: ElevatedButton(
+                //     onPressed: () {
+                //       log("yes");
+                //       openFile(context, pdfFilePath!);
+                //     },
+                //     child: Text('Open'),
+                //     style: ElevatedButton.styleFrom(
+                //       primary: kThemeColor,
+                //       shape: RoundedRectangleBorder(
+                //         borderRadius: BorderRadius.circular(15.0),
+                //       ),
+                //     ),
+                //   ),
+                // ),
+                // if (pdfFilePath != null)
+                //   Container(
+                //     width: 100,
+                //     height: 150,
+                //     child: PDFView(
+                //       filePath: pdfFilePath,
+                //     ),
+                //   ),
               ],
             ),
           ),
