@@ -312,6 +312,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.6.5"
+  khalti_flutter:
+    dependency: "direct main"
+    description:
+      name: khalti_flutter
+      sha256: "0534384e8b01a4ce34131ed9003e9415bff1e82c2c22df64698aa9bff6173e6b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.1"
   lints:
     dependency: transitive
     description:

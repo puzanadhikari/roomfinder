@@ -45,6 +45,7 @@ dependencies:
   curved_navigation_bar:
   animated_toggle_switch: ^0.8.2
   lite_rolling_switch: ^1.0.1
+  khalti_flutter:
   flutter:
     sdk: flutter
 

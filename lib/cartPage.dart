@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:meroapp/Constants/styleConsts.dart';
+
+import 'Constants/checkoutPage.dart';
 class CartPage extends StatefulWidget {
   const CartPage({super.key});
 
@@ -8,6 +10,7 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartPageState extends State<CartPage> {
+  int grandTotal = 10000;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -139,7 +142,7 @@ class _CartPageState extends State<CartPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text("Grand Total:",style: TextStyle(color: kThemeColor,fontWeight: FontWeight.bold),),
-                          Text("500.0",style: TextStyle(color: kThemeColor,fontWeight: FontWeight.bold),),
+                          Text(grandTotal.toString(),style: TextStyle(color: kThemeColor,fontWeight: FontWeight.bold),),
                         ],
                       )
                     ],
@@ -153,7 +156,7 @@ class _CartPageState extends State<CartPage> {
               width: MediaQuery.of(context).size.width/2,
               child: ElevatedButton(
                 onPressed: () {
-                  // Navigator.push(context, MaterialPageRoute(builder: (context)=>CheckoutPage()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>CheckoutPage(grandTotal: grandTotal)));
                 },
                 style: ElevatedButton.styleFrom(
                   elevation: 0,
