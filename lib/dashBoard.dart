@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -8,11 +9,13 @@ import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:meroapp/Constants/styleConsts.dart';
 import 'package:meroapp/profilePage.dart';
+import 'package:meroapp/roomdetail.dart';
 import 'package:meroapp/splashScreen.dart';
 import 'package:meroapp/test.dart';
 import 'package:meroapp/wishlistPage.dart';
 
 import 'cartPage.dart';
+import 'model/onSaleModel.dart';
 
 class DashBoard extends StatefulWidget {
   @override
@@ -49,6 +52,34 @@ class _DashBoardState extends State<DashBoard> {
   String? pdfFilePath;
   TextEditingController searchController = TextEditingController();
   final _advancedDrawerController = AdvancedDrawerController();
+
+  Future<List<Room>> fetchRooms() async {
+    final QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('onSale')
+        .where('active', isEqualTo: true) // Query for active rooms
+        .get();
+
+    return snapshot.docs.map((doc) {
+      final data = doc.data() as Map<String, dynamic>;
+      return Room(
+        uid: doc.id,
+        name: data['name'],
+        capacity: data['capacity'],
+        description: data['description'],
+        length: data['length'],
+        breadth: data['breadth'],
+        photo: List<String>.from(data['photo']),
+        panoramaImg: data['panoramaImg'],
+        electricity: data['electricity'],
+        fohor: data['fohor'],
+        lat: data['lat'],
+        lng: data['lng'],
+        active: data['active'],
+        featured: data['featured'],
+        locationName: data["locationName"]
+      );
+    }).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -316,28 +347,78 @@ class _DashBoardState extends State<DashBoard> {
                   ),
                 ),
                 SizedBox(height: 20),
-                Container(
-                  height: 200.0,
-                  margin: EdgeInsets.symmetric(vertical:.0),
-                  child: SingleChildScrollView(
+            FutureBuilder<List<Room>>(
+              future: fetchRooms(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                }
+                if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Center(child: Text('No rooms available'));
+                }
+
+                final rooms = snapshot.data!;
+
+                return Container(
+                  height: 200, // Set height for the card
+                  child: ListView.builder(
                     scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: List.generate(10, (index) {
-                        return Container(
-                          margin: EdgeInsets.symmetric(horizontal: 8.0),
+                    itemCount: rooms.length,
+                    itemBuilder: (context, index) {
+                      final room = rooms[index];
+
+                      return GestureDetector(
+                        onTap: () {
+                          // Navigate to details page
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => RoomDetailPage(room: room),
+                            ),
+                          );
+                        },
+                        child: Card(
+                          margin: EdgeInsets.all(8),
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Container(
-                                height:200,
-                                child:Image.network((imageUrls[index])),
+                                width: 150,
+                                height: 100,
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                    image: NetworkImage(room.photo.isNotEmpty ? room.photo[0] : ''),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      room.name,
+                                      style: TextStyle(fontWeight: FontWeight.bold),
+                                    ),
+                                    SizedBox(height: 4),
+                                    Text('Capacity: ${room.capacity}'),
+                                    // You can add more details here if needed
+                                  ],
+                                ),
                               ),
                             ],
                           ),
-                        );
-                      }),
-                    ),
+                        ),
+                      );
+                    },
                   ),
-                ),
+                );
+              },
+            ),
                 SizedBox(height: 20),
                 // Container(
                 //   height: 200,

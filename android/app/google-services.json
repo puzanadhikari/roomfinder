@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "667214389765",
-    "project_id": "meroapp-45a36",
-    "storage_bucket": "meroapp-45a36.appspot.com"
+    "project_number": "659862114161",
+    "project_id": "roomrent-pujan",
+    "storage_bucket": "roomrent-pujan.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:667214389765:android:9515707f526cefa832b26c",
+        "mobilesdk_app_id": "1:659862114161:android:15001bbc5eb14279eff0d0",
         "android_client_info": {
           "package_name": "com.example.meroapp"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDsXiZKYK1nv2LIYXg5K8-LmVeb2mlCQJM"
+          "current_key": "AIzaSyCmUiZcSkGBKE4obi2mguM_OgIOkZMf9JU"
         }
       ],
       "services": {

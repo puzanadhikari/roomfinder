@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,9 @@ import 'package:meroapp/Constants/styleConsts.dart';
 import 'package:meroapp/dashBoard.dart';
 import 'package:meroapp/homePage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../admin/homePage.dart';
+import '../model/onSaleModel.dart';
+import '../seller/homepage.dart';
 import 'loginPage.dart';
 
 class FirebaseAuthService {
@@ -32,16 +36,16 @@ class FirebaseAuthService {
     }
   }
 
-  Future<User?> register(
-      BuildContext context, String name, String email, String password) async {
+  Future<User?> register(BuildContext context, String name, String email,
+      String password, String userType) async {
     try {
       UserCredential userCredential =
-          await _auth.createUserWithEmailAndPassword(
+      await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
       await userCredential.user?.updateDisplayName(name);
-      await addUserData(email, name, password);
+      await addUserData(email, name, password, userType);
       Fluttertoast.showToast(
           msg: 'Register successfully',
           backgroundColor: appBarColor,
@@ -58,7 +62,8 @@ class FirebaseAuthService {
     }
   }
 
-  Future addUserData(String email, String name, String password) async {
+  Future addUserData(String email, String name, String password,
+      String userType) async {
     try {
       User? user = FirebaseAuth.instance.currentUser;
 
@@ -69,10 +74,11 @@ class FirebaseAuthService {
           "email": email,
           "username": name,
           "password": password,
+          "userType": userType,
         };
 
         DocumentReference userRef =
-            FirebaseFirestore.instance.collection('users').doc(uid);
+        FirebaseFirestore.instance.collection('users').doc(uid);
         await userRef.set(userData);
       }
     } catch (e) {
@@ -80,13 +86,33 @@ class FirebaseAuthService {
     }
   }
 
-  Future<User?> signInWithEmailAndPassword(
-      BuildContext context, String email, String password) async {
+  Future<User?> signInWithEmailAndPassword(BuildContext context, String email,
+      String password) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     try {
       UserCredential credential = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
+
+
       if (credential.user != null && credential.user!.emailVerified) {
+        String uid = credential.user!.uid; // Get the UID of the logged-in user
+        DocumentSnapshot userDoc = await FirebaseFirestore.instance
+            .collection('users') // Replace 'users' with your collection name
+            .doc(uid)
+            .get();
+        if (userDoc.exists) {
+          String userType = userDoc['userType'];
+          if (userType == "Seller") {
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) => SellerHomePage()));
+          } else if (userType == "Buyer") {
+            Navigator.pushReplacement(
+                context, MaterialPageRoute(builder: (context) => HomePage()));
+          } else {
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) => AdminHomePage()));
+          }
+        }
         Fluttertoast.showToast(
             msg: 'Logged in Successful',
             backgroundColor: appBarColor,
@@ -95,8 +121,8 @@ class FirebaseAuthService {
             textColor: Colors.white,
             fontSize: 16.0);
 
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => HomePage()));
+        // Navigator.push(
+        //     context, MaterialPageRoute(builder: (context) => HomePage()));
         return credential.user;
       } else {
         print('Email not verified. Please check your email for verification.');
@@ -143,4 +169,51 @@ class FirebaseAuthService {
           fontSize: 16.0);
     }
   }
+
+  Future<void> addSellerRoomDetail(String name,
+      double capacity,
+      String description,
+      double length,
+      double breadth,
+      List<String> photo, // Change type to List<String>
+      String? panorama, // Change type to String?
+      double electricity,
+      double fohor,
+      double lat,
+      String locName,
+      double lng) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        String uid = user.uid;
+        Map<String, dynamic> userData = {
+          "name": name,
+          "capacity": capacity,
+          "description": description,
+          "length": length,
+          "breadth": breadth,
+          "photo": photo,
+          "panoramaImg": panorama, // Store panorama URL
+          "electricity": electricity,
+          "active": false,
+          "fohor": fohor,
+          "lat": lat,
+          "lng": lng,
+          "locationName": locName,
+          "featured": false,
+        };
+
+        DocumentReference userRef =
+        FirebaseFirestore.instance.collection('onSale').doc(uid);
+        await userRef.set(userData);
+        prefs.clear();
+      }
+    } catch (e) {
+      log('Error storing user data: $e');
+    }
+  }
+
+
+
 }

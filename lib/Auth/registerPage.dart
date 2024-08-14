@@ -25,7 +25,7 @@ class _RegisterPageState extends State<RegisterPage> {
       TextEditingController();
   bool _obscureText = true;
   bool _obscureText1 = true;
-
+  String selectedUserType = "Seller";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -128,6 +128,23 @@ class _RegisterPageState extends State<RegisterPage> {
                                 ),
                               )),
                         ),
+                        kHeightSmall,
+                        kHeightSmall,
+                        DropdownButton<String>(
+                          value: selectedUserType,
+                          items: ["Seller", "Buyer"].map((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              selectedUserType = newValue!;
+                            });
+                          },
+                          isExpanded: true,
+                        ),
                         kHeightMedium,
                         Container(
                           width: MediaQuery.of(context).size.width,
@@ -154,6 +171,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   nameController.text,
                                   emailController.text,
                                   passwordController.text,
+                                    selectedUserType
                                 );
                                 setState(() {
                                   isLoading = false;
