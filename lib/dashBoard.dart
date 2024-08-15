@@ -84,6 +84,66 @@ class _DashBoardState extends State<DashBoard> {
       );
     }).toList();
   }
+  Future<void> recordSearch(String searchTerm, String productId) async {
+    final docRef = FirebaseFirestore.instance.collection('searchHistory').doc(searchTerm);
+
+    await FirebaseFirestore.instance.runTransaction((transaction) async {
+      final snapshot = await transaction.get(docRef);
+      if (snapshot.exists) {
+        // If the search term exists, increment the count
+        int newCount = (snapshot.data()?['count'] ?? 0) + 1;
+        transaction.update(docRef, {'count': newCount});
+      } else {
+        // If the search term does not exist, create a new entry
+        transaction.set(docRef, {
+          'searchTerm': searchTerm,
+          'productId': productId,
+          'count': 1,
+          'timestamp': FieldValue.serverTimestamp(),
+        });
+      }
+    });
+  }
+  Future<List<Room>> fetchMostSearchedProducts() async {
+    final QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('searchHistory')
+        .orderBy('count', descending: true) // Order by the search count
+        .limit(10) // Limit to top 10 most searched
+        .get();
+
+    List<Room> mostSearchedProducts = [];
+
+    for (var doc in snapshot.docs) {
+      final data = doc.data() as Map<String, dynamic>;
+      final productId = data['productId'];
+
+      final productSnapshot = await FirebaseFirestore.instance.collection('onSale').doc(productId).get();
+      if (productSnapshot.exists) {
+        final productData = productSnapshot.data() as Map<String, dynamic>;
+        mostSearchedProducts.add(Room(
+          uid: productSnapshot.id,
+          name: productData['name'],
+          capacity: productData['capacity'],
+          description: productData['description'],
+            length: productData['length'],
+            breadth: productData['breadth'],
+            photo: List<String>.from(productData['photo']),
+            panoramaImg: productData['panoramaImg'],
+            electricity: productData['electricity'],
+            fohor: productData['fohor'],
+            lat: productData['lat'],
+            lng: productData['lng'],
+            active: productData['active'],
+            featured: productData['featured'],
+            locationName: productData["locationName"]
+          // Add other fields as necessary
+        ));
+      }
+    }
+
+    return mostSearchedProducts;
+  }
+
   late Future<List<Room>> rooms;
   List<Room> filteredRooms = [];
   String searchQuery = '';
@@ -130,170 +190,196 @@ class _DashBoardState extends State<DashBoard> {
           body: SingleChildScrollView(
             child: Column(
               children: [
-                Container(
-                  height: MediaQuery.of(context).size.height / 2,
-                  child: Stack(
-                    children: [
-                      Positioned(
-                          top: 0,
-                          left: 0,
-                          right: 0,
-                          child: Container(
-                            height: MediaQuery.of(context).size.height / 4,
-                            decoration: BoxDecoration(
-                              color: kThemeColor,
-                              borderRadius: BorderRadius.only(
-                                bottomRight: Radius.circular(50.0),
-                                bottomLeft: Radius.circular(50.0),
-                              ),
-                            ),
-                          )),
-                      Positioned(
-                        top: 40,
-                        left: 20,
-                        child: IconButton(
-                          icon: ValueListenableBuilder<AdvancedDrawerValue>(
-                            valueListenable: _advancedDrawerController,
-                            builder: (_, value, __) {
-                              return AnimatedSwitcher(
-                                duration: Duration(milliseconds: 250),
-                                child: Icon(
-                                  value.visible
-                                      ? Icons.clear
-                                      : Icons.menu_open_outlined,
-                                  key: ValueKey<bool>(value.visible),
-                                  color: Colors.white,
-                                  size: 30,
-                                ),
-                              );
-                            },
-                          ),
-                          onPressed: () => _advancedDrawerController.showDrawer(),
+                Column(
+                  children: [
+                    Container(
+                      height: MediaQuery.of(context).size.height / 10,
+                      decoration: BoxDecoration(
+                        color: kThemeColor,
+                        borderRadius: BorderRadius.only(
+                          bottomRight: Radius.circular(50.0),
+                          bottomLeft: Radius.circular(50.0),
                         ),
                       ),
-                      Positioned(
-                        top: 40,
-                        right: 0,
-                        child: IconButton(
-                          icon: Icon(
-                            Icons.shopping_cart,
-                            color: Colors.white,
-                            size: 30,
-                          ),
-                          onPressed: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => CartPage()));
-                          },
-                        ),
-                      ),
-                      Positioned(
-                        top: 90,
-                        left: 0,
-                        right: 0,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                          child: Text(
-                            "Discover",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold,
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            // Menu Button
+                            IconButton(
+                              icon: ValueListenableBuilder<AdvancedDrawerValue>(
+                                valueListenable: _advancedDrawerController,
+                                builder: (_, value, __) {
+                                  return AnimatedSwitcher(
+                                    duration: Duration(milliseconds: 250),
+                                    child: Icon(
+                                      value.visible ? Icons.clear : Icons.menu_open_outlined,
+                                      key: ValueKey<bool>(value.visible),
+                                      color: Colors.white,
+                                      size: 30,
+                                    ),
+                                  );
+                                },
+                              ),
+                              onPressed: () => _advancedDrawerController.showDrawer(),
                             ),
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        top: 120,
-                        left: 0,
-                        right: 0,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                          child: TextFormField(
-                            controller: searchController,
-                            decoration: KFormFieldDecoration.copyWith(
-                              suffixIcon: Icon(Icons.search, size: 30),
-                              hintText: "search",
-                              labelStyle:
-                                  TextStyle(color: Colors.grey, fontSize: 20),
-                              fillColor: Colors.white,
-                              filled: true,
-                            ),
-                            onChanged: updateFilteredRooms,
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        top: 200,
-                        left: 0,
-                        right: 0,
-                        child: CarouselSlider(
-                          options: CarouselOptions(
-                            enlargeCenterPage: true,
-                            autoPlay: true,
-                            aspectRatio: 16 / 10,
-                            autoPlayCurve: Curves.fastOutSlowIn,
-                            autoPlayAnimationDuration:
-                                Duration(milliseconds: 400),
-                            viewportFraction: 0.8,
-                          ),
-                          items: [
-                            Container(
-                              margin: EdgeInsets.symmetric(horizontal: 5.0),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(40),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black26,
-                                    spreadRadius: 1,
-                                    blurRadius: 10,
-                                    offset: Offset(0, 5),
-                                  ),
-                                ],
+                            // Shopping Cart Button
+                            IconButton(
+                              icon: Icon(
+                                Icons.shopping_cart,
+                                color: Colors.white,
+                                size: 30,
                               ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(40),
-                                child: Image.network('https://econtent.o2.co.uk/o/econtent/media/get/43f82c83-69ec-480d-82b5-3fef330f2a0b', fit: BoxFit.cover),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.symmetric(horizontal: 5.0),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(40),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black26,
-                                    spreadRadius: 1,
-                                    blurRadius: 10,
-                                    offset: Offset(0, 5),
-                                  ),
-                                ],
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(40),
-                                child: Image.network('https://i02.appmifile.com/504_operatorx_operatorx_xm/08/01/2024/fb199e5433ffcbcc38eeff0042fe0fbe.jpg', fit: BoxFit.cover),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.symmetric(horizontal: 5.0),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(40),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black26,
-                                    spreadRadius: 1,
-                                    blurRadius: 10,
-                                    offset: Offset(0, 5),
-                                  ),
-                                ],
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(40),
-                                child: Image.network('https://images.samsung.com/is/image/samsung/p6pim/uk/2401/gallery/uk-galaxy-s24-ultra-491396-sm-s928bztpeub-thumb-539464063', fit: BoxFit.cover),
-                              ),
+                              onPressed: () {
+                                Navigator.push(
+                                    context, MaterialPageRoute(builder: (context) => CartPage()));
+                              },
                             ),
                           ],
                         ),
                       ),
-                    ],
+                    ),
+
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 40.0,vertical: 20),
+                      child: TextFormField(
+                        controller: searchController,
+                        decoration: KFormFieldDecoration.copyWith(
+                          suffixIcon: Icon(Icons.search, size: 30),
+                          hintText: "search",
+                          labelStyle: TextStyle(color: Colors.grey, fontSize: 20),
+                          fillColor: Colors.white,
+                          filled: true,
+                        ),
+                        onChanged: updateFilteredRooms,
+                      ),
+                    ),
+
+                  ],
+                ),
+
+                Container(
+                  height: 200,
+                  child: FutureBuilder<List<Room>>(
+                    future: fetchRooms(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator());
+                      } else if (snapshot.hasError) {
+                        return Center(child: Text('Error: ${snapshot.error}'));
+                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return Center(child: Text('No rooms available.'));
+                      }
+
+                      // Filter and sort rooms based on search query
+                      List<Room> filteredRooms = snapshot.data!
+                          .where((room) => room.name.toLowerCase().contains(searchQuery.toLowerCase()))
+                          .toList();
+
+                      // Sort the filtered rooms by distance
+                      List<Room> sortedRooms = sortedRoomsByDistance(filteredRooms, widget.lat, widget.lng);
+
+                      return ListView.builder(
+                        itemCount: sortedRooms.length,
+                        itemBuilder: (context, index) {
+                          final room = sortedRooms[index];
+                          return Container(
+                            margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                            child: GestureDetector(
+                              onTap: (){
+                                recordSearch( searchQuery,  room.uid);
+                              },
+                              child: ListTile(
+                                title: Text(
+                                  room.name,
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                subtitle: Text('Capacity: ${room.capacity}'),
+                                contentPadding: EdgeInsets.all(8.0),
+                                tileColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  side: BorderSide(color: Colors.grey, width: 0.5),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      "Most searched",
+                      style: TextStyle(
+                        color: kThemeColor,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  height: 200, // Set the height for the horizontal list
+                  child: FutureBuilder<List<Room>>(
+                    future: fetchMostSearchedProducts(), // Fetch the most searched products
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator());
+                      } else if (snapshot.hasError) {
+                        return Center(child: Text('Error: ${snapshot.error}'));
+                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return Center(child: Text('No products found.'));
+                      }
+
+                      return ListView.builder(
+                        scrollDirection: Axis.horizontal, // Horizontal scroll
+                        itemCount: snapshot.data!.length,
+                        itemBuilder: (context, index) {
+                          final product = snapshot.data![index];
+                          return Container(
+                            width: 150, // Set width for each item
+                            margin: EdgeInsets.all(8.0),
+                            child: Card(
+                              child: Column(
+                                children: [
+                                  product.photo.isNotEmpty
+                                      ? ClipRRect(
+                                    borderRadius: BorderRadius.vertical(top: Radius.circular(8.0)),
+                                    child: Image.network(
+                                      product.photo[0],
+                                      height: 100,
+                                      width: 150,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  )
+                                      : Container(
+                                    height: 100,
+                                    width: 150,
+                                    color: Colors.grey,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      product.name,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  Text('Capacity: ${product.capacity}'),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
                   ),
                 ),
                 Padding(
@@ -375,7 +461,6 @@ class _DashBoardState extends State<DashBoard> {
                     },
                   ),
                 ),
-
 
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
