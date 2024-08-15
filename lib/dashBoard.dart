@@ -14,15 +14,19 @@ import 'package:meroapp/splashScreen.dart';
 import 'package:meroapp/test.dart';
 import 'package:meroapp/wishlistPage.dart';
 
+import 'calculation.dart';
 import 'cartPage.dart';
 import 'model/onSaleModel.dart';
 
 class DashBoard extends StatefulWidget {
+  double lat,lng;
+  DashBoard(this.lat,this.lng);
   @override
   State<DashBoard> createState() => _DashBoardState();
 }
 
 class _DashBoardState extends State<DashBoard> {
+
   final List<String> imageUrls = [
     "https://econtent.o2.co.uk/o/econtent/media/get/43f82c83-69ec-480d-82b5-3fef330f2a0b",
     "https://m.media-amazon.com/images/I/61voYsPhFTL._AC_SL1500_.jpg",
@@ -80,7 +84,29 @@ class _DashBoardState extends State<DashBoard> {
       );
     }).toList();
   }
+  late Future<List<Room>> rooms;
+  List<Room> filteredRooms = [];
+  String searchQuery = '';
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    rooms = fetchRooms();
+  }
+  void updateFilteredRooms(String query) {
+    setState(() {
+      searchQuery = query;
+    });
+  }
+  List<Room> sortedRoomsByDistance(List<Room> rooms, double userLat, double userLng) {
+    rooms.sort((a, b) {
+      double distanceA = haversineDistance(userLat, userLng, a.lat, a.lng);
+      double distanceB = haversineDistance(userLat, userLng, b.lat, b.lng);
+      return distanceA.compareTo(distanceB);
+    });
+    return rooms;
+  }
   @override
   Widget build(BuildContext context) {
     return AdvancedDrawer(
@@ -191,6 +217,7 @@ class _DashBoardState extends State<DashBoard> {
                               fillColor: Colors.white,
                               filled: true,
                             ),
+                            onChanged: updateFilteredRooms,
                           ),
                         ),
                       ),
@@ -269,6 +296,87 @@ class _DashBoardState extends State<DashBoard> {
                     ],
                   ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      "Suggested near you ",
+                      style: TextStyle(
+                        color: kThemeColor,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  height: 200,
+                  child: FutureBuilder<List<Room>>(
+                    future: fetchRooms(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator());
+                      } else if (snapshot.hasError) {
+                        return Center(child: Text('Error: ${snapshot.error}'));
+                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return Center(child: Text('No rooms available.'));
+                      }
+
+                      // Filter and sort rooms based on search query
+                      List<Room> filteredRooms = snapshot.data!
+                          .where((room) => room.name.toLowerCase().contains(searchQuery.toLowerCase()))
+                          .toList();
+
+                      // Sort the filtered rooms by distance
+                      List<Room> sortedRooms = sortedRoomsByDistance(filteredRooms, widget.lat, widget.lng);
+
+                      return ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: sortedRooms.length,
+                        itemBuilder: (context, index) {
+                          final room = sortedRooms[index];
+                          return Container(
+                            width: 150,
+                            margin: EdgeInsets.all(8.0),
+                            child: Card(
+                              child: Column(
+                                children: [
+                                  room.photo.isNotEmpty
+                                      ? ClipRRect(
+                                    borderRadius: BorderRadius.vertical(top: Radius.circular(8.0)),
+                                    child: Image.network(
+                                      room.photo[0],
+                                      height: 100,
+                                      width: 150,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  )
+                                      : Container(
+                                    height: 100,
+                                    width: 150,
+                                    color: Colors.grey,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      room.name,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  Text('Capacity: ${room.capacity}'),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
+
+
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: Align(

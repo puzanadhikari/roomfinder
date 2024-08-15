@@ -7,6 +7,7 @@ import 'package:meroapp/Auth/forgotPassword.dart';
 import 'package:meroapp/Constants/styleConsts.dart';
 import 'package:meroapp/Auth/loginViaNumber.dart';
 import 'package:meroapp/Auth/registerPage.dart';
+import 'package:meroapp/homePage.dart';
 
 import '../dashBoard.dart';
 import 'firebase_auth.dart';
@@ -327,7 +328,7 @@ class _LoginPageState extends State<LoginPage> {
             await FirebaseAuth.instance.signInWithCredential(credential);
         User? user = firebaseResult.user;
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => DashBoard()));
+            context, MaterialPageRoute(builder: (context) => HomePage()));
         // Proceed with your app logic after successful sign-in
         // For example, navigate to a new screen or update UI
       } else {}

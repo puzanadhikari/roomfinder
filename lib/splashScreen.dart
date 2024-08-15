@@ -28,7 +28,7 @@ class _SplashScreenState extends State<SplashScreen> {
       log("User is verified");
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => HomePage()),
+        MaterialPageRoute(builder: (context) => LoginPage()),
       );
     } else {
       log("User is not verified");

@@ -170,18 +170,20 @@ class FirebaseAuthService {
     }
   }
 
-  Future<void> addSellerRoomDetail(String name,
+  Future<void> addSellerRoomDetail(
+      String name,
       double capacity,
       String description,
       double length,
       double breadth,
-      List<String> photo, // Change type to List<String>
-      String? panorama, // Change type to String?
+      List<String> photo,
+      String? panorama,
       double electricity,
       double fohor,
       double lat,
       String locName,
-      double lng) async {
+      double lng,
+      ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       User? user = FirebaseAuth.instance.currentUser;
@@ -202,11 +204,15 @@ class FirebaseAuthService {
           "lng": lng,
           "locationName": locName,
           "featured": false,
+          "userId": uid,
         };
 
-        DocumentReference userRef =
-        FirebaseFirestore.instance.collection('onSale').doc(uid);
-        await userRef.set(userData);
+        // Use collection('onSale') to add a new document with a generated ID
+        CollectionReference collectionRef =
+        FirebaseFirestore.instance.collection('onSale');
+
+        await collectionRef.add(userData); // Add a new document with a generated ID
+
         prefs.clear();
       }
     } catch (e) {
@@ -214,6 +220,7 @@ class FirebaseAuthService {
     }
   }
 
-
-
 }
+
+
+

@@ -1,6 +1,7 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:location/location.dart';
 import 'package:meroapp/Constants/styleConsts.dart';
 import 'package:meroapp/dashBoard.dart';
 import 'package:meroapp/profilePage.dart';
@@ -18,13 +19,38 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _page = 0;
+  double? _latitude, _longitude;
+  String?  _locationName;
+  Future<void> _getLocation() async {
+    Location location = Location();
+    LocationData? currentLocation;
 
-  final List<Widget> _pages = [
-    DashBoard(),
-    CartPage(),
-    WishlistPage(),
-    ProfilePage(),
-  ];
+    try {
+      currentLocation = await location.getLocation();
+      setState(() {
+        _latitude = currentLocation!.latitude;
+        _longitude = currentLocation!.longitude;
+        _locationName = "Current Location"; // You can also use reverse geocoding to get the location name
+      });
+    } catch (e) {
+      print("Error getting location: $e");
+    }
+  }
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _getLocation();
+  }
+  List<Widget> _buildPages() {
+    return [
+      if (_latitude != null && _longitude != null)
+        DashBoard(_latitude!, _longitude!),
+      CartPage(),
+      WishlistPage(),
+      ProfilePage(),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +75,7 @@ class _HomePageState extends State<HomePage> {
             });
           },
         ),
-        body: _pages[_page],
+        body:_buildPages()[_page],
       ),
     );
   }
