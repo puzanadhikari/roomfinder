@@ -51,7 +51,7 @@ class _SplashScreenState extends State<SplashScreen> {
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset('assets/ecommerce.png'),
+              Image.asset('assets/room.png'),
               SizedBox(height: 20.0),
               LoadingAnimationWidget.discreteCircle(
                 color: kThemeColor,

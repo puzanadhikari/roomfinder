@@ -35,77 +35,130 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     return email.contains('@') && email.contains('.');
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Forgot Password"),
-        centerTitle: true,
-        backgroundColor: kThemeColor,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios_new_rounded, color: kMTextColor),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        elevation: 0,
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(color: kMTextColor),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.only(top: 40.0),
-          child: Column(
-            children: [
-           CircleAvatar(
-            radius: 70,
-            backgroundColor: kThemeColor,
-            backgroundImage: NetworkImage(
-                "https://media.licdn.com/dms/image/D5603AQFD6ld3NWc2HQ/profile-displayphoto-shrink_200_200/0/1684164054868?e=2147483647&v=beta&t=cwQoyfhgAl_91URX5FTEXLwLDEHWe1H337EMebpgntQ"),
-          ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  height: MediaQuery.of(context).size.height / 3,
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                    shadowColor: Colors.black,
-                    elevation: 16.0,
-                    child: ListTile(
-                      title: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Forgot Password ?',
-                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                          ),
-                          Text(
-                            'Enter the email address associated with your account'
-                          ),
-                          SizedBox(height: 20),
-                          TextFormField(
-                            controller: _forgotPassword,
-                            decoration: KFormFieldDecoration.copyWith(
-                                labelText: "Recovery Email"),
-                          ),
-                          SizedBox(height: 20),
-                          Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: 50,
-                            child: ElevatedButton(
-                              onPressed: _sendPasswordResetEmail,
-                              child: Text("Reset Password",
-                                  style: TextStyle(color: Colors.black, fontSize: 18)),
-                              style: ElevatedButton.styleFrom(
-                                primary: appBarColor,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15.0),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+      body: Center(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Form(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Forgot Password",
+                    style: TextStyle(
+                      color: kThemeColor,
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                ),
+                  SizedBox(height: 10),
+                  Text(
+                    "Enter the email address associated with your account",
+                    style: TextStyle(
+                      color: Colors.black54,
+                      fontSize: 16,
+                    ),
+                  ),
+                  SizedBox(height: 30),
+                  _buildTextField(
+                    controller: _forgotPassword,
+                    label: "Recovery Email",
+                    prefixIcon: Icons.mail_outline_outlined,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your email';
+                      }
+                      final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+                      if (!emailRegex.hasMatch(value)) {
+                        return 'Please enter a valid email';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 30),
+                  _buildResetButton(),
+                  SizedBox(height: 20),
+                  _buildBackToLoginLink(),
+                ],
               ),
-            ],
+            ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    IconData? prefixIcon,
+    bool obscureText = false,
+    required String? Function(String?) validator,
+  }) {
+    return TextFormField(
+      controller: controller,
+      obscureText: obscureText,
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: TextStyle(color: Colors.grey),
+        prefixIcon: Icon(prefixIcon, color: Colors.grey),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: kThemeColor),
+        ),
+        contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+      ),
+      validator: validator,
+    );
+  }
+
+  Widget _buildResetButton() {
+    return SizedBox(
+      width: double.infinity,
+      height: 50,
+      child: ElevatedButton(
+        onPressed: _sendPasswordResetEmail,
+        child: Text(
+          "Reset Password",
+          style: TextStyle(color: Colors.white, fontSize: 18),
+        ),
+        style: ElevatedButton.styleFrom(
+          primary: kThemeColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBackToLoginLink() {
+    return Center(
+      child: TextButton(
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        child: Text(
+          "Back to Login",
+          style: TextStyle(color: kThemeColor, fontSize: 12),
         ),
       ),
     );
