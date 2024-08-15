@@ -729,19 +729,6 @@ class _DashBoardState extends State<DashBoard> {
           mainAxisSize: MainAxisSize.max,
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: 20, top: 10, bottom: 20.0),
-              child: Container(
-                width: 128.0,
-                height: 128.0,
-                clipBehavior: Clip.antiAlias,
-                decoration: BoxDecoration(
-                  color: Colors.black26,
-                  shape: BoxShape.circle,
-                ),
-                child: Image.asset('assets/ecommerce.png'),
-              ),
-            ),
-            Padding(
               padding: const EdgeInsets.only(left: 20, bottom: 60.0),
               child: Text(
                 user?.displayName ?? "Guest",
