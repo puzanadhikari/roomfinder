@@ -16,6 +16,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final _formKey = GlobalKey<FormState>();
   bool isLoading = false;
   final FirebaseAuthService _auth = FirebaseAuthService();
   final TextEditingController emailController = TextEditingController();
@@ -91,83 +92,106 @@ class _LoginPageState extends State<LoginPage> {
       child: Scaffold(
         body: isLoading
             ? Center(
-            child: LoadingAnimationWidget.discreteCircle(
-              color: kThemeColor,
-              size: 60,
-              secondRingColor: appBarColor,
-              thirdRingColor: Color(0xFFD9D9D9),
-            ))
+          child: LoadingAnimationWidget.discreteCircle(
+            color: kThemeColor,
+            size: 60,
+            secondRingColor: appBarColor,
+            thirdRingColor: Color(0xFFD9D9D9),
+          ),
+        )
             : Center(
           child: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(20.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Welcome to Dera",
-                    style: TextStyle(
-                      color: kThemeColor,
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    "Sign up to manage properties",
-                    style: TextStyle(
-                      color: Colors.black54,
-                      fontSize: 16,
-                    ),
-                  ),
-                  SizedBox(height: 30),
-                  _buildTextField(
-                    controller: emailController,
-                    label: "Email Address",
-                    prefixIcon: Icons.mail_outline_outlined,
-                  ),
-                  SizedBox(height: 20),
-                  _buildTextField(
-                    controller: passwordController,
-                    label: "Password",
-                    obscureText: _obscureText,
-                    prefixIcon: Icons.password_rounded,
-                    suffixIcon: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _obscureText = !_obscureText;
-                        });
-                      },
-                      child: Icon(
-                        _obscureText
-                            ? Icons.visibility
-                            : Icons.visibility_outlined,
-                        color: Colors.grey.shade500,
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Welcome to Dera",
+                      style: TextStyle(
+                        color: kThemeColor,
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ),
-                  SizedBox(height: 10),
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ForgotPassword()));
-                      },
-                      child: Text(
-                        "Forgot Password?",
-                        style: TextStyle(color: kThemeColor),
+                    SizedBox(height: 10),
+                    Text(
+                      "Sign up to manage properties",
+                      style: TextStyle(
+                        color: Colors.black54,
+                        fontSize: 16,
                       ),
                     ),
-                  ),
-                  SizedBox(height: 30),
-                  _buildLoginButton(),
-                  SizedBox(height: 30),
-                  _buildRegisterLink(),
-                ],
+                    SizedBox(height: 30),
+                    _buildTextField(
+                      controller: emailController,
+                      label: "Email Address",
+                      prefixIcon: Icons.mail_outline_outlined,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your email';
+                        }
+                        final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
+                        if (!emailRegex.hasMatch(value)) {
+                          return 'Please enter a valid email';
+                        }
+                        return null;
+                      },
+                    ),
+                    SizedBox(height: 20),
+                    _buildTextField(
+                      controller: passwordController,
+                      label: "Password",
+                      obscureText: _obscureText,
+                      prefixIcon: Icons.password_rounded,
+                      suffixIcon: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _obscureText = !_obscureText;
+                          });
+                        },
+                        child: Icon(
+                          _obscureText
+                              ? Icons.visibility
+                              : Icons.visibility_outlined,
+                          color: Colors.grey.shade500,
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your password';
+                        }
+                        if (value.length < 6) {
+                          return 'Password must be at least 6 characters';
+                        }
+                        return null;
+                      },
+                    ),
+                    SizedBox(height: 10),
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ForgotPassword()));
+                        },
+                        child: Text(
+                          "Forgot Password?",
+                          style: TextStyle(color: kThemeColor),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 30),
+                    _buildLoginButton(),
+                    SizedBox(height: 30),
+                    _buildRegisterLink(),
+                  ],
+                ),
               ),
             ),
           ),
@@ -182,6 +206,7 @@ class _LoginPageState extends State<LoginPage> {
     IconData? prefixIcon,
     Widget? suffixIcon,
     bool obscureText = false,
+    required String? Function(String?) validator,
   }) {
     return TextFormField(
       controller: controller,
@@ -200,6 +225,7 @@ class _LoginPageState extends State<LoginPage> {
         ),
         contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
       ),
+      validator: validator,
     );
   }
 
@@ -209,18 +235,20 @@ class _LoginPageState extends State<LoginPage> {
       height: 50,
       child: ElevatedButton(
         onPressed: () async {
-          setState(() {
-            isLoading = true;
-          });
-          await _auth.signInWithEmailAndPassword(
-              context,
-              emailController.text,
-              passwordController.text);
-          emailController.clear();
-          passwordController.clear();
-          setState(() {
-            isLoading = false;
-          });
+          if (_formKey.currentState?.validate() ?? false) {
+            setState(() {
+              isLoading = true;
+            });
+            await _auth.signInWithEmailAndPassword(
+                context,
+                emailController.text,
+                passwordController.text);
+            emailController.clear();
+            passwordController.clear();
+            setState(() {
+              isLoading = false;
+            });
+          }
         },
         child: Text(
           "Login",
@@ -242,7 +270,7 @@ class _LoginPageState extends State<LoginPage> {
       children: [
         Text(
           "New User?",
-          style: TextStyle(fontSize: 12,color: Colors.black54),
+          style: TextStyle(fontSize: 12, color: Colors.black54),
         ),
         TextButton(
           onPressed: () {
@@ -253,8 +281,7 @@ class _LoginPageState extends State<LoginPage> {
           },
           child: Text(
             "Create an account",
-            style: TextStyle(
-                color: kThemeColor, fontSize: 12),
+            style: TextStyle(color: kThemeColor, fontSize: 12),
           ),
         )
       ],
