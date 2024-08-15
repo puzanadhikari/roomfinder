@@ -1,5 +1,5 @@
 class Room {
-  final String uid; // New field for the document UID
+  final String uid;
   final String name;
   final double capacity;
   final String description;
@@ -14,9 +14,10 @@ class Room {
   final bool active;
   final bool featured;
   final String locationName;
+  late final Map<String, dynamic> status;
 
   Room({
-    required this.uid, // Include uid in the constructor
+    required this.uid,
     required this.name,
     required this.capacity,
     required this.description,
@@ -31,5 +32,6 @@ class Room {
     required this.active,
     required this.featured,
     required this.locationName,
+    required this.status,
   });
 }

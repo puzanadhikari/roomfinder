@@ -39,6 +39,7 @@ class _AdminHomePageState extends State<AdminHomePage> {
           active: data['active'],
           featured: data['featured'],
           locationName: data['locationName'],
+          status: data['status'] != null ? Map<String, dynamic>.from(data['status']) : {},
         );
       }).toList();
     });
