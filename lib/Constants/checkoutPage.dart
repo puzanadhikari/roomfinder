@@ -1,9 +1,12 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:meroapp/Constants/styleConsts.dart';
 
 class CheckoutPage extends StatefulWidget {
   int grandTotal;
-  CheckoutPage({super.key,required this.grandTotal});
+
+  CheckoutPage({super.key, required this.grandTotal});
 
   @override
   State<CheckoutPage> createState() => _CheckoutPageState();
@@ -81,18 +84,16 @@ class _CheckoutPageState extends State<CheckoutPage> {
             SizedBox(height: 20),
             Container(
               height: 50,
-              width: MediaQuery.of(context).size.width/2,
+              width: MediaQuery.of(context).size.width / 2,
               child: ElevatedButton(
                 onPressed: () {
-                  print('Payment Method: $_paymentMethod');
+                  log('Payment Method: $_paymentMethod');
                 },
                 style: ElevatedButton.styleFrom(
                   elevation: 0,
-                  primary:  appBarColor,
+                  primary: appBarColor,
                   shape: RoundedRectangleBorder(
-                    borderRadius:
-                    BorderRadius.circular(
-                        10.0),
+                    borderRadius: BorderRadius.circular(10.0),
                   ),
                 ),
                 child: Text(

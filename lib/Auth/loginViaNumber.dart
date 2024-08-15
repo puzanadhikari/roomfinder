@@ -41,7 +41,7 @@ class _LoginVIaNumberState extends State<LoginVIaNumber> {
                   child: TextFormField(
                     initialValue: '+977',
                     enabled: false,
-                    decoration: KFormFieldDecoration.copyWith(
+                    decoration: kFormFieldDecoration.copyWith(
                       labelText: '',
                       hintText: '+977',
                     ),
@@ -52,7 +52,7 @@ class _LoginVIaNumberState extends State<LoginVIaNumber> {
                   child: TextFormField(
                     keyboardType: TextInputType.number,
                     controller: _phoneController,
-                    decoration: KFormFieldDecoration.copyWith(
+                    decoration: kFormFieldDecoration.copyWith(
                         labelText: "Phone Number"),
                   ),
                 ),

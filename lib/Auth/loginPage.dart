@@ -1,12 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:meroapp/Auth/forgotPassword.dart';
 import 'package:meroapp/Constants/styleConsts.dart';
 import 'package:meroapp/Auth/registerPage.dart';
-
-import '../dashBoard.dart';
 import 'firebase_auth.dart';
 
 class LoginPage extends StatefulWidget {
@@ -26,57 +23,57 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<bool> _onBackPressed() async {
     return await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(
-          'Exit App',
-          style: TextStyle(
-            color: kThemeColor,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        content: Text(
-          'Are you sure you want to exit the app?',
-          style: TextStyle(
-            color: Colors.black54,
-            fontSize: 16,
-          ),
-        ),
-        actions: <Widget>[
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(
-              'No',
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text(
+              'Exit App',
               style: TextStyle(
                 color: kThemeColor,
+                fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
             ),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text(
-              'Yes',
+            content: const Text(
+              'Are you sure you want to exit the app?',
               style: TextStyle(
-                color: Colors.white,
+                color: Colors.black54,
+                fontSize: 16,
               ),
             ),
-            style: ElevatedButton.styleFrom(
-              primary: kThemeColor,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text(
+                  'No',
+                  style: TextStyle(
+                    color: kThemeColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
-              elevation: 2,
+              ElevatedButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: kThemeColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  elevation: 2,
+                ),
+                child: const Text(
+                  'Yes',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
             ),
+            contentPadding: const EdgeInsets.all(20),
           ),
-        ],
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        contentPadding: EdgeInsets.all(20),
-      ),
-    ) ??
+        ) ??
         false;
   }
 
@@ -94,123 +91,133 @@ class _LoginPageState extends State<LoginPage> {
       child: Scaffold(
         body: isLoading
             ? Center(
-          child: LoadingAnimationWidget.discreteCircle(
-            color: kThemeColor,
-            size: 60,
-            secondRingColor: appBarColor,
-            thirdRingColor: Color(0xFFD9D9D9),
-          ),
-        )
+                child: LoadingAnimationWidget.discreteCircle(
+                  color: kThemeColor,
+                  size: 60,
+                  secondRingColor: appBarColor,
+                  thirdRingColor: const Color(0xFFD9D9D9),
+                ),
+              )
             : Center(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Center(
-                      child: SvgPicture.asset(
-                        'assets/Logo.svg',
-                        width: MediaQuery.of(context).size.width / 1.5,
-                      ),
-                    ),
-                    SizedBox(height: 30),
-                    Container(
-                      padding: EdgeInsets.all(25 ),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black26,
-                            blurRadius: 12,
-                            offset: Offset(0, 6),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        children: [
-                          Text("Sign In to Continue",style: TextStyle(color: Color(0xFF616161),fontWeight: FontWeight.bold,fontSize: 20)),
-                          SizedBox(height: 30),
-                          _buildTextField(
-                            controller: emailController,
-                            label: "Email Address",
-                            prefixIcon: Icons.mail_outline_outlined,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter your email';
-                              }
-                              final emailRegex =
-                              RegExp(r'^[^@]+@[^@]+\.[^@]+');
-                              if (!emailRegex.hasMatch(value)) {
-                                return 'Please enter a valid email';
-                              }
-                              return null;
-                            },
-                          ),
-                          SizedBox(height: 20),
-                          _buildTextField(
-                            controller: passwordController,
-                            label: "Password",
-                            obscureText: _obscureText,
-                            prefixIcon: Icons.password_rounded,
-                            suffixIcon: GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  _obscureText = !_obscureText;
-                                });
-                              },
-                              child: Icon(
-                                _obscureText
-                                    ? Icons.visibility
-                                    : Icons.visibility_outlined,
-                                color: Colors.grey.shade500,
+                child: NotificationListener<OverscrollIndicatorNotification>(
+                  onNotification: (overscroll) {
+                    overscroll.disallowIndicator();
+                    return true;
+                  },
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Center(
+                              child: SvgPicture.asset(
+                                'assets/Logo.svg',
+                                width: MediaQuery.of(context).size.width / 1.5,
                               ),
                             ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter your password';
-                              }
-                              if (value.length < 6) {
-                                return 'Password must be at least 6 characters';
-                              }
-                              return null;
-                            },
-                          ),
-                          SizedBox(height: 30),
-                          _buildLoginButton(),
-                          SizedBox(height: 10),
-                          Align(
-                            alignment: Alignment.bottomRight,
-                            child: TextButton(
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            ForgotPassword()));
-                              },
-                              child: Text(
-                                "Forgot Password?",
-                                style: TextStyle(
-                                    color: kThemeColor, fontSize: 14),
+                            const SizedBox(height: 30),
+                            Container(
+                              padding: const EdgeInsets.all(25),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(12),
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Colors.black26,
+                                    blurRadius: 12,
+                                    offset: Offset(0, 6),
+                                  ),
+                                ],
+                              ),
+                              child: Column(
+                                children: [
+                                  const Text("Sign In to Continue",
+                                      style: TextStyle(
+                                          color: Color(0xFF616161),
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20)),
+                                  const SizedBox(height: 30),
+                                  _buildTextField(
+                                    controller: emailController,
+                                    label: "Email Address",
+                                    prefixIcon: Icons.mail_outline_outlined,
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Please enter your email';
+                                      }
+                                      final emailRegex =
+                                          RegExp(r'^[^@]+@[^@]+\.[^@]+');
+                                      if (!emailRegex.hasMatch(value)) {
+                                        return 'Please enter a valid email';
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                  const SizedBox(height: 20),
+                                  _buildTextField(
+                                    controller: passwordController,
+                                    label: "Password",
+                                    obscureText: _obscureText,
+                                    prefixIcon: Icons.password_rounded,
+                                    suffixIcon: GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          _obscureText = !_obscureText;
+                                        });
+                                      },
+                                      child: Icon(
+                                        _obscureText
+                                            ? Icons.visibility
+                                            : Icons.visibility_outlined,
+                                        color: Colors.grey.shade500,
+                                      ),
+                                    ),
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Please enter your password';
+                                      }
+                                      if (value.length < 6) {
+                                        return 'Password must be at least 6 characters';
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                  const SizedBox(height: 30),
+                                  _buildLoginButton(),
+                                  const SizedBox(height: 10),
+                                  Align(
+                                    alignment: Alignment.bottomRight,
+                                    child: TextButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const ForgotPassword()));
+                                      },
+                                      child: Text(
+                                        "Forgot Password?",
+                                        style: TextStyle(
+                                            color: kThemeColor, fontSize: 14),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                          ),
-                        ],
+                            const SizedBox(height: 30),
+                            _buildRegisterLink(),
+                          ],
+                        ),
                       ),
                     ),
-                    SizedBox(height: 30),
-                    _buildRegisterLink(),
-                  ],
+                  ),
                 ),
               ),
-            ),
-          ),
-        ),
       ),
     );
   }
@@ -228,7 +235,7 @@ class _LoginPageState extends State<LoginPage> {
       obscureText: obscureText,
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: TextStyle(color: Colors.grey),
+        labelStyle: const TextStyle(color: Colors.grey),
         prefixIcon: Icon(prefixIcon, color: Colors.grey),
         suffixIcon: suffixIcon,
         border: OutlineInputBorder(
@@ -238,7 +245,8 @@ class _LoginPageState extends State<LoginPage> {
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: kThemeColor),
         ),
-        contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+        contentPadding:
+            const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
       ),
       validator: validator,
     );
@@ -263,15 +271,15 @@ class _LoginPageState extends State<LoginPage> {
             });
           }
         },
-        child: Text(
-          "Login",
-          style: TextStyle(color: Colors.white, fontSize: 18),
-        ),
         style: ElevatedButton.styleFrom(
-          primary: kThemeColor,
+          backgroundColor: kThemeColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12.0),
           ),
+        ),
+        child: const Text(
+          "Login",
+          style: TextStyle(color: Colors.white, fontSize: 18),
         ),
       ),
     );
@@ -281,15 +289,14 @@ class _LoginPageState extends State<LoginPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(
+        const Text(
           "New Member?",
-          style: TextStyle(
-              color: Colors.grey, fontSize: 14),
+          style: TextStyle(color: Colors.grey, fontSize: 14),
         ),
         TextButton(
           onPressed: () {
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => RegisterPage()));
+                MaterialPageRoute(builder: (context) => const RegisterPage()));
           },
           child: Text(
             "Sign up Here",

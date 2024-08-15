@@ -250,7 +250,7 @@ class _DashBoardState extends State<DashBoard> {
                       padding: const EdgeInsets.symmetric(horizontal: 40.0,vertical: 20),
                       child: TextFormField(
                         controller: searchController,
-                        decoration: KFormFieldDecoration.copyWith(
+                        decoration: kFormFieldDecoration.copyWith(
                           suffixIcon: Icon(Icons.search, size: 30),
                           hintText: "search",
                           labelStyle: TextStyle(color: Colors.grey, fontSize: 20),

@@ -1,15 +1,12 @@
 import 'dart:developer';
-import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:meroapp/Constants/styleConsts.dart';
-import 'package:meroapp/dashBoard.dart';
 import 'package:meroapp/homePage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../admin/homePage.dart';
-import '../model/onSaleModel.dart';
 import '../seller/homepage.dart';
 import 'loginPage.dart';
 
@@ -24,15 +21,15 @@ class FirebaseAuthService {
         await user.sendEmailVerification();
 
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Verification email sent!'),
           ),
         );
       } else {
-        print('User not signed in.');
+        log('User not signed in.');
       }
     } catch (e) {
-      print('Error sending verification email: $e');
+      log('Error sending verification email: $e');
     }
   }
 
@@ -40,7 +37,7 @@ class FirebaseAuthService {
       String password, String userType) async {
     try {
       UserCredential userCredential =
-      await _auth.createUserWithEmailAndPassword(
+          await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -55,15 +52,15 @@ class FirebaseAuthService {
           fontSize: 16.0);
       sendVerificationEmail(context);
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => LoginPage()));
+          context, MaterialPageRoute(builder: (context) => const LoginPage()));
       return userCredential.user;
     } catch (e) {
       return null;
     }
   }
 
-  Future addUserData(String email, String name, String password,
-      String userType) async {
+  Future addUserData(
+      String email, String name, String password, String userType) async {
     try {
       User? user = FirebaseAuth.instance.currentUser;
 
@@ -78,7 +75,7 @@ class FirebaseAuthService {
         };
 
         DocumentReference userRef =
-        FirebaseFirestore.instance.collection('users').doc(uid);
+            FirebaseFirestore.instance.collection('users').doc(uid);
         await userRef.set(userData);
       }
     } catch (e) {
@@ -86,13 +83,12 @@ class FirebaseAuthService {
     }
   }
 
-  Future<User?> signInWithEmailAndPassword(BuildContext context, String email,
-      String password) async {
+  Future<User?> signInWithEmailAndPassword(
+      BuildContext context, String email, String password) async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     try {
       UserCredential credential = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
-
 
       if (credential.user != null && credential.user!.emailVerified) {
         String uid = credential.user!.uid; // Get the UID of the logged-in user
@@ -103,14 +99,16 @@ class FirebaseAuthService {
         if (userDoc.exists) {
           String userType = userDoc['userType'];
           if (userType == "Seller") {
-            Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) => SellerHomePage()));
-          } else if (userType == "Buyer") {
             Navigator.pushReplacement(
-                context, MaterialPageRoute(builder: (context) => HomePage()));
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const SellerHomePage()));
+          } else if (userType == "Buyer") {
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) => const HomePage()));
           } else {
             Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) => AdminHomePage()));
+                MaterialPageRoute(builder: (context) => const AdminHomePage()));
           }
         }
         Fluttertoast.showToast(
@@ -125,10 +123,10 @@ class FirebaseAuthService {
         //     context, MaterialPageRoute(builder: (context) => HomePage()));
         return credential.user;
       } else {
-        print('Email not verified. Please check your email for verification.');
+        log('Email not verified. Please check your email for verification.');
         FirebaseAuth.instance.signOut();
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text(
                 'Email not verified. Please check your email for verification.'),
           ),
@@ -138,7 +136,7 @@ class FirebaseAuthService {
       log("Error during login: $e");
       Fluttertoast.showToast(
           msg: 'Login Failed',
-          backgroundColor: Color(0xff283E50),
+          backgroundColor: const Color(0xff283E50),
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.TOP_RIGHT,
           textColor: Colors.white,
@@ -162,7 +160,7 @@ class FirebaseAuthService {
       log("Error during password reset: $e");
       Fluttertoast.showToast(
           msg: 'Error sending password reset email',
-          backgroundColor: Color(0xff283E50),
+          backgroundColor: const Color(0xff283E50),
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.TOP_RIGHT,
           textColor: Colors.white,
@@ -171,19 +169,19 @@ class FirebaseAuthService {
   }
 
   Future<void> addSellerRoomDetail(
-      String name,
-      double capacity,
-      String description,
-      double length,
-      double breadth,
-      List<String> photo,
-      String? panorama,
-      double electricity,
-      double fohor,
-      double lat,
-      String locName,
-      double lng,
-      ) async {
+    String name,
+    double capacity,
+    String description,
+    double length,
+    double breadth,
+    List<String> photo,
+    String? panorama,
+    double electricity,
+    double fohor,
+    double lat,
+    String locName,
+    double lng,
+  ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       User? user = FirebaseAuth.instance.currentUser;
@@ -209,9 +207,10 @@ class FirebaseAuthService {
 
         // Use collection('onSale') to add a new document with a generated ID
         CollectionReference collectionRef =
-        FirebaseFirestore.instance.collection('onSale');
+            FirebaseFirestore.instance.collection('onSale');
 
-        await collectionRef.add(userData); // Add a new document with a generated ID
+        await collectionRef
+            .add(userData); // Add a new document with a generated ID
 
         prefs.clear();
       }
@@ -219,8 +218,4 @@ class FirebaseAuthService {
       log('Error storing user data: $e');
     }
   }
-
 }
-
-
-

@@ -1,7 +1,7 @@
 class AppUser {
   String uid;
   String email;
-  String userType; // 'Seller', 'Buyer', 'Admin' // for pujan reference
+  String userType;
 
   AppUser({required this.uid, required this.email, required this.userType});
 

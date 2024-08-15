@@ -1,8 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:meroapp/Auth/loginPage.dart';
 
@@ -39,7 +36,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 color: kThemeColor,
                 size: 60,
                 secondRingColor: appBarColor,
-                thirdRingColor: Color(0xFFD9D9D9),
+                thirdRingColor: const Color(0xFFD9D9D9),
               ),
             )
           : NotificationListener<OverscrollIndicatorNotification>(
@@ -47,7 +44,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 overscroll.disallowIndicator();
                 return true;
               },
-               child: SingleChildScrollView(
+              child: SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                       vertical: 30.0, horizontal: 20.0),
@@ -63,13 +60,13 @@ class _RegisterPageState extends State<RegisterPage> {
                             width: MediaQuery.of(context).size.width / 1.5,
                           ),
                         ),
-                        SizedBox(height: 30),
+                        const SizedBox(height: 30),
                         Container(
-                          padding: EdgeInsets.all(25),
+                          padding: const EdgeInsets.all(25),
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(12),
-                            boxShadow: [
+                            boxShadow: const [
                               BoxShadow(
                                 color: Colors.black26,
                                 blurRadius: 12,
@@ -79,12 +76,12 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                           child: Column(
                             children: [
-                              Text("Sign UP",
+                              const Text("Sign UP",
                                   style: TextStyle(
                                       color: Color(0xFF616161),
                                       fontWeight: FontWeight.bold,
                                       fontSize: 20)),
-                              SizedBox(height: 30),
+                              const SizedBox(height: 30),
                               _buildTextField(
                                 controller: nameController,
                                 label: "Full Name",
@@ -96,7 +93,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   return null;
                                 },
                               ),
-                              SizedBox(height: 20),
+                              const SizedBox(height: 20),
                               _buildTextField(
                                 controller: emailController,
                                 label: "Email Address",
@@ -113,7 +110,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   return null;
                                 },
                               ),
-                              SizedBox(height: 20),
+                              const SizedBox(height: 20),
                               _buildTextField(
                                 controller: passwordController,
                                 label: "Password",
@@ -142,7 +139,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   return null;
                                 },
                               ),
-                              SizedBox(height: 20),
+                              const SizedBox(height: 20),
                               _buildTextField(
                                 controller: confirmPasswordController,
                                 label: "Confirm Password",
@@ -171,17 +168,17 @@ class _RegisterPageState extends State<RegisterPage> {
                                   return null;
                                 },
                               ),
-                              SizedBox(height: 20),
+                              const SizedBox(height: 20),
                               _buildDropdown(),
-                              SizedBox(height: 30),
+                              const SizedBox(height: 30),
                               _buildRegisterButton(),
-                              SizedBox(height: 20),
+                              const SizedBox(height: 20),
                               _buildGoogleButton(),
-                              SizedBox(height: 20),
+                              const SizedBox(height: 20),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text(
+                                  const Text(
                                     "Already Have an Account?",
                                     style: TextStyle(fontSize: 15),
                                   ),
@@ -190,7 +187,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) => LoginPage(),
+                                          builder: (context) =>
+                                              const LoginPage(),
                                         ),
                                       );
                                     },
@@ -207,11 +205,11 @@ class _RegisterPageState extends State<RegisterPage> {
                             ],
                           ),
                         ),
-                        SizedBox(height: 30),
+                        const SizedBox(height: 30),
                         Center(
                           child: Column(
                             children: [
-                              Text(
+                              const Text(
                                 "By creating an account, you agree with our",
                                 style: TextStyle(fontSize: 15),
                               ),
@@ -220,7 +218,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => LoginPage(),
+                                      builder: (context) => const LoginPage(),
                                     ),
                                   );
                                 },
@@ -257,7 +255,7 @@ class _RegisterPageState extends State<RegisterPage> {
       obscureText: obscureText,
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: TextStyle(color: Colors.grey),
+        labelStyle: const TextStyle(color: Colors.grey),
         prefixIcon: Icon(prefixIcon, color: Colors.grey),
         suffixIcon: suffixIcon,
         border: OutlineInputBorder(
@@ -267,7 +265,8 @@ class _RegisterPageState extends State<RegisterPage> {
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: kThemeColor),
         ),
-        contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+        contentPadding:
+            const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
       ),
       validator: validator,
     );
@@ -289,7 +288,7 @@ class _RegisterPageState extends State<RegisterPage> {
       },
       decoration: InputDecoration(
         labelText: "Select User Type",
-        labelStyle: TextStyle(color: Colors.grey),
+        labelStyle: const TextStyle(color: Colors.grey),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
         ),
@@ -297,7 +296,8 @@ class _RegisterPageState extends State<RegisterPage> {
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: kThemeColor),
         ),
-        contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+        contentPadding:
+            const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
       ),
     );
   }
@@ -324,15 +324,15 @@ class _RegisterPageState extends State<RegisterPage> {
             });
           }
         },
-        child: Text(
-          "Sign Up",
-          style: TextStyle(color: Colors.white, fontSize: 18),
-        ),
         style: ElevatedButton.styleFrom(
-          primary: kThemeColor,
+          backgroundColor: kThemeColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12.0),
           ),
+        ),
+        child: const Text(
+          "Sign Up",
+          style: TextStyle(color: Colors.white, fontSize: 18),
         ),
       ),
     );
@@ -344,15 +344,15 @@ class _RegisterPageState extends State<RegisterPage> {
       height: 50,
       child: ElevatedButton(
         onPressed: () async {},
-        child: Text(
-          "Google",
-          style: TextStyle(color: Colors.white, fontSize: 18),
-        ),
         style: ElevatedButton.styleFrom(
-          primary: kThemeColor,
+          backgroundColor: kThemeColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12.0),
           ),
+        ),
+        child: const Text(
+          "Google",
+          style: TextStyle(color: Colors.white, fontSize: 18),
         ),
       ),
     );
