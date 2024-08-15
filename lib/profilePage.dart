@@ -5,6 +5,7 @@ import 'package:meroapp/splashScreen.dart';
 import 'package:meroapp/wishlistPage.dart';
 
 import 'informationDetail.dart';
+import 'orders.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -73,7 +74,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 title: Text('Orders'),
                 trailing: Icon(Icons.chevron_right, color: appBarColor),
                 onTap: () {
-                  // Navigator.push(context, MaterialPageRoute(builder: (context)=>InformationPage()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>OrderPage()));
                 },
               ),
             ),

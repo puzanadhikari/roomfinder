@@ -80,9 +80,12 @@ class _DashBoardState extends State<DashBoard> {
         lng: data['lng'],
         active: data['active'],
         featured: data['featured'],
-        locationName: data["locationName"]
+        locationName: data["locationName"],
+        status: data['status'] != null ? Map<String, dynamic>.from(data['status']) : {},
       );
+      
     }).toList();
+    
   }
   Future<void> recordSearch(String searchTerm, String productId) async {
     final docRef = FirebaseFirestore.instance.collection('searchHistory').doc(searchTerm);
@@ -135,7 +138,9 @@ class _DashBoardState extends State<DashBoard> {
             lng: productData['lng'],
             active: productData['active'],
             featured: productData['featured'],
-            locationName: productData["locationName"]
+            locationName: productData["locationName"],
+          status: data['status'] != null ? Map<String, dynamic>.from(data['status']) : {},
+
           // Add other fields as necessary
         ));
       }
@@ -259,56 +264,59 @@ class _DashBoardState extends State<DashBoard> {
                   ],
                 ),
 
-                Container(
-                  height: 200,
-                  child: FutureBuilder<List<Room>>(
-                    future: fetchRooms(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(child: CircularProgressIndicator());
-                      } else if (snapshot.hasError) {
-                        return Center(child: Text('Error: ${snapshot.error}'));
-                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return Center(child: Text('No rooms available.'));
-                      }
+                Visibility(
+                  visible: searchQuery.isEmpty?false:true,
+                  child: Container(
+                    height: 200,
+                    child: FutureBuilder<List<Room>>(
+                      future: fetchRooms(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return Center(child: CircularProgressIndicator());
+                        } else if (snapshot.hasError) {
+                          return Center(child: Text('Error: ${snapshot.error}'));
+                        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                          return Center(child: Text('No rooms available.'));
+                        }
 
-                      // Filter and sort rooms based on search query
-                      List<Room> filteredRooms = snapshot.data!
-                          .where((room) => room.name.toLowerCase().contains(searchQuery.toLowerCase()))
-                          .toList();
+                        // Filter and sort rooms based on search query
+                        List<Room> filteredRooms = snapshot.data!
+                            .where((room) => room.name.toLowerCase().contains(searchQuery.toLowerCase()))
+                            .toList();
 
-                      // Sort the filtered rooms by distance
-                      List<Room> sortedRooms = sortedRoomsByDistance(filteredRooms, widget.lat, widget.lng);
+                        // Sort the filtered rooms by distance
+                        List<Room> sortedRooms = sortedRoomsByDistance(filteredRooms, widget.lat, widget.lng);
 
-                      return ListView.builder(
-                        itemCount: sortedRooms.length,
-                        itemBuilder: (context, index) {
-                          final room = sortedRooms[index];
-                          return Container(
-                            margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                            child: GestureDetector(
-                              onTap: (){
-                                recordSearch( searchQuery,  room.uid);
-                              },
-                              child: ListTile(
-                                title: Text(
-                                  room.name,
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                subtitle: Text('Capacity: ${room.capacity}'),
-                                contentPadding: EdgeInsets.all(8.0),
-                                tileColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                  side: BorderSide(color: Colors.grey, width: 0.5),
+                        return ListView.builder(
+                          itemCount: sortedRooms.length,
+                          itemBuilder: (context, index) {
+                            final room = sortedRooms[index];
+                            return Container(
+                              margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                              child: GestureDetector(
+                                onTap: (){
+                                  recordSearch( searchQuery,  room.uid);
+                                },
+                                child: ListTile(
+                                  title: Text(
+                                    room.name,
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  subtitle: Text('Capacity: ${room.capacity}'),
+                                  contentPadding: EdgeInsets.all(8.0),
+                                  tileColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    side: BorderSide(color: Colors.grey, width: 0.5),
+                                  ),
                                 ),
                               ),
-                            ),
-                          );
-                        },
-                      );
-                    },
+                            );
+                          },
+                        );
+                      },
+                    ),
                   ),
                 ),
                 Padding(
