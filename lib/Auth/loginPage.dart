@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:meroapp/Auth/forgotPassword.dart';
 import 'package:meroapp/Constants/styleConsts.dart';
@@ -75,7 +76,8 @@ class _LoginPageState extends State<LoginPage> {
         ),
         contentPadding: EdgeInsets.all(20),
       ),
-    ) ?? false;
+    ) ??
+        false;
   }
 
   @override
@@ -109,85 +111,98 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "Welcome to Dera",
-                      style: TextStyle(
-                        color: kThemeColor,
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      "Sign up to manage properties",
-                      style: TextStyle(
-                        color: Colors.black54,
-                        fontSize: 16,
+                    Center(
+                      child: SvgPicture.asset(
+                        'assets/Logo.svg',
+                        width: MediaQuery.of(context).size.width / 1.5,
                       ),
                     ),
                     SizedBox(height: 30),
-                    _buildTextField(
-                      controller: emailController,
-                      label: "Email Address",
-                      prefixIcon: Icons.mail_outline_outlined,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your email';
-                        }
-                        final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
-                        if (!emailRegex.hasMatch(value)) {
-                          return 'Please enter a valid email';
-                        }
-                        return null;
-                      },
-                    ),
-                    SizedBox(height: 20),
-                    _buildTextField(
-                      controller: passwordController,
-                      label: "Password",
-                      obscureText: _obscureText,
-                      prefixIcon: Icons.password_rounded,
-                      suffixIcon: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _obscureText = !_obscureText;
-                          });
-                        },
-                        child: Icon(
-                          _obscureText
-                              ? Icons.visibility
-                              : Icons.visibility_outlined,
-                          color: Colors.grey.shade500,
-                        ),
+                    Container(
+                      padding: EdgeInsets.all(25 ),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: 12,
+                            offset: Offset(0, 6),
+                          ),
+                        ],
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your password';
-                        }
-                        if (value.length < 6) {
-                          return 'Password must be at least 6 characters';
-                        }
-                        return null;
-                      },
-                    ),
-                    SizedBox(height: 10),
-                    Align(
-                      alignment: Alignment.bottomRight,
-                      child: TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ForgotPassword()));
-                        },
-                        child: Text(
-                          "Forgot Password?",
-                          style: TextStyle(color: kThemeColor),
-                        ),
+                      child: Column(
+                        children: [
+                          Text("Sign In to Continue",style: TextStyle(color: Color(0xFF616161),fontWeight: FontWeight.bold,fontSize: 20)),
+                          SizedBox(height: 30),
+                          _buildTextField(
+                            controller: emailController,
+                            label: "Email Address",
+                            prefixIcon: Icons.mail_outline_outlined,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter your email';
+                              }
+                              final emailRegex =
+                              RegExp(r'^[^@]+@[^@]+\.[^@]+');
+                              if (!emailRegex.hasMatch(value)) {
+                                return 'Please enter a valid email';
+                              }
+                              return null;
+                            },
+                          ),
+                          SizedBox(height: 20),
+                          _buildTextField(
+                            controller: passwordController,
+                            label: "Password",
+                            obscureText: _obscureText,
+                            prefixIcon: Icons.password_rounded,
+                            suffixIcon: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  _obscureText = !_obscureText;
+                                });
+                              },
+                              child: Icon(
+                                _obscureText
+                                    ? Icons.visibility
+                                    : Icons.visibility_outlined,
+                                color: Colors.grey.shade500,
+                              ),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter your password';
+                              }
+                              if (value.length < 6) {
+                                return 'Password must be at least 6 characters';
+                              }
+                              return null;
+                            },
+                          ),
+                          SizedBox(height: 30),
+                          _buildLoginButton(),
+                          SizedBox(height: 10),
+                          Align(
+                            alignment: Alignment.bottomRight,
+                            child: TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            ForgotPassword()));
+                              },
+                              child: Text(
+                                "Forgot Password?",
+                                style: TextStyle(
+                                    color: kThemeColor, fontSize: 14),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    SizedBox(height: 30),
-                    _buildLoginButton(),
                     SizedBox(height: 30),
                     _buildRegisterLink(),
                   ],
@@ -240,9 +255,7 @@ class _LoginPageState extends State<LoginPage> {
               isLoading = true;
             });
             await _auth.signInWithEmailAndPassword(
-                context,
-                emailController.text,
-                passwordController.text);
+                context, emailController.text, passwordController.text);
             emailController.clear();
             passwordController.clear();
             setState(() {
@@ -269,21 +282,20 @@ class _LoginPageState extends State<LoginPage> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          "New User?",
-          style: TextStyle(fontSize: 12, color: Colors.black54),
+          "New Member?",
+          style: TextStyle(
+              color: Colors.grey, fontSize: 14),
         ),
         TextButton(
           onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => RegisterPage()));
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => RegisterPage()));
           },
           child: Text(
-            "Create an account",
-            style: TextStyle(color: kThemeColor, fontSize: 12),
+            "Sign up Here",
+            style: TextStyle(color: kThemeColor, fontSize: 14),
           ),
-        )
+        ),
       ],
     );
   }
