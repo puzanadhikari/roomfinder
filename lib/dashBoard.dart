@@ -4,9 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
-import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:meroapp/Constants/styleConsts.dart';
 import 'package:meroapp/profilePage.dart';
 import 'package:meroapp/roomdetail.dart';
@@ -20,37 +18,12 @@ import 'model/onSaleModel.dart';
 
 class DashBoard extends StatefulWidget {
   double lat,lng;
-  DashBoard(this.lat,this.lng);
+  DashBoard(this.lat,this.lng, {super.key});
   @override
   State<DashBoard> createState() => _DashBoardState();
 }
 
 class _DashBoardState extends State<DashBoard> {
-
-  final List<String> imageUrls = [
-    "https://econtent.o2.co.uk/o/econtent/media/get/43f82c83-69ec-480d-82b5-3fef330f2a0b",
-    "https://m.media-amazon.com/images/I/61voYsPhFTL._AC_SL1500_.jpg",
-    "https://i02.appmifile.com/504_operatorx_operatorx_xm/08/01/2024/fb199e5433ffcbcc38eeff0042fe0fbe.jpg",
-    "https://images-cdn.ubuy.co.in/633b88f09d0e14619a371557-oneplus-nord-n200-5g-unlocked-android.jpg",
-    "https://www.apple.com/v/iphone/home/bu/images/meta/iphone__ky2k6x5u6vue_og.png",
-    "https://images.samsung.com/is/image/samsung/p6pim/uk/2401/gallery/uk-galaxy-s24-ultra-491396-sm-s928bztpeub-thumb-539464063",
-    "https://image.oppo.com/content/dam/oppo/product-asset-library/specs/a78-4g/a78-bg.png",
-    "https://asia-exstatic-vivofs.vivo.com/PSee2l50xoirPK7y/1687938111308/4347f794c401b874b7a314efe168da68.png",
-    "https://i05.appmifile.com/175_item_fr/12/05/2023/deca984ab02cfffd8e52cb58683005da!400x400!85.png",
-    "https://m.media-amazon.com/images/I/61jJeZBliWL._AC_SL1000_.jpg",
-  ];
-  final List<String> names = [
-    "iPhone 13",
-    "Redmi",
-    "Poco",
-    "One Plus",
-    "iPhone 14",
-    "Samsung",
-    "Motorola",
-    "Huwaei",
-    "Oppo",
-    "Vivo",
-  ];
   String fileName = '';
   List<String> filePaths = [];
   String? pdfFilePath;
@@ -93,11 +66,9 @@ class _DashBoardState extends State<DashBoard> {
     await FirebaseFirestore.instance.runTransaction((transaction) async {
       final snapshot = await transaction.get(docRef);
       if (snapshot.exists) {
-        // If the search term exists, increment the count
         int newCount = (snapshot.data()?['count'] ?? 0) + 1;
         transaction.update(docRef, {'count': newCount});
       } else {
-        // If the search term does not exist, create a new entry
         transaction.set(docRef, {
           'searchTerm': searchTerm,
           'productId': productId,
@@ -110,8 +81,8 @@ class _DashBoardState extends State<DashBoard> {
   Future<List<Room>> fetchMostSearchedProducts() async {
     final QuerySnapshot snapshot = await FirebaseFirestore.instance
         .collection('searchHistory')
-        .orderBy('count', descending: true) // Order by the search count
-        .limit(10) // Limit to top 10 most searched
+        .orderBy('count', descending: true)
+        .limit(10)
         .get();
 
     List<Room> mostSearchedProducts = [];
@@ -140,12 +111,9 @@ class _DashBoardState extends State<DashBoard> {
             featured: productData['featured'],
             locationName: productData["locationName"],
           status: data['status'] != null ? Map<String, dynamic>.from(data['status']) : {},
-
-          // Add other fields as necessary
         ));
       }
     }
-
     return mostSearchedProducts;
   }
 
@@ -193,90 +161,229 @@ class _DashBoardState extends State<DashBoard> {
         },
         child: Scaffold(
           body: SingleChildScrollView(
-            child: Column(
-              children: [
-                Column(
-                  children: [
-                    Container(
-                      height: MediaQuery.of(context).size.height / 10,
-                      decoration: BoxDecoration(
-                        color: kThemeColor,
-                        borderRadius: BorderRadius.only(
-                          bottomRight: Radius.circular(50.0),
-                          bottomLeft: Radius.circular(50.0),
-                        ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            // Menu Button
-                            IconButton(
-                              icon: ValueListenableBuilder<AdvancedDrawerValue>(
-                                valueListenable: _advancedDrawerController,
-                                builder: (_, value, __) {
-                                  return AnimatedSwitcher(
-                                    duration: Duration(milliseconds: 250),
-                                    child: Icon(
-                                      value.visible ? Icons.clear : Icons.menu_open_outlined,
-                                      key: ValueKey<bool>(value.visible),
-                                      color: Colors.white,
-                                      size: 30,
-                                    ),
-                                  );
-                                },
-                              ),
-                              onPressed: () => _advancedDrawerController.showDrawer(),
-                            ),
-                            // Shopping Cart Button
-                            IconButton(
-                              icon: Icon(
-                                Icons.shopping_cart,
-                                color: Colors.white,
+            child: Padding(
+              padding: const EdgeInsets.all(18.0),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      IconButton(
+                        icon: ValueListenableBuilder<AdvancedDrawerValue>(
+                          valueListenable: _advancedDrawerController,
+                          builder: (_, value, __) {
+                            return AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 250),
+                              child: Icon(
+                                value.visible ? Icons.clear : Icons.menu_open_outlined,
+                                key: ValueKey<bool>(value.visible),
+                                color: kThemeColor,
                                 size: 30,
                               ),
-                              onPressed: () {
-                                Navigator.push(
-                                    context, MaterialPageRoute(builder: (context) => CartPage()));
-                              },
-                            ),
-                          ],
+                            );
+                          },
+                        ),
+                        onPressed: () => _advancedDrawerController.showDrawer(),
+                      ),
+                      // Shopping Cart Button
+                      IconButton(
+                        icon: Icon(
+                          Icons.notifications_none_outlined,
+                          color: kThemeColor,
+                          size: 30,
+                        ),
+                        onPressed: () {},
+                      ),
+                    ],
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    padding: const EdgeInsets.all(25),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 10,
+                          offset: Offset(0, 6),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text("Find a property anywhere.",
+                            style: TextStyle(
+                                color: Color(0xFF616161),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16)),
+                        const SizedBox(height: 30),
+                        TextFormField(
+                          controller: searchController,
+                          decoration: kFormFieldDecoration.copyWith(
+                            hintText: "search",
+                            labelStyle: const TextStyle(color: Colors.grey, fontSize: 20),
+                            fillColor: Colors.grey.shade300,
+                            filled: true,
+                          ),
+                          onChanged: updateFilteredRooms,
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  Visibility(
+                    visible: searchQuery.isEmpty?false:true,
+                    child: SizedBox(
+                      height: 200,
+                      child: FutureBuilder<List<Room>>(
+                        future: fetchRooms(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return const Center(child: CircularProgressIndicator());
+                          } else if (snapshot.hasError) {
+                            return Center(child: Text('Error: ${snapshot.error}'));
+                          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                            return const Center(child: Text('No rooms available.'));
+                          }
+
+                          // Filter and sort rooms based on search query
+                          List<Room> filteredRooms = snapshot.data!
+                              .where((room) => room.name.toLowerCase().contains(searchQuery.toLowerCase()))
+                              .toList();
+
+                          // Sort the filtered rooms by distance
+                          List<Room> sortedRooms = sortedRoomsByDistance(filteredRooms, widget.lat, widget.lng);
+
+                          return ListView.builder(
+                            itemCount: sortedRooms.length,
+                            itemBuilder: (context, index) {
+                              final room = sortedRooms[index];
+                              return Container(
+                                margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                                child: GestureDetector(
+                                  onTap: (){
+                                    recordSearch( searchQuery,  room.uid);
+                                  },
+                                  child: ListTile(
+                                    title: Text(
+                                      room.name,
+                                      textAlign: TextAlign.left,
+                                      style: const TextStyle(fontWeight: FontWeight.bold),
+                                    ),
+                                    subtitle: Text('Capacity: ${room.capacity}'),
+                                    contentPadding: const EdgeInsets.all(8.0),
+                                    tileColor: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8.0),
+                                      side: const BorderSide(color: Colors.grey, width: 0.5),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        "Most searched",
+                        style: TextStyle(
+                          color: kThemeColor,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
+                  ),
+                  SizedBox(
+                    height: 200, // Set the height for the horizontal list
+                    child: FutureBuilder<List<Room>>(
+                      future: fetchMostSearchedProducts(), // Fetch the most searched products
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const Center(child: CircularProgressIndicator());
+                        } else if (snapshot.hasError) {
+                          return Center(child: Text('Error: ${snapshot.error}'));
+                        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                          return const Center(child: Text('No products found.'));
+                        }
 
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 40.0,vertical: 20),
-                      child: TextFormField(
-                        controller: searchController,
-                        decoration: kFormFieldDecoration.copyWith(
-                          suffixIcon: Icon(Icons.search, size: 30),
-                          hintText: "search",
-                          labelStyle: TextStyle(color: Colors.grey, fontSize: 20),
-                          fillColor: Colors.white,
-                          filled: true,
+                        return ListView.builder(
+                          scrollDirection: Axis.horizontal, // Horizontal scroll
+                          itemCount: snapshot.data!.length,
+                          itemBuilder: (context, index) {
+                            final product = snapshot.data![index];
+                            return Container(
+                              width: 150, // Set width for each item
+                              margin: const EdgeInsets.all(8.0),
+                              child: Card(
+                                child: Column(
+                                  children: [
+                                    product.photo.isNotEmpty
+                                        ? ClipRRect(
+                                      borderRadius: const BorderRadius.vertical(top: Radius.circular(8.0)),
+                                      child: Image.network(
+                                        product.photo[0],
+                                        height: 100,
+                                        width: 150,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    )
+                                        : Container(
+                                      height: 100,
+                                      width: 150,
+                                      color: Colors.grey,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        product.name,
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                    Text('Capacity: ${product.capacity}'),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        "Suggested near you ",
+                        style: TextStyle(
+                          color: kThemeColor,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
                         ),
-                        onChanged: updateFilteredRooms,
                       ),
                     ),
-
-                  ],
-                ),
-
-                Visibility(
-                  visible: searchQuery.isEmpty?false:true,
-                  child: Container(
+                  ),
+                  SizedBox(
                     height: 200,
                     child: FutureBuilder<List<Room>>(
                       future: fetchRooms(),
                       builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.waiting) {
-                          return Center(child: CircularProgressIndicator());
+                          return const Center(child: CircularProgressIndicator());
                         } else if (snapshot.hasError) {
                           return Center(child: Text('Error: ${snapshot.error}'));
                         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                          return Center(child: Text('No rooms available.'));
+                          return const Center(child: Text('No rooms available.'));
                         }
 
                         // Filter and sort rooms based on search query
@@ -288,28 +395,41 @@ class _DashBoardState extends State<DashBoard> {
                         List<Room> sortedRooms = sortedRoomsByDistance(filteredRooms, widget.lat, widget.lng);
 
                         return ListView.builder(
+                          scrollDirection: Axis.horizontal,
                           itemCount: sortedRooms.length,
                           itemBuilder: (context, index) {
                             final room = sortedRooms[index];
                             return Container(
-                              margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                              child: GestureDetector(
-                                onTap: (){
-                                  recordSearch( searchQuery,  room.uid);
-                                },
-                                child: ListTile(
-                                  title: Text(
-                                    room.name,
-                                    textAlign: TextAlign.left,
-                                    style: TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                  subtitle: Text('Capacity: ${room.capacity}'),
-                                  contentPadding: EdgeInsets.all(8.0),
-                                  tileColor: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                    side: BorderSide(color: Colors.grey, width: 0.5),
-                                  ),
+                              width: 150,
+                              margin: const EdgeInsets.all(8.0),
+                              child: Card(
+                                child: Column(
+                                  children: [
+                                    room.photo.isNotEmpty
+                                        ? ClipRRect(
+                                      borderRadius: const BorderRadius.vertical(top: Radius.circular(8.0)),
+                                      child: Image.network(
+                                        room.photo[0],
+                                        height: 100,
+                                        width: 150,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    )
+                                        : Container(
+                                      height: 100,
+                                      width: 150,
+                                      color: Colors.grey,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        room.name,
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                    Text('Capacity: ${room.capacity}'),
+                                  ],
                                 ),
                               ),
                             );
@@ -318,217 +438,25 @@ class _DashBoardState extends State<DashBoard> {
                       },
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      "Most searched",
-                      style: TextStyle(
-                        color: kThemeColor,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-                Container(
-                  height: 200, // Set the height for the horizontal list
-                  child: FutureBuilder<List<Room>>(
-                    future: fetchMostSearchedProducts(), // Fetch the most searched products
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(child: CircularProgressIndicator());
-                      } else if (snapshot.hasError) {
-                        return Center(child: Text('Error: ${snapshot.error}'));
-                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return Center(child: Text('No products found.'));
-                      }
-
-                      return ListView.builder(
-                        scrollDirection: Axis.horizontal, // Horizontal scroll
-                        itemCount: snapshot.data!.length,
-                        itemBuilder: (context, index) {
-                          final product = snapshot.data![index];
-                          return Container(
-                            width: 150, // Set width for each item
-                            margin: EdgeInsets.all(8.0),
-                            child: Card(
-                              child: Column(
-                                children: [
-                                  product.photo.isNotEmpty
-                                      ? ClipRRect(
-                                    borderRadius: BorderRadius.vertical(top: Radius.circular(8.0)),
-                                    child: Image.network(
-                                      product.photo[0],
-                                      height: 100,
-                                      width: 150,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  )
-                                      : Container(
-                                    height: 100,
-                                    width: 150,
-                                    color: Colors.grey,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      product.name,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                  Text('Capacity: ${product.capacity}'),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      "Suggested near you ",
-                      style: TextStyle(
-                        color: kThemeColor,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-                Container(
-                  height: 200,
-                  child: FutureBuilder<List<Room>>(
-                    future: fetchRooms(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(child: CircularProgressIndicator());
-                      } else if (snapshot.hasError) {
-                        return Center(child: Text('Error: ${snapshot.error}'));
-                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return Center(child: Text('No rooms available.'));
-                      }
-
-                      // Filter and sort rooms based on search query
-                      List<Room> filteredRooms = snapshot.data!
-                          .where((room) => room.name.toLowerCase().contains(searchQuery.toLowerCase()))
-                          .toList();
-
-                      // Sort the filtered rooms by distance
-                      List<Room> sortedRooms = sortedRoomsByDistance(filteredRooms, widget.lat, widget.lng);
-
-                      return ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: sortedRooms.length,
-                        itemBuilder: (context, index) {
-                          final room = sortedRooms[index];
-                          return Container(
-                            width: 150,
-                            margin: EdgeInsets.all(8.0),
-                            child: Card(
-                              child: Column(
-                                children: [
-                                  room.photo.isNotEmpty
-                                      ? ClipRRect(
-                                    borderRadius: BorderRadius.vertical(top: Radius.circular(8.0)),
-                                    child: Image.network(
-                                      room.photo[0],
-                                      height: 100,
-                                      width: 150,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  )
-                                      : Container(
-                                    height: 100,
-                                    width: 150,
-                                    color: Colors.grey,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      room.name,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                  Text('Capacity: ${room.capacity}'),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                  ),
-                ),
-
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      "Categories",
-                      style: TextStyle(
-                        color: kThemeColor,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 20),
-                Container(
-                  height: 100.0,
-                  margin: EdgeInsets.symmetric(vertical:.0),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
                     child: Row(
-                      children: List.generate(10, (index) {
-                        return Container(
-                          margin: EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Column(
-                            children: [
-                              CircleAvatar(
-                                radius: 30.0,
-                                backgroundColor: Colors.green.shade300,
-                                backgroundImage: NetworkImage(imageUrls[index]),
-                              ),
-                              Text(names[index]),
-                            ],
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Popular",
+                          style: TextStyle(
+                            color: kThemeColor,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
                           ),
-                        );
-                      }),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Popular",
-                        style: TextStyle(
-                          color: kThemeColor,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
                         ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          // pickFile();
-                        },
-                        child: Container(
+                        GestureDetector(
+                          onTap: () {
+                            // pickFile();
+                          },
                           child: Row(
-                            children: [
+                            children: const [
                               Text(
                                 "See More",
                                 style: TextStyle(
@@ -543,174 +471,174 @@ class _DashBoardState extends State<DashBoard> {
                             ],
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                SizedBox(height: 20),
-            FutureBuilder<List<Room>>(
-              future: fetchRooms(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                }
-                if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                }
-                if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Center(child: Text('No rooms available'));
-                }
+                  const SizedBox(height: 20),
+              FutureBuilder<List<Room>>(
+                future: fetchRooms(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  }
+                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Center(child: Text('No rooms available'));
+                  }
 
-                final rooms = snapshot.data!;
+                  final rooms = snapshot.data!;
 
-                return Container(
-                  height: 200, // Set height for the card
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: rooms.length,
-                    itemBuilder: (context, index) {
-                      final room = rooms[index];
+                  return SizedBox(
+                    height: 200, // Set height for the card
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: rooms.length,
+                      itemBuilder: (context, index) {
+                        final room = rooms[index];
 
-                      return GestureDetector(
-                        onTap: () {
-                          // Navigate to details page
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => RoomDetailPage(room: room),
-                            ),
-                          );
-                        },
-                        child: Card(
-                          margin: EdgeInsets.all(8),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                width: 150,
-                                height: 100,
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    image: NetworkImage(room.photo.isNotEmpty ? room.photo[0] : ''),
-                                    fit: BoxFit.cover,
+                        return GestureDetector(
+                          onTap: () {
+                            // Navigate to details page
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => RoomDetailPage(room: room),
+                              ),
+                            );
+                          },
+                          child: Card(
+                            margin: const EdgeInsets.all(8),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width: 150,
+                                  height: 100,
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: NetworkImage(room.photo.isNotEmpty ? room.photo[0] : ''),
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      room.name,
-                                      style: TextStyle(fontWeight: FontWeight.bold),
-                                    ),
-                                    SizedBox(height: 4),
-                                    Text('Capacity: ${room.capacity}'),
-                                    // You can add more details here if needed
-                                  ],
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        room.name,
+                                        style: const TextStyle(fontWeight: FontWeight.bold),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text('Capacity: ${room.capacity}'),
+                                      // You can add more details here if needed
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  ),
-                );
-              },
-            ),
-                SizedBox(height: 20),
-                // Container(
-                //   height: 200,
-                //   child: NotificationListener<OverscrollIndicatorNotification>(
-                //     onNotification: (overscroll) {
-                //       overscroll.disallowGlow(); // This disables the glow effect
-                //       return true;
-                //     },
-                //     child: ListView.builder(
-                //       scrollDirection: Axis.horizontal,
-                //       itemCount: filePaths.length,
-                //       itemBuilder: (context, index) {
-                //         return Padding(
-                //           padding: const EdgeInsets.only(left: 20.0),
-                //           child: GestureDetector(
-                //             onTap: () {
-                //               Navigator.push(
-                //                 context,
-                //                 MaterialPageRoute(
-                //                   builder: (context) => FullScreenImage(
-                //                     imagePath: filePaths[index],
-                //                   ),
-                //                 ),
-                //               );
-                //             },
-                //             child: Container(
-                //               // height: 200,
-                //               // width: 100,
-                //               child: filePaths[index].isNotEmpty &&
-                //                       File(filePaths[index]).existsSync()
-                //                   ? Image.file(
-                //                       File(filePaths[index]),
-                //                       fit: BoxFit.fill,
-                //                     )
-                //                   : Container(), // Display an empty container if file path is invalid
-                //             ),
-                //           ),
-                //         );
-                //       },
-                //     ),
-                //   ),
-                // ),
-                SizedBox(height: 20),
-                // Padding(
-                //   padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                //   child: Row(
-                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //     children: [
-                //       Text(
-                //         "Choose Pdf",
-                //         style: TextStyle(
-                //           color: kThemeColor,
-                //           fontSize: 18,
-                //           fontWeight: FontWeight.bold,
-                //         ),
-                //       ),
-                //       IconButton(
-                //         color: Colors.grey,
-                //         onPressed: () {
-                //           pickPdf();
-                //         },
-                //         icon: Icon(Icons.picture_as_pdf),
-                //       )
-                //     ],
-                //   ),
-                // ),
-                // Visibility(
-                //   visible: pdfFilePath != null,
-                //   child: ElevatedButton(
-                //     onPressed: () {
-                //       log("yes");
-                //       openFile(context, pdfFilePath!);
-                //     },
-                //     child: Text('Open'),
-                //     style: ElevatedButton.styleFrom(
-                //       primary: kThemeColor,
-                //       shape: RoundedRectangleBorder(
-                //         borderRadius: BorderRadius.circular(15.0),
-                //       ),
-                //     ),
-                //   ),
-                // ),
-                // if (pdfFilePath != null)
-                //   Container(
-                //     width: 100,
-                //     height: 150,
-                //     child: PDFView(
-                //       filePath: pdfFilePath,
-                //     ),
-                //   ),
-              ],
+                        );
+                      },
+                    ),
+                  );
+                },
+              ),
+                  const SizedBox(height: 20),
+                  // Container(
+                  //   height: 200,
+                  //   child: NotificationListener<OverscrollIndicatorNotification>(
+                  //     onNotification: (overscroll) {
+                  //       overscroll.disallowGlow(); // This disables the glow effect
+                  //       return true;
+                  //     },
+                  //     child: ListView.builder(
+                  //       scrollDirection: Axis.horizontal,
+                  //       itemCount: filePaths.length,
+                  //       itemBuilder: (context, index) {
+                  //         return Padding(
+                  //           padding: const EdgeInsets.only(left: 20.0),
+                  //           child: GestureDetector(
+                  //             onTap: () {
+                  //               Navigator.push(
+                  //                 context,
+                  //                 MaterialPageRoute(
+                  //                   builder: (context) => FullScreenImage(
+                  //                     imagePath: filePaths[index],
+                  //                   ),
+                  //                 ),
+                  //               );
+                  //             },
+                  //             child: Container(
+                  //               // height: 200,
+                  //               // width: 100,
+                  //               child: filePaths[index].isNotEmpty &&
+                  //                       File(filePaths[index]).existsSync()
+                  //                   ? Image.file(
+                  //                       File(filePaths[index]),
+                  //                       fit: BoxFit.fill,
+                  //                     )
+                  //                   : Container(), // Display an empty container if file path is invalid
+                  //             ),
+                  //           ),
+                  //         );
+                  //       },
+                  //     ),
+                  //   ),
+                  // ),
+                  const SizedBox(height: 20),
+                  // Padding(
+                  //   padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  //   child: Row(
+                  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //     children: [
+                  //       Text(
+                  //         "Choose Pdf",
+                  //         style: TextStyle(
+                  //           color: kThemeColor,
+                  //           fontSize: 18,
+                  //           fontWeight: FontWeight.bold,
+                  //         ),
+                  //       ),
+                  //       IconButton(
+                  //         color: Colors.grey,
+                  //         onPressed: () {
+                  //           pickPdf();
+                  //         },
+                  //         icon: Icon(Icons.picture_as_pdf),
+                  //       )
+                  //     ],
+                  //   ),
+                  // ),
+                  // Visibility(
+                  //   visible: pdfFilePath != null,
+                  //   child: ElevatedButton(
+                  //     onPressed: () {
+                  //       log("yes");
+                  //       openFile(context, pdfFilePath!);
+                  //     },
+                  //     child: Text('Open'),
+                  //     style: ElevatedButton.styleFrom(
+                  //       primary: kThemeColor,
+                  //       shape: RoundedRectangleBorder(
+                  //         borderRadius: BorderRadius.circular(15.0),
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+                  // if (pdfFilePath != null)
+                  //   Container(
+                  //     width: 100,
+                  //     height: 150,
+                  //     child: PDFView(
+                  //       filePath: pdfFilePath,
+                  //     ),
+                  //   ),
+                ],
+              ),
             ),
           ),
         ),
@@ -732,7 +660,7 @@ class _DashBoardState extends State<DashBoard> {
               padding: const EdgeInsets.only(left: 20, bottom: 60.0),
               child: Text(
                 user?.displayName ?? "Guest",
-                style: TextStyle(
+                style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                     fontSize: 20),
@@ -740,45 +668,45 @@ class _DashBoardState extends State<DashBoard> {
             ),
             ListTile(
               onTap: () {},
-              leading: Icon(Icons.recommend),
-              title: Text('Recommended'),
+              leading: const Icon(Icons.recommend),
+              title: const Text('Recommended'),
             ),
             ListTile(
               onTap: () {},
-              leading: Icon(Icons.star),
-              title: Text('Popular'),
+              leading: const Icon(Icons.star),
+              title: const Text('Popular'),
             ),
             ListTile(
               onTap: () {},
-              leading: Icon(Icons.category_sharp),
-              title: Text('Categories'),
+              leading: const Icon(Icons.category_sharp),
+              title: const Text('Categories'),
             ),
             ListTile(
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>WishlistPage()));
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>const WishlistPage()));
               },
-              leading: Icon(Icons.favorite_outlined),
-              title: Text('Favourites'),
+              leading: const Icon(Icons.favorite_outlined),
+              title: const Text('Favourites'),
             ),
             ListTile(
               onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>ProfilePage()));
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>const ProfilePage()));
               },
-              leading: Icon(Icons.account_balance_wallet_sharp),
-              title: Text('Accounts'),
+              leading: const Icon(Icons.account_balance_wallet_sharp),
+              title: const Text('Accounts'),
             ),
             ListTile(
               onTap: () {},
-              leading: Icon(Icons.settings),
-              title: Text('Settings'),
+              leading: const Icon(Icons.settings),
+              title: const Text('Settings'),
             ),
-            Spacer(),
+            const Spacer(),
             ListTile(
               onTap: _signOut,
-              leading: Icon(Icons.logout),
-              title: Text('Logout'),
+              leading: const Icon(Icons.logout),
+              title: const Text('Logout'),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
           ],
         ),
       ),
@@ -790,10 +718,10 @@ class _DashBoardState extends State<DashBoard> {
       await FirebaseAuth.instance.signOut();
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => SplashScreen()),
+        MaterialPageRoute(builder: (context) => const SplashScreen()),
       );
     } catch (e) {
-      print("Error signing out: $e");
+      log("Error signing out: $e");
     }
   }
 
@@ -852,7 +780,7 @@ void openFile(BuildContext context, String? filePath) {
           ),
         );
       } else {
-        print('File does not exist');
+        log('File does not exist');
       }
     });
   }
@@ -860,7 +788,7 @@ void openFile(BuildContext context, String? filePath) {
 class FullScreenImage extends StatelessWidget {
   final String imagePath;
 
-  FullScreenImage({required this.imagePath});
+   const FullScreenImage({super.key, required this.imagePath});
 
   @override
   Widget build(BuildContext context) {
@@ -869,7 +797,7 @@ class FullScreenImage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.black,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
