@@ -148,606 +148,663 @@ class _DashBoardState extends State<DashBoard> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.only(
-                top: 50.0, bottom: 18.0, left: 18.0, right: 18.0),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    CircleAvatar(
-                      radius: 20,
-                      backgroundColor: kThemeColor,
-                      backgroundImage: NetworkImage(
-                          "https://media.licdn.com/dms/image/D5603AQFD6ld3NWc2HQ/profile-displayphoto-shrink_200_200/0/1684164054868?e=2147483647&v=beta&t=cwQoyfhgAl_91URX5FTEXLwLDEHWe1H337EMebpgntQ"),
-                    ),
-                    Text("Home",
-                        style: TextStyle(
-                            color: kThemeColor,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 25)),
-                    IconButton(
-                      icon: Icon(
-                        Icons.notifications_none_outlined,
-                        color: kThemeColor,
-                        size: 30,
-                      ),
-                      onPressed: () {},
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  padding: const EdgeInsets.all(25),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black26,
-                        blurRadius: 10,
-                        offset: Offset(0, 6),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+        body: NotificationListener<OverscrollIndicatorNotification>(
+          onNotification: (overscroll) {
+            overscroll.disallowIndicator();
+            return true;
+          },
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.only(
+                  top: 50.0, bottom: 18.0, left: 18.0, right: 18.0),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text("Find a property anywhere.",
-                          style: TextStyle(
-                              color: Color(0xAA616161),
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16)),
-                      const SizedBox(height: 30),
-                      TextFormField(
-                        controller: searchController,
-                        decoration: InputDecoration(
-                          prefixIcon: Icon(
-                            Icons.location_on_rounded,
-                            color: kThemeColor,
-                          ),
-                          hintText: "Enter an address or room",
-                          hintStyle: TextStyle(
-                              color: Colors.grey.shade600, fontSize: 16),
-                          fillColor: Colors.grey.shade200,
-                          filled: true,
-                          contentPadding: EdgeInsets.symmetric(
-                              vertical: 14, horizontal: 20),
-                          labelStyle:
-                              TextStyle(color: Colors.grey, fontSize: 20),
-                          border: InputBorder.none,
-                        ),
-                        style: TextStyle(fontSize: 18, color: Colors.black),
-                        onChanged: updateFilteredRooms,
+                      CircleAvatar(
+                        radius: 20,
+                        backgroundColor: kThemeColor,
+                        backgroundImage: NetworkImage(
+                            "https://media.licdn.com/dms/image/D5603AQFD6ld3NWc2HQ/profile-displayphoto-shrink_200_200/0/1684164054868?e=2147483647&v=beta&t=cwQoyfhgAl_91URX5FTEXLwLDEHWe1H337EMebpgntQ"),
                       ),
-                      SizedBox(height: 10),
-                      SizedBox(
-                        width: double.infinity,
-                        height: 50,
-                        child: ElevatedButton(
-                          onPressed: () async {},
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: kThemeColor,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5.0),
-                            ),
-                          ),
-                          child: const Text(
-                            "Search Now",
-                            style: TextStyle(color: Colors.white, fontSize: 18),
-                          ),
+                      Text("Home",
+                          style: TextStyle(
+                              color: kThemeColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 25)),
+                      IconButton(
+                        icon: Icon(
+                          Icons.notifications_none_outlined,
+                          color: kThemeColor,
+                          size: 30,
                         ),
-                      )
+                        onPressed: () {},
+                      ),
                     ],
                   ),
-                ),
-                const SizedBox(height: 30),
-                Visibility(
-                  visible: searchQuery.isEmpty ? false : true,
-                  child: SizedBox(
-                    height: 200,
-                    child: FutureBuilder<List<Room>>(
-                      future: fetchRooms(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        } else if (snapshot.hasError) {
-                          return Center(
-                              child: Text('Error: ${snapshot.error}'));
-                        } else if (!snapshot.hasData ||
-                            snapshot.data!.isEmpty) {
-                          return const Center(
-                              child: Text('No rooms available.'));
-                        }
-                        List<Room> filteredRooms = snapshot.data!
-                            .where((room) => room.name
-                                .toLowerCase()
-                                .contains(searchQuery.toLowerCase()))
-                            .toList();
-                        List<Room> sortedRooms = sortedRoomsByDistance(
-                            filteredRooms, widget.lat, widget.lng);
-
-                        return ListView.builder(
-                          itemCount: sortedRooms.length,
-                          itemBuilder: (context, index) {
-                            final room = sortedRooms[index];
-                            return Container(
-                              margin: const EdgeInsets.symmetric(
-                                  vertical: 8.0, horizontal: 16.0),
-                              child: GestureDetector(
-                                onTap: () {
-                                  recordSearch(searchQuery, room.uid);
-                                },
-                                child: ListTile(
-                                  title: Text(
-                                    room.name,
-                                    textAlign: TextAlign.left,
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  subtitle: Text('Capacity: ${room.capacity}'),
-                                  contentPadding: const EdgeInsets.all(8.0),
-                                  tileColor: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                    side: const BorderSide(
-                                        color: Colors.grey, width: 0.5),
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                        );
-                      },
-                    ),
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    "Most searched",
-                    style: TextStyle(
-                      color: Color(0xFF072A2E),
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                FutureBuilder<List<Room>>(
-                  future: fetchMostSearchedProducts(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    } else if (snapshot.hasError) {
-                      return Center(child: Text('Error: ${snapshot.error}'));
-                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return const Center(child: Text('No products found.'));
-                    }
-                    final displayedProducts = showAllMostSearch
-                        ? snapshot.data!
-                        : snapshot.data!.take(3).toList();
-                    return Column(
-                      children: [
-                        ListView.builder(
-                          itemCount: displayedProducts.length,
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            final product = displayedProducts[index];
-                            return Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(16.0),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.shade300,
-                                    blurRadius: 5,
-                                    offset: Offset(0, 4),
-                                  ),
-                                ],
-                              ),
-                              child: Card(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16.0),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                  child: Row(
-                                    children: [
-                                      ClipRRect(
-                                        borderRadius:
-                                            const BorderRadius.horizontal(
-                                          left: Radius.circular(16.0),
-                                          right: Radius.circular(16.0),
-                                        ),
-                                        child: Image.network(
-                                          product.photo.isNotEmpty
-                                              ? product.photo[0]
-                                              : 'https://via.placeholder.com/150',
-                                          height: 100,
-                                          width: 100,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(16.0),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                product.name.toUpperCase(),
-                                                style: TextStyle(
-                                                  color: kThemeColor,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 18,
-                                                ),
-                                              ),
-                                              const SizedBox(height: 8),
-                                              Text(
-                                                product.locationName,
-                                                style: TextStyle(
-                                                  color: Colors.grey.shade700,
-                                                  fontSize: 14,
-                                                ),
-                                              ),
-                                              const SizedBox(height: 8),
-                                              Text(
-                                                "Rs. 8000/ per month",
-                                                style: TextStyle(
-                                                  color: kThemeColor,
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w600,
-                                                ),
-                                              ),
-                                              SizedBox(height: 20),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Row(
-                                                    children: [
-                                                      Icon(
-                                                        Icons.location_on_rounded,
-                                                        size: 16,
-                                                        color: kThemeColor,
-                                                      ),
-                                                      Text(
-                                                        "${(displayedProducts[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.black45),
-                                                      )
-                                                    ],
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      Icon(
-                                                        Icons
-                                                            .do_not_disturb_on_total_silence,
-                                                        size: 16,
-                                                        color: kThemeColor,
-                                                      ),
-                                                      Text(
-                                                        "Available",
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.black45),
-                                                      )
-                                                    ],
-                                                  )
-                                                ],
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
+                  const SizedBox(height: 20),
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    padding: const EdgeInsets.all(25),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 10,
+                          offset: Offset(0, 6),
                         ),
-                        if (!showAllMostSearch && snapshot.data!.length > 3)
-                          TextButton(
-                            onPressed: () {
-                              setState(() {
-                                showAllMostSearch = true;
-                              });
-                            },
-                            child: Text(
-                              'View All',
-                              style: TextStyle(
-                                color: kThemeColor,
-                                fontSize: 16,
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text("Find a property anywhere.",
+                            style: TextStyle(
+                                color: Color(0xAA616161),
                                 fontWeight: FontWeight.bold,
+                                fontSize: 16)),
+                        const SizedBox(height: 30),
+                        TextFormField(
+                          controller: searchController,
+                          decoration: InputDecoration(
+                            prefixIcon: Icon(
+                              Icons.location_on_rounded,
+                              color: kThemeColor,
+                            ),
+                            hintText: "Enter an address or room",
+                            hintStyle: TextStyle(
+                                color: Colors.grey.shade600, fontSize: 16),
+                            fillColor: Colors.grey.shade200,
+                            filled: true,
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 14, horizontal: 20),
+                            labelStyle:
+                                TextStyle(color: Colors.grey, fontSize: 20),
+                            border: InputBorder.none,
+                          ),
+                          style: TextStyle(fontSize: 18, color: Colors.black),
+                          onChanged: updateFilteredRooms,
+                        ),
+                        SizedBox(height: 10),
+                        SizedBox(
+                          width: double.infinity,
+                          height: 50,
+                          child: ElevatedButton(
+                            onPressed: () async {},
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: kThemeColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5.0),
                               ),
                             ),
-                          ),
-                      ],
-                    );
-                  },
-                ),
-                SizedBox(height: 10),
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    "Suggested Near You",
-                    style: TextStyle(
-                      color: Color(0xFF072A2E),
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                FutureBuilder<List<Room>>(
-                  future: fetchRooms(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    } else if (snapshot.hasError) {
-                      return Center(child: Text('Error: ${snapshot.error}'));
-                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return const Center(child: Text('No rooms available.'));
-                    }
-                    // Filter and sort rooms based on search query
-                    List<Room> filteredRooms = snapshot.data!
-                        .where((room) => room.name
-                            .toLowerCase()
-                            .contains(searchQuery.toLowerCase()))
-                        .toList();
-
-                    // Sort the filtered rooms by distance
-                    List<Room> sortedRooms = sortedRoomsByDistance(
-                        filteredRooms, widget.lat, widget.lng);
-
-                    sortedRooms = showAllNearYou
-                        ? snapshot.data!
-                        : snapshot.data!.take(3).toList();
-
-                    return Column(
-                      children: [
-                        ListView.builder(
-                          itemCount: sortedRooms.length,
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            final room = sortedRooms[index];
-                            return Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(16.0),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.shade300,
-                                    blurRadius: 5,
-                                    offset: Offset(0, 4),
-                                  ),
-                                ],
-                              ),
-                              child: Card(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16.0),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                  child: Row(
-                                    children: [
-                                      ClipRRect(
-                                        borderRadius:
-                                            const BorderRadius.horizontal(
-                                          left: Radius.circular(16.0),
-                                          right: Radius.circular(16.0),
-                                        ),
-                                        child: Image.network(
-                                          room.photo.isNotEmpty
-                                              ? room.photo[0]
-                                              : 'https://via.placeholder.com/150',
-                                          height: 100,
-                                          width: 100,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(16.0),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                room.name.toUpperCase(),
-                                                style: TextStyle(
-                                                  color: kThemeColor,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 18,
-                                                ),
-                                              ),
-                                              const SizedBox(height: 8),
-                                              Text(
-                                                room.locationName,
-                                                style: TextStyle(
-                                                  color: Colors.grey.shade700,
-                                                  fontSize: 14,
-                                                ),
-                                              ),
-                                              const SizedBox(height: 8),
-                                              Text(
-                                                "Capacity: ${room.capacity}",
-                                                style: TextStyle(
-                                                  color: kThemeColor,
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.w600,
-                                                ),
-                                              ),
-                                              SizedBox(height: 20),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Row(
-                                                    children: [
-                                                      Icon(
-                                                          Icons
-                                                              .location_on_rounded,
-                                                          size: 16,
-                                                          color: kThemeColor),
-                                                      Text(
-                                                        "${(sortedRooms[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.black45),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      Icon(Icons.check_circle,
-                                                          size: 16,
-                                                          color: kThemeColor),
-                                                      Text(
-                                                        "Available",
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.black45),
-                                                      )
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                        if (!showAllNearYou && snapshot.data!.length > 3)
-                          TextButton(
-                            onPressed: () {
-                              setState(() {
-                                showAllNearYou = true;
-                              });
-                            },
-                            child: Text(
-                              'View All',
-                              style: TextStyle(
-                                color: kThemeColor,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
+                            child: const Text(
+                              "Search Now",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 18),
                             ),
                           ),
+                        )
                       ],
-                    );
-                  },
-                ),
-                SizedBox(height: 30),
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    "Popular",
-                    style: TextStyle(
-                      color: Color(0xFF072A2E),
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                ),
-                FutureBuilder<List<Room>>(
-                  future: fetchRooms(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
-                    if (snapshot.hasError) {
-                      return Center(child: Text('Error: ${snapshot.error}'));
-                    }
-                    if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return const Center(child: Text('No rooms available'));
-                    }
+                  const SizedBox(height: 30),
+                  Visibility(
+                    visible: searchQuery.isEmpty ? false : true,
+                    child: SizedBox(
+                      height: 200,
+                      child: FutureBuilder<List<Room>>(
+                        future: fetchRooms(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          } else if (snapshot.hasError) {
+                            return Center(
+                                child: Text('Error: ${snapshot.error}'));
+                          } else if (!snapshot.hasData ||
+                              snapshot.data!.isEmpty) {
+                            return const Center(
+                                child: Text('No rooms available.'));
+                          }
+                          List<Room> filteredRooms = snapshot.data!
+                              .where((room) => room.name
+                                  .toLowerCase()
+                                  .contains(searchQuery.toLowerCase()))
+                              .toList();
+                          List<Room> sortedRooms = sortedRoomsByDistance(
+                              filteredRooms, widget.lat, widget.lng);
 
-                    final rooms = snapshot.data!;
-
-                    return SizedBox(
-                      height: 200, // Set height for the card
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: rooms.length,
-                        itemBuilder: (context, index) {
-                          final room = rooms[index];
-
-                          return GestureDetector(
-                            onTap: () {
-                              // Navigate to details page
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      RoomDetailPage(room: room),
+                          return ListView.builder(
+                            itemCount: sortedRooms.length,
+                            itemBuilder: (context, index) {
+                              final room = sortedRooms[index];
+                              return Container(
+                                margin: const EdgeInsets.symmetric(
+                                    vertical: 8.0, horizontal: 16.0),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    recordSearch(searchQuery, room.uid);
+                                  },
+                                  child: ListTile(
+                                    title: Text(
+                                      room.name,
+                                      textAlign: TextAlign.left,
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    subtitle:
+                                        Text('Capacity: ${room.capacity}'),
+                                    contentPadding: const EdgeInsets.all(8.0),
+                                    tileColor: Colors.white,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8.0),
+                                      side: const BorderSide(
+                                          color: Colors.grey, width: 0.5),
+                                    ),
+                                  ),
                                 ),
                               );
                             },
-                            child: Card(
-                              margin: const EdgeInsets.all(8),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    width: 150,
-                                    height: 100,
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        image: NetworkImage(
-                                            room.photo.isNotEmpty
-                                                ? room.photo[0]
-                                                : ''),
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          room.name,
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Text('Capacity: ${room.capacity}'),
-                                        // You can add more details here if needed
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
                           );
                         },
                       ),
-                    );
-                  },
-                ),
-              ],
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      "Most searched",
+                      style: TextStyle(
+                        color: Color(0xFF072A2E),
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  FutureBuilder<List<Room>>(
+                    future: fetchMostSearchedProducts(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return SizedBox(
+                            height: 300,
+                            child: Center(
+                                child: CircularProgressIndicator(
+                                    color: kThemeColor)));
+                      } else if (snapshot.hasError) {
+                        return Center(child: Text('Error: ${snapshot.error}'));
+                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return const Center(child: Text('No products found.'));
+                      }
+                      final displayedProducts = showAllMostSearch
+                          ? snapshot.data!
+                          : snapshot.data!.take(3).toList();
+                      return Column(
+                        children: [
+                          ListView.builder(
+                            itemCount: displayedProducts.length,
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              final product = displayedProducts[index];
+                              return Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(16.0),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.shade300,
+                                      blurRadius: 5,
+                                      offset: Offset(0, 4),
+                                    ),
+                                  ],
+                                ),
+                                child: Card(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16.0),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0),
+                                    child: Row(
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius:
+                                              const BorderRadius.horizontal(
+                                            left: Radius.circular(16.0),
+                                            right: Radius.circular(16.0),
+                                          ),
+                                          child: Image.network(
+                                            product.photo.isNotEmpty
+                                                ? product.photo[0]
+                                                : 'https://via.placeholder.com/150',
+                                            height: 100,
+                                            width: 100,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(16.0),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  product.name.toUpperCase(),
+                                                  style: TextStyle(
+                                                    color: kThemeColor,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 18,
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 8),
+                                                Text(
+                                                  product.locationName,
+                                                  style: TextStyle(
+                                                    color: Colors.grey.shade700,
+                                                    fontSize: 14,
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 8),
+                                                Text(
+                                                  "Rs. 8000/ per month",
+                                                  style: TextStyle(
+                                                    color: kThemeColor,
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                                SizedBox(height: 20),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        Icon(
+                                                          Icons
+                                                              .location_on_rounded,
+                                                          size: 16,
+                                                          color: kThemeColor,
+                                                        ),
+                                                        Text(
+                                                          "${(displayedProducts[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
+                                                          style: TextStyle(
+                                                              color: Colors
+                                                                  .black45),
+                                                        )
+                                                      ],
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        Icon(
+                                                          Icons
+                                                              .do_not_disturb_on_total_silence,
+                                                          size: 16,
+                                                          color: kThemeColor,
+                                                        ),
+                                                        Text(
+                                                          "Available",
+                                                          style: TextStyle(
+                                                              color: Colors
+                                                                  .black45),
+                                                        )
+                                                      ],
+                                                    )
+                                                  ],
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                          if (!showAllMostSearch && snapshot.data!.length > 3)
+                            TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  showAllMostSearch = true;
+                                });
+                              },
+                              child: Text(
+                                'View All',
+                                style: TextStyle(
+                                  color: kThemeColor,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                        ],
+                      );
+                    },
+                  ),
+                  SizedBox(height: 10),
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      "Suggested Near You",
+                      style: TextStyle(
+                        color: Color(0xFF072A2E),
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  FutureBuilder<List<Room>>(
+                    future: fetchRooms(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return SizedBox(
+                            height: 300,
+                            child: Center(
+                                child: CircularProgressIndicator(
+                                    color: kThemeColor)));
+                      } else if (snapshot.hasError) {
+                        return Center(child: Text('Error: ${snapshot.error}'));
+                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return const Center(child: Text('No rooms available.'));
+                      }
+                      // Filter and sort rooms based on search query
+                      List<Room> filteredRooms = snapshot.data!
+                          .where((room) => room.name
+                              .toLowerCase()
+                              .contains(searchQuery.toLowerCase()))
+                          .toList();
+
+                      // Sort the filtered rooms by distance
+                      List<Room> sortedRooms = sortedRoomsByDistance(
+                          filteredRooms, widget.lat, widget.lng);
+
+                      sortedRooms = showAllNearYou
+                          ? snapshot.data!
+                          : snapshot.data!.take(3).toList();
+
+                      return Column(
+                        children: [
+                          ListView.builder(
+                            itemCount: sortedRooms.length,
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              final room = sortedRooms[index];
+                              return Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(16.0),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.shade300,
+                                      blurRadius: 5,
+                                      offset: Offset(0, 4),
+                                    ),
+                                  ],
+                                ),
+                                child: Card(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16.0),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0),
+                                    child: Row(
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius:
+                                              const BorderRadius.horizontal(
+                                            left: Radius.circular(16.0),
+                                            right: Radius.circular(16.0),
+                                          ),
+                                          child: Image.network(
+                                            room.photo.isNotEmpty
+                                                ? room.photo[0]
+                                                : 'https://via.placeholder.com/150',
+                                            height: 100,
+                                            width: 100,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(16.0),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  room.name.toUpperCase(),
+                                                  style: TextStyle(
+                                                    color: kThemeColor,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 18,
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 8),
+                                                Text(
+                                                  room.locationName,
+                                                  style: TextStyle(
+                                                    color: Colors.grey.shade700,
+                                                    fontSize: 14,
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 8),
+                                                Text(
+                                                  "Capacity: ${room.capacity}",
+                                                  style: TextStyle(
+                                                    color: kThemeColor,
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                                SizedBox(height: 20),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        Icon(
+                                                            Icons
+                                                                .location_on_rounded,
+                                                            size: 16,
+                                                            color: kThemeColor),
+                                                        Text(
+                                                          "${(sortedRooms[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
+                                                          style: TextStyle(
+                                                              color: Colors
+                                                                  .black45),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        Icon(Icons.check_circle,
+                                                            size: 16,
+                                                            color: kThemeColor),
+                                                        Text(
+                                                          "Available",
+                                                          style: TextStyle(
+                                                              color: Colors
+                                                                  .black45),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                          if (!showAllNearYou && snapshot.data!.length > 3)
+                            TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  showAllNearYou = true;
+                                });
+                              },
+                              child: Text(
+                                'View All',
+                                style: TextStyle(
+                                  color: kThemeColor,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                        ],
+                      );
+                    },
+                  ),
+                  SizedBox(height: 30),
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      "Popular",
+                      style: TextStyle(
+                        color: Color(0xFF072A2E),
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  FutureBuilder<List<Room>>(
+                    future: fetchRooms(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return SizedBox(
+                            height: 300,
+                            child: Center(
+                                child: CircularProgressIndicator(
+                                    color: kThemeColor)));
+                      }
+                      if (snapshot.hasError) {
+                        return Center(child: Text('Error: ${snapshot.error}'));
+                      }
+                      if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return const Center(child: Text('No rooms available'));
+                      }
+
+                      final rooms = snapshot.data!;
+
+                      return Container(
+                        height: 350,
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: rooms.length,
+                          itemBuilder: (context, index) {
+                            final room = rooms[index];
+
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        RoomDetailPage(room: room),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                width: 200,
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 8),
+                                // Horizontal margin for spacing
+                                child: Stack(
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(12),
+                                      // Rounded corners
+                                      child: Image.network(
+                                        room.photo.isNotEmpty
+                                            ? room.photo[0]
+                                            : '',
+                                        width: 200,
+                                        height: 350,
+                                        // Ensure image fits the container height
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    Positioned(
+                                        right: 10,
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                              backgroundColor: kThemeColor),
+                                          child: Text("For Rent"),
+                                          onPressed: () {},
+                                        )),
+                                    Positioned(
+                                      bottom: 0,
+                                      left: 0,
+                                      right: 0,
+                                      child: Container(
+                                        padding: const EdgeInsets.all(12),
+                                        child: Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                room.name.toUpperCase(),
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 20,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 4),
+                                              Row(
+                                                children: [
+                                                  Icon(
+                                                    Icons.location_on_rounded,
+                                                    color: Colors.white,
+                                                  ),
+                                                  Expanded(
+                                                    child: Text(
+                                                      room.locationName,
+                                                      style: const TextStyle(
+                                                          fontSize: 12,
+                                                          color: Colors.white),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  )
+                ],
+              ),
             ),
           ),
         ),

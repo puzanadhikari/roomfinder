@@ -1,86 +1,267 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
-import 'package:panorama/panorama.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:meroapp/Constants/styleConsts.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'model/onSaleModel.dart';
 
 class RoomDetailPage extends StatefulWidget {
   final Room room;
 
-  RoomDetailPage({required this.room});
+  const RoomDetailPage({super.key, required this.room});
 
   @override
   State<RoomDetailPage> createState() => _RoomDetailPageState();
 }
 
 class _RoomDetailPageState extends State<RoomDetailPage> {
+  bool _isBooking = false;
+  final String _mapApiKey = 'AIzaSyCzZwn-q2Dd8s9RX5nIr32ZJSGEVbFbyPI';
+
   @override
   Widget build(BuildContext context) {
-    // Combine panorama image with the other images
     List<String> allImages = widget.room.photo;
+    final double carouselHeight = MediaQuery.of(context).size.height / 3;
+    String mapImageUrl = 'https://maps.googleapis.com/maps/api/staticmap?'
+        'center=${widget.room.lat},${widget.room.lng}&'
+        'zoom=14&size=200x200&markers=color:red%7C${widget.room.lat},${widget.room.lng}&'
+        'key=$_mapApiKey';
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.room.name),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+      body: ModalProgressHUD(
+        inAsyncCall: _isBooking,
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height,
+          child: Stack(
             children: [
-              // Image slider
-              Container(
-                height: 250, // Adjust height as necessary
-                child: PageView.builder(
-                  itemCount: allImages.length,
-                  itemBuilder: (context, index) {
-                    return Image.network(
-                      allImages[index],
-                      fit: BoxFit.cover,
+              SizedBox(
+                height: carouselHeight,
+                child: CarouselSlider(
+                  options: CarouselOptions(
+                    height: carouselHeight,
+                    autoPlay: true,
+                    aspectRatio: 16 / 9,
+                    viewportFraction: 1.0,
+                    enlargeCenterPage: false,
+                    enableInfiniteScroll: true,
+                  ),
+                  items: allImages.map((imageUrl) {
+                    return Builder(
+                      builder: (BuildContext context) {
+                        return Container(
+                          width: double.infinity,
+                          margin: const EdgeInsets.symmetric(horizontal: 0.0),
+                          child: Image.network(
+                            imageUrl,
+                            fit: BoxFit.cover,
+                          ),
+                        );
+                      },
                     );
-                  },
+                  }).toList(),
                 ),
               ),
-              SizedBox(height: 16),
-
-              // Decorated panorama image
-              Container(
-                height: 300, // Adjust height as necessary
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16.0), // Rounded corners
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.2), // Shadow color
-                      spreadRadius: 2, // Spread radius
-                      blurRadius: 10, // Blur radius
-                      offset: Offset(0, 3), // Offset for the shadow
+              Positioned(
+                top: carouselHeight - 30,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(50.0),
                     ),
-                  ],
-                  color: Colors.white, // Background color
-                ),
-                clipBehavior: Clip.hardEdge, // Clip child widgets to the rounded corners
-                child: Panorama(
-                  child: Image.network(
-                    widget.room.panoramaImg, // Use network image for panorama
-                    fit: BoxFit.cover,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: NotificationListener<OverscrollIndicatorNotification>(
+                      onNotification: (overscroll) {
+                        overscroll.disallowIndicator();
+                        return true;
+                      },
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              widget.room.name.toUpperCase(),
+                              style: const TextStyle(
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black54),
+                            ),
+                            const SizedBox(height: 8),
+                            Row(
+                              children: [
+                                Text(
+                                  "Rs. 8000 /",
+                                  style: TextStyle(
+                                      color: kThemeColor,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                const Text(
+                                  "per month",
+                                  style:
+                                      TextStyle(color: Colors.black, fontSize: 16),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 25),
+                            Row(
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      "1.5 km from Gwarko",
+                                      style: TextStyle(
+                                          color: Color(0xFF4D4D4D), fontSize: 16),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      widget.room.locationName,
+                                      style: const TextStyle(
+                                          color: Color(0xFF4D4D4D), fontSize: 16),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(width: 8),
+                                mapImageUrl.isNotEmpty
+                                    ? Image.network(
+                                        mapImageUrl,
+                                        width: 50,
+                                        height: 50,
+                                        fit: BoxFit.cover,
+                                      )
+                                    : Image.network(
+                                        "https://media.licdn.com/dms/image/D5603AQFD6ld3NWc2HQ/profile-displayphoto-shrink_200_200/0/1684164054868?e=2147483647&v=beta&t=cwQoyfhgAl_91URX5FTEXLwLDEHWe1H337EMebpgntQ"),
+                              ],
+                            ),
+                            const SizedBox(height: 25),
+                            const Divider(
+                                color: Colors.black54, height: 2, thickness: 1),
+                            const SizedBox(height: 12),
+                            Row(
+                              children: [
+                                Text(
+                                  '${widget.room.capacity} BHK',
+                                  style: const TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black54),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 12),
+                            const Divider(
+                                color: Colors.black54, height: 2, thickness: 1),
+                            const SizedBox(height: 20),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text(
+                                  "Description",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold, fontSize: 16),
+                                ),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.do_not_disturb_on_total_silence,
+                                      size: 16,
+                                      color: kThemeColor,
+                                    ),
+                                    const Text(
+                                      "Available",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black45),
+                                    )
+                                  ],
+                                )
+                              ],
+                            ),
+                            const SizedBox(height: 18),
+                            Text(widget.room.description),
+                            const SizedBox(height: 30),
+                            const Text(
+                              "Facilities",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 16),
+                            ),
+                            const SizedBox(height: 20),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(Icons.check, color: kThemeColor),
+                                    Text("Attach Bathroom")
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Icon(Icons.check, color: kThemeColor),
+                                    Text("1 Big Hall")
+                                  ],
+                                )
+                              ],
+                            ),
+                            const SizedBox(height: 12),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(Icons.check, color: kThemeColor),
+                                    Text("Bikes and Car Parking")
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Icon(Icons.check, color: kThemeColor),
+                                    Text("24/7 water Facilities")
+                                  ],
+                                )
+                              ],
+                            ),
+                            const SizedBox(height: 20),
+                            SizedBox(
+                              width: double.infinity,
+                              height: 45,
+                              child: ElevatedButton(
+                                onPressed: _bookRoom,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Color(0xFF072A2E),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5.0),
+                                  ),
+                                ),
+                                child: const Text(
+                                  "Book Now",
+                                  style:
+                                      TextStyle(color: Colors.white, fontSize: 18),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),
-
-              SizedBox(height: 16),
-              Text('Description: ${widget.room.description}'),
-              Text('Capacity: ${widget.room.capacity}'),
-              Text('Electricity: ${widget.room.electricity}'),
-              Text('Fohor: ${widget.room.fohor}'),
-              Text('Location: (${widget.room.lat}, ${widget.room.lng})'),
-              Text('Location Name: (${widget.room.locationName}, ${widget.room.locationName})'),
-              ElevatedButton(
-                onPressed: _bookRoom,
-                child: Text('Book Room'),
-              ),
-              // Add more details as necessary
+              Positioned(
+                  right: 40,
+                  top: carouselHeight - 50,
+                  child: CircleAvatar(
+                    backgroundColor: Colors.white,
+                    child: Icon(Icons.bookmark, color: kThemeColor),
+                  ))
             ],
           ),
         ),
@@ -88,12 +269,13 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
     );
   }
 
-
   void _bookRoom() async {
+    setState(() {
+      _isBooking = true;
+    });
+
     try {
       User? user = FirebaseAuth.instance.currentUser;
-
-      // Create a new status object
       Map<String, dynamic> newStatus = {
         'By': user?.displayName,
         'uId': user?.uid,
@@ -101,7 +283,6 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
         'statusDisplay': 'To Buy',
       };
 
-      // Create a room detail object
       Map<String, dynamic> roomDetail = {
         "roomId": widget.room.uid,
         "name": widget.room.name,
@@ -119,7 +300,6 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
         "status": 'To Buy'
       };
 
-      // Update Firestore with new status and room details
       await FirebaseFirestore.instance
           .collection('onSale')
           .doc(widget.room.uid)
@@ -128,24 +308,33 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
           .collection('users')
           .doc(user?.uid)
           .update({
-        'rooms': FieldValue.arrayUnion([roomDetail]), // Add to array
+        'rooms': FieldValue.arrayUnion([roomDetail]),
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Room Requested successfully!')),
+      Fluttertoast.showToast(
+        msg: 'Room Requested successfully!',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
       );
 
       setState(() {
-        widget.room.status = newStatus; // Update the local state
+        _isBooking = false; // Hide the loader
+        widget.room.status = newStatus;
       });
-
     } catch (e) {
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   SnackBar(content: Text('Booking failed: $e')),
-      // );
+      Fluttertoast.showToast(
+        msg: 'Booking failed: $e',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+      );
+
+      setState(() {
+        _isBooking = false;
+      });
     }
   }
-
-
-
 }
