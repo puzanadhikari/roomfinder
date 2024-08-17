@@ -7,7 +7,7 @@ import 'package:meroapp/Constants/styleConsts.dart';
 import 'package:meroapp/dashBoard.dart';
 import 'package:meroapp/profilePage.dart';
 import 'package:meroapp/splashScreen.dart';
-import 'package:meroapp/wishlistPage.dart';
+import 'package:meroapp/wishlist.dart';
 import 'cartPage.dart';
 
 class HomePage extends StatefulWidget {

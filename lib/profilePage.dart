@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:meroapp/Constants/styleConsts.dart';
 import 'package:meroapp/splashScreen.dart';
-import 'package:meroapp/wishlistPage.dart';
+import 'package:meroapp/wishlist.dart';
 
 import 'informationDetail.dart';
 import 'orders.dart';
