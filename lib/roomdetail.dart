@@ -18,7 +18,7 @@ class RoomDetailPage extends StatefulWidget {
 
 class _RoomDetailPageState extends State<RoomDetailPage> {
   bool _isBooking = false;
-  final String _mapApiKey = 'AIzaSyCzZwn-q2Dd8s9RX5nIr32ZJSGEVbFbyPI';
+  final String _mapApiKey = 'AIzaSyAGFdLuw0m2pCFxNxmFA5EzJia6IzUM3iU';
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +26,7 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
     final double carouselHeight = MediaQuery.of(context).size.height / 3;
     String mapImageUrl = 'https://maps.googleapis.com/maps/api/staticmap?'
         'center=${widget.room.lat},${widget.room.lng}&'
-        'zoom=14&size=200x200&markers=color:red%7C${widget.room.lat},${widget.room.lng}&'
+        'zoom=15&size=800x300&markers=color:red%7C${widget.room.lat},${widget.room.lng}&'
         'key=$_mapApiKey';
 
     return Scaffold(
@@ -64,6 +64,15 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                 ),
               ),
               Positioned(
+                top: 50,
+                  left: 10,
+                  child: IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: Icon(Icons.arrow_back_ios,color: Colors.white,size: 30,),
+              )),
+              Positioned(
                 top: carouselHeight - 30,
                 left: 0,
                 right: 0,
@@ -77,7 +86,8 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(20.0),
-                    child: NotificationListener<OverscrollIndicatorNotification>(
+                    child:
+                        NotificationListener<OverscrollIndicatorNotification>(
                       onNotification: (overscroll) {
                         overscroll.disallowIndicator();
                         return true;
@@ -105,40 +115,44 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                                 ),
                                 const Text(
                                   "per month",
-                                  style:
-                                      TextStyle(color: Colors.black, fontSize: 16),
+                                  style: TextStyle(
+                                      color: Colors.black, fontSize: 16),
                                 ),
                               ],
                             ),
                             const SizedBox(height: 25),
                             Row(
                               children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text(
-                                      "1.5 km from Gwarko",
-                                      style: TextStyle(
-                                          color: Color(0xFF4D4D4D), fontSize: 16),
-                                    ),
-                                    const SizedBox(height: 8),
-                                    Text(
-                                      widget.room.locationName,
-                                      style: const TextStyle(
-                                          color: Color(0xFF4D4D4D), fontSize: 16),
-                                    ),
-                                  ],
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      const Text(
+                                        "1.5 km from Gwarko",
+                                        style: TextStyle(color: Color(0xFF4D4D4D), fontSize: 16),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        widget.room.locationName,
+                                        style: const TextStyle(color: Color(0xFF4D4D4D), fontSize: 16),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                                 const SizedBox(width: 8),
-                                mapImageUrl.isNotEmpty
-                                    ? Image.network(
-                                        mapImageUrl,
-                                        width: 50,
-                                        height: 50,
-                                        fit: BoxFit.cover,
-                                      )
-                                    : Image.network(
-                                        "https://media.licdn.com/dms/image/D5603AQFD6ld3NWc2HQ/profile-displayphoto-shrink_200_200/0/1684164054868?e=2147483647&v=beta&t=cwQoyfhgAl_91URX5FTEXLwLDEHWe1H337EMebpgntQ"),
+                                ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                    maxWidth: MediaQuery.of(context).size.width * 0.4, // Adjust as needed
+                                  ),
+                                  child: mapImageUrl.isNotEmpty
+                                      ? Image.network(
+                                    mapImageUrl,
+                                    height: 120,
+                                    fit: BoxFit.cover,
+                                  )
+                                      : Image.network(
+                                      "https://media.licdn.com/dms/image/D5603AQFD6ld3NWc2HQ/profile-displayphoto-shrink_200_200/0/1684164054868?e=2147483647&v=beta&t=cwQoyfhgAl_91URX5FTEXLwLDEHWe1H337EMebpgntQ"),
+                                ),
                               ],
                             ),
                             const SizedBox(height: 25),
@@ -166,7 +180,8 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                                 const Text(
                                   "Description",
                                   style: TextStyle(
-                                      fontWeight: FontWeight.bold, fontSize: 16),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16),
                                 ),
                                 Row(
                                   children: [
@@ -243,8 +258,8 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                                 ),
                                 child: const Text(
                                   "Book Now",
-                                  style:
-                                      TextStyle(color: Colors.white, fontSize: 18),
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 18),
                                 ),
                               ),
                             ),
@@ -320,7 +335,7 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
       );
 
       setState(() {
-        _isBooking = false; // Hide the loader
+        _isBooking = false;
         widget.room.status = newStatus;
       });
     } catch (e) {
