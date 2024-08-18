@@ -8,7 +8,7 @@ import 'package:meroapp/dashBoard.dart';
 import 'package:meroapp/profilePage.dart';
 import 'package:meroapp/splashScreen.dart';
 import 'package:meroapp/wishlist.dart';
-import 'cartPage.dart';
+import 'listing_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -48,7 +48,7 @@ class _HomePageState extends State<HomePage> {
     return [
       if (_latitude != null && _longitude != null)
         DashBoard(_latitude!, _longitude!),
-      const CartPage(),
+      const Listing(),
       const WishlistPage(),
       const ProfilePage(),
     ];
@@ -80,8 +80,8 @@ class _HomePageState extends State<HomePage> {
               label: 'Home',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.search_outlined,weight: 20),
-              label: 'Search',
+              icon: Icon(Icons.list_alt_outlined,weight: 20),
+              label: 'Listing',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.favorite_border),

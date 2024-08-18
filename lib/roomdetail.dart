@@ -70,7 +70,7 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                icon: Icon(Icons.arrow_back_ios,color: Colors.white,size: 30,),
+                icon: const Icon(Icons.arrow_back_ios,color: Colors.white,size: 30,),
               )),
               Positioned(
                 top: carouselHeight - 30,
@@ -215,13 +215,13 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                                 Row(
                                   children: [
                                     Icon(Icons.check, color: kThemeColor),
-                                    Text("Attach Bathroom")
+                                    const Text("Attach Bathroom")
                                   ],
                                 ),
                                 Row(
                                   children: [
                                     Icon(Icons.check, color: kThemeColor),
-                                    Text("1 Big Hall")
+                                    const Text("1 Big Hall")
                                   ],
                                 )
                               ],
@@ -233,13 +233,13 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                                 Row(
                                   children: [
                                     Icon(Icons.check, color: kThemeColor),
-                                    Text("Bikes and Car Parking")
+                                    const Text("Bikes and Car Parking")
                                   ],
                                 ),
                                 Row(
                                   children: [
                                     Icon(Icons.check, color: kThemeColor),
-                                    Text("24/7 water Facilities")
+                                    const Text("24/7 water Facilities")
                                   ],
                                 )
                               ],
@@ -251,7 +251,7 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                               child: ElevatedButton(
                                 onPressed: _bookRoom,
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: Color(0xFF072A2E),
+                                  backgroundColor: const Color(0xFF072A2E),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(5.0),
                                   ),

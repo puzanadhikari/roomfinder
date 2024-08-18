@@ -4,8 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import 'model/onSaleModel.dart';
-
 class Room {
   final String uid;
   final String name;
@@ -84,7 +82,7 @@ Future<Map<String, dynamic>?> fetchUserData() async {
       return null; // Document does not exist
     }
   } catch (e) {
-    print("Error fetching user data: $e");
+    log("Error fetching user data: $e");
     return null; // Handle the error as needed
   }
 }
@@ -117,7 +115,7 @@ class _OrderPageState extends State<OrderPage> {
         return null; // Document does not exist
       }
     } catch (e) {
-      print("Error fetching user data: $e");
+      log("Error fetching user data: $e");
       return null; // Handle the error as needed
     }
   }
@@ -135,7 +133,7 @@ class _OrderPageState extends State<OrderPage> {
         return {'status': 'Unknown'}; // Handle case where room does not exist
       }
     } catch (e) {
-      print("Error fetching room status: $e");
+      log("Error fetching room status: $e");
       return {'status': 'Error'}; // Handle the error as needed
     }
   }
@@ -143,16 +141,16 @@ class _OrderPageState extends State<OrderPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Orders")),
+      appBar: AppBar(title: const Text("Orders")),
       body: FutureBuilder(
         future: fetchUserData(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!['rooms'].isEmpty) {
-            return Center(child: Text('No rooms found.'));
+            return const Center(child: Text('No rooms found.'));
           }
 
           final rooms = snapshot.data!['rooms'];
@@ -168,20 +166,20 @@ class _OrderPageState extends State<OrderPage> {
                 future: fetchRoomStatus(roomId),
                 builder: (context, roomSnapshot) {
                   if (roomSnapshot.connectionState == ConnectionState.waiting) {
-                    return Card(
+                    return const Card(
                       elevation: 4,
                       margin: EdgeInsets.all(8.0),
                       child: Padding(
-                        padding: const EdgeInsets.all(16.0),
+                        padding: EdgeInsets.all(16.0),
                         child: Center(child: CircularProgressIndicator()),
                       ),
                     );
                   } else if (roomSnapshot.hasError) {
-                    return Card(
+                    return const Card(
                       elevation: 4,
                       margin: EdgeInsets.all(8.0),
                       child: Padding(
-                        padding: const EdgeInsets.all(16.0),
+                        padding: EdgeInsets.all(16.0),
                         child: Center(child: Text('Error fetching status')),
                       ),
                     );
@@ -193,7 +191,7 @@ class _OrderPageState extends State<OrderPage> {
 
                   return Card(
                     elevation: 4,
-                    margin: EdgeInsets.all(8.0),
+                    margin: const EdgeInsets.all(8.0),
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
@@ -205,30 +203,30 @@ class _OrderPageState extends State<OrderPage> {
                             width: double.infinity,
                             fit: BoxFit.cover,
                           ),
-                          SizedBox(height: 8.0),
+                          const SizedBox(height: 8.0),
                           Text(
                             room['name'] ?? '',
-                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                           ),
-                          SizedBox(height: 4.0),
+                          const SizedBox(height: 4.0),
                           Text(
                             room['locationName'] ?? '',
-                            style: TextStyle(fontSize: 16),
+                            style: const TextStyle(fontSize: 16),
                           ),
-                          SizedBox(height: 4.0),
+                          const SizedBox(height: 4.0),
                           Text(
                             'Email: $userEmail',
-                            style: TextStyle(fontSize: 14, color: Colors.grey),
+                            style: const TextStyle(fontSize: 14, color: Colors.grey),
                           ),
-                          SizedBox(height: 4.0),
+                          const SizedBox(height: 4.0),
                           Text(
                             'Status: ${roomStatus['status']['statusDisplay'] ?? 'Unknown'}',
-                            style: TextStyle(fontSize: 14),
+                            style: const TextStyle(fontSize: 14),
                           ),
-                          SizedBox(height: 8.0),
+                          const SizedBox(height: 8.0),
                           Text(
                             room['description'] ?? '',
-                            style: TextStyle(fontSize: 14),
+                            style: const TextStyle(fontSize: 14),
                           ),
                         ],
                       ),
