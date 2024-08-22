@@ -15,6 +15,8 @@ class Room {
   final bool featured;
   final String locationName;
   late final Map<String, dynamic> status;
+  bool? isFavorite;
+
 
   Room({
     required this.uid,
@@ -33,5 +35,20 @@ class Room {
     required this.featured,
     required this.locationName,
     required this.status,
+    this.isFavorite = false,
   });
+
+  void toggleFavorite() {
+    isFavorite = !isFavorite!;
+  }
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is Room &&
+        other.uid == uid;
+  }
+
+  @override
+  int get hashCode => uid.hashCode;
 }

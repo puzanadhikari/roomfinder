@@ -1,10 +1,14 @@
+import 'dart:developer';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:meroapp/Constants/styleConsts.dart';
+import 'package:meroapp/provider/wishlistProvider.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:provider/provider.dart';
 import 'model/onSaleModel.dart';
 
 class RoomDetailPage extends StatefulWidget {
@@ -20,20 +24,30 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
   bool _isBooking = false;
   final String _mapApiKey = 'AIzaSyAGFdLuw0m2pCFxNxmFA5EzJia6IzUM3iU';
 
+
   @override
   Widget build(BuildContext context) {
+    final wishlistProvider = Provider.of<WishlistProvider>(context);
+    log(wishlistProvider.isInWishlist(widget.room).toString());
     List<String> allImages = widget.room.photo;
-    final double carouselHeight = MediaQuery.of(context).size.height / 3;
+    final double carouselHeight = MediaQuery
+        .of(context)
+        .size
+        .height / 3;
     String mapImageUrl = 'https://maps.googleapis.com/maps/api/staticmap?'
         'center=${widget.room.lat},${widget.room.lng}&'
-        'zoom=15&size=800x300&markers=color:red%7C${widget.room.lat},${widget.room.lng}&'
+        'zoom=15&size=800x300&markers=color:red%7C${widget.room.lat},${widget
+        .room.lng}&'
         'key=$_mapApiKey';
 
     return Scaffold(
       body: ModalProgressHUD(
         inAsyncCall: _isBooking,
         child: SizedBox(
-          height: MediaQuery.of(context).size.height,
+          height: MediaQuery
+              .of(context)
+              .size
+              .height,
           child: Stack(
             children: [
               SizedBox(
@@ -64,14 +78,15 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                 ),
               ),
               Positioned(
-                top: 50,
+                  top: 50,
                   left: 10,
                   child: IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: const Icon(Icons.arrow_back_ios,color: Colors.white,size: 30,),
-              )),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: const Icon(
+                      Icons.arrow_back_ios, color: Colors.white, size: 30,),
+                  )),
               Positioned(
                 top: carouselHeight - 30,
                 left: 0,
@@ -87,7 +102,7 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                   child: Padding(
                     padding: const EdgeInsets.all(20.0),
                     child:
-                        NotificationListener<OverscrollIndicatorNotification>(
+                    NotificationListener<OverscrollIndicatorNotification>(
                       onNotification: (overscroll) {
                         overscroll.disallowIndicator();
                         return true;
@@ -125,16 +140,21 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                               children: [
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment
+                                        .start,
                                     children: [
                                       const Text(
                                         "1.5 km from Gwarko",
-                                        style: TextStyle(color: Color(0xFF4D4D4D), fontSize: 16),
+                                        style: TextStyle(
+                                            color: Color(0xFF4D4D4D),
+                                            fontSize: 16),
                                       ),
                                       const SizedBox(height: 8),
                                       Text(
                                         widget.room.locationName,
-                                        style: const TextStyle(color: Color(0xFF4D4D4D), fontSize: 16),
+                                        style: const TextStyle(
+                                            color: Color(0xFF4D4D4D),
+                                            fontSize: 16),
                                       ),
                                     ],
                                   ),
@@ -142,7 +162,10 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                                 const SizedBox(width: 8),
                                 ConstrainedBox(
                                   constraints: BoxConstraints(
-                                    maxWidth: MediaQuery.of(context).size.width * 0.4, // Adjust as needed
+                                    maxWidth: MediaQuery
+                                        .of(context)
+                                        .size
+                                        .width * 0.4, // Adjust as needed
                                   ),
                                   child: mapImageUrl.isNotEmpty
                                       ? Image.network(
@@ -273,9 +296,19 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
               Positioned(
                   right: 40,
                   top: carouselHeight - 50,
-                  child: CircleAvatar(
-                    backgroundColor: Colors.white,
-                    child: Icon(Icons.bookmark, color: kThemeColor),
+                  child: GestureDetector(
+                    onTap: () {
+                      wishlistProvider.isInWishlist(widget.room) == true ?
+                      wishlistProvider.removeFromWishlist(widget.room)
+                      : wishlistProvider.addToWishlist(widget.room);
+                      },
+                    child: CircleAvatar(
+                      backgroundColor: Colors.white,
+                      child: Icon(Icons.bookmark,
+                          color: wishlistProvider.isInWishlist(widget.room)
+                              ? Colors.red
+                              : kThemeColor),
+                    ),
                   ))
             ],
           ),
