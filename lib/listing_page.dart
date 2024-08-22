@@ -112,7 +112,14 @@ class _ListingState extends State<Listing> {
         return true;
       },
       child: Scaffold(
-        appBar: AppBar(title: Text(pageProvider.choice),),
+        appBar: AppBar(
+          elevation: 0,
+          centerTitle: true,
+          backgroundColor: Colors.grey.shade200,
+          title: Text(pageProvider.choice,
+              style: TextStyle(
+                  color: kThemeColor, fontWeight: FontWeight.bold, fontSize: 25)),
+        ),
           body: pageProvider.choice=="From Main" ?
               SingleChildScrollView(
                 child: Column(

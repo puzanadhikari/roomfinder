@@ -439,85 +439,87 @@ class _DashBoardState extends State<DashBoard> {
                                               fit: BoxFit.cover,
                                             ),
                                           ),
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.all(16.0),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Text(
-                                                  product.name.toUpperCase(),
-                                                  style: TextStyle(
-                                                    color: kThemeColor,
-                                                    fontWeight:
-                                                        FontWeight.bold,
-                                                    fontSize: 18,
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 8),
-                                                Text(
-                                                  product.locationName,
-                                                  style: TextStyle(
-                                                    color:
-                                                        Colors.grey.shade700,
-                                                    fontSize: 14,
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 8),
-                                                Text(
-                                                  "Rs. 8000/ per month",
-                                                  style: TextStyle(
-                                                    color: kThemeColor,
-                                                    fontSize: 14,
-                                                    fontWeight:
-                                                        FontWeight.w600,
-                                                  ),
-                                                ),
-                                                SizedBox(height: 20),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Row(
-                                                      children: [
-                                                        Icon(
-                                                          Icons
-                                                              .location_on_rounded,
-                                                          size: 16,
-                                                          color: kThemeColor,
-                                                        ),
-                                                        Text(
-                                                          "${(displayedProducts[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
-                                                          style: TextStyle(
-                                                              color: Colors
-                                                                  .black45),
-                                                        )
-                                                      ],
+                                          Expanded(
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(16.0),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    product.name.toUpperCase(),
+                                                    style: TextStyle(
+                                                      color: kThemeColor,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 18,
                                                     ),
-                                                    Row(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                      children: [
-                                                        Icon(
-                                                          Icons
-                                                              .do_not_disturb_on_total_silence,
-                                                          size: 16,
-                                                          color: kThemeColor,
-                                                        ),
-                                                        Text(
-                                                          "Available",
-                                                          style: TextStyle(
-                                                              color: Colors
-                                                                  .black45),
-                                                        )
-                                                      ],
-                                                    )
-                                                  ],
-                                                )
-                                              ],
+                                                  ),
+                                                  const SizedBox(height: 8),
+                                                  Text(
+                                                    product.locationName,
+                                                    style: TextStyle(
+                                                      color:
+                                                          Colors.grey.shade700,
+                                                      fontSize: 14,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 8),
+                                                  Text(
+                                                    "Rs. 8000/ per month",
+                                                    style: TextStyle(
+                                                      color: kThemeColor,
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 20),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Row(
+                                                        children: [
+                                                          Icon(
+                                                            Icons
+                                                                .location_on_rounded,
+                                                            size: 16,
+                                                            color: kThemeColor,
+                                                          ),
+                                                          Text(
+                                                            "${(displayedProducts[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .black45),
+                                                          )
+                                                        ],
+                                                      ),
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        children: [
+                                                          Icon(
+                                                            Icons
+                                                                .do_not_disturb_on_total_silence,
+                                                            size: 16,
+                                                            color: kThemeColor,
+                                                          ),
+                                                          Text(
+                                                            "Available",
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .black45),
+                                                          )
+                                                        ],
+                                                      )
+                                                    ],
+                                                  )
+                                                ],
+                                              ),
                                             ),
                                           ),
                                         ],
@@ -550,16 +552,56 @@ class _DashBoardState extends State<DashBoard> {
                     },
                   ),
                   SizedBox(height: 10),
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      "Suggested Near You",
-                      style: TextStyle(
-                        color: Color(0xFF072A2E),
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Suggested Near You",
+                        style: TextStyle(
+                          color: Color(0xFF072A2E),
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
+                      FutureBuilder<List<Room>>(
+                        future: fetchRooms(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return Text(
+                              "Loading...",
+                              style: TextStyle(
+                                color: Color(0xFF072A2E),
+                                fontSize: 14,
+                              ),
+                            );
+                          } else if (snapshot.hasError) {
+                            return Text(
+                              "Error",
+                              style: TextStyle(
+                                color: Color(0xFF072A2E),
+                                fontSize: 14,
+                              ),
+                            );
+                          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                            return Text(
+                              "0 items",
+                              style: TextStyle(
+                                color: Color(0xFF072A2E),
+                                fontSize: 14,
+                              ),
+                            );
+                          }
+                          final itemCount = snapshot.data!.length;
+                          return Text(
+                            "$itemCount items",
+                            style: TextStyle(
+                              color: Color(0xFF072A2E),
+                              fontSize: 14,
+                            ),
+                          );
+                        },
+                      ),
+                    ],
                   ),
                   FutureBuilder<List<Room>>(
                     future: fetchRooms(),
@@ -643,76 +685,78 @@ class _DashBoardState extends State<DashBoard> {
                                               fit: BoxFit.cover,
                                             ),
                                           ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(16.0),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Text(
-                                                  room.name.toUpperCase(),
-                                                  style: TextStyle(
-                                                    color: kThemeColor,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 18,
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 8),
-                                                Text(
-                                                  room.locationName,
-                                                  style: TextStyle(
-                                                    color: Colors.grey.shade700,
-                                                    fontSize: 14,
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 8),
-                                                Text(
-                                                  "Capacity: ${room.capacity}",
-                                                  style: TextStyle(
-                                                    color: kThemeColor,
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.w600,
-                                                  ),
-                                                ),
-                                                SizedBox(height: 20),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Row(
-                                                      children: [
-                                                        Icon(
-                                                            Icons
-                                                                .location_on_rounded,
-                                                            size: 16,
-                                                            color: kThemeColor),
-                                                        Text(
-                                                          "${(sortedRooms[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
-                                                          style: TextStyle(
-                                                              color: Colors
-                                                                  .black45),
-                                                        ),
-                                                      ],
+                                          Expanded(
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(16.0),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    room.name.toUpperCase(),
+                                                    style: TextStyle(
+                                                      color: kThemeColor,
+                                                      fontWeight: FontWeight.bold,
+                                                      fontSize: 18,
                                                     ),
-                                                    Row(
-                                                      children: [
-                                                        Icon(Icons.check_circle,
-                                                            size: 16,
-                                                            color: kThemeColor),
-                                                        Text(
-                                                          "Available",
-                                                          style: TextStyle(
-                                                              color: Colors
-                                                                  .black45),
-                                                        )
-                                                      ],
+                                                  ),
+                                                  const SizedBox(height: 8),
+                                                  Text(
+                                                    room.locationName,
+                                                    style: TextStyle(
+                                                      color: Colors.grey.shade700,
+                                                      fontSize: 14,
                                                     ),
-                                                  ],
-                                                ),
-                                              ],
+                                                  ),
+                                                  const SizedBox(height: 8),
+                                                  Text(
+                                                    "Capacity: ${room.capacity}",
+                                                    style: TextStyle(
+                                                      color: kThemeColor,
+                                                      fontSize: 14,
+                                                      fontWeight: FontWeight.w600,
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 20),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Row(
+                                                        children: [
+                                                          Icon(
+                                                              Icons
+                                                                  .location_on_rounded,
+                                                              size: 16,
+                                                              color: kThemeColor),
+                                                          Text(
+                                                            "${(sortedRooms[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .black45),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      Row(
+                                                        children: [
+                                                          Icon(Icons.check_circle,
+                                                              size: 16,
+                                                              color: kThemeColor),
+                                                          Text(
+                                                            "Available",
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .black45),
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ),
                                         ],
@@ -727,7 +771,6 @@ class _DashBoardState extends State<DashBoard> {
                             TextButton(
                               onPressed: () {
                                 setState(() {
-                                  // showAllNearYou = true;
                                   pageProvider.setPage(1);
                                   pageProvider.setChoice("Suggested");
                                 });
@@ -799,7 +842,6 @@ class _DashBoardState extends State<DashBoard> {
                                 width: 200,
                                 margin:
                                     const EdgeInsets.symmetric(horizontal: 8),
-                                // Horizontal margin for spacing
                                 child: Stack(
                                   children: [
                                     ClipRRect(
@@ -848,11 +890,13 @@ class _DashBoardState extends State<DashBoard> {
                                                   Icons.location_on_rounded,
                                                   color: Colors.white,
                                                 ),
-                                                Text(
-                                                  room.locationName,
-                                                  style: const TextStyle(
-                                                      fontSize: 12,
-                                                      color: Colors.white),
+                                                Expanded(
+                                                  child: Text(
+                                                    room.locationName,
+                                                    style: const TextStyle(
+                                                        fontSize: 12,
+                                                        color: Colors.white),
+                                                  ),
                                                 ),
                                               ],
                                             ),
