@@ -16,12 +16,27 @@ class _InformationDetailsState extends State<InformationDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Details", style: TextStyle(fontSize: 24)),
+        elevation: 0,
         centerTitle: true,
-        backgroundColor: kThemeColor,
+        backgroundColor: Colors.grey.shade200,
+        iconTheme: IconThemeData(
+          color: kThemeColor,
+        ),
+        title: Text(
+          "Details",
+          style: TextStyle(
+            color: kThemeColor,
+            fontWeight: FontWeight.bold,
+            fontSize: 25,
+          ),
+        ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
+      body: NotificationListener<OverscrollIndicatorNotification>(
+        onNotification: (overscroll) {
+          overscroll.disallowIndicator();
+          return true;
+        },
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(12.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -30,7 +45,7 @@ class _InformationDetailsState extends State<InformationDetails> {
                 child: Text(
                   "Personal Information",
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 22,
                     fontWeight: FontWeight.bold,
                     color: Colors.black87,
                   ),
@@ -41,12 +56,14 @@ class _InformationDetailsState extends State<InformationDetails> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0),
                 ),
-                elevation: 6.0,
+                elevation: 8.0,
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15.0),
                     gradient: LinearGradient(
                       colors: [Colors.white, Colors.grey.shade200],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
                   ),
                   padding: const EdgeInsets.all(20.0),
@@ -65,54 +82,57 @@ class _InformationDetailsState extends State<InformationDetails> {
                             'Name:',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: 16,
+                              fontSize: 18,
                               color: Colors.black87,
                             ),
                           ),
                           subtitle: Text(
                             user?.displayName ?? 'Name not saved yet',
                             style: TextStyle(
-                              color: Colors.grey.shade600,
+                              color: Colors.grey.shade700,
                             ),
                           ),
-                          trailing: Icon(Icons.edit, color: kThemeColor),
+                          trailing:
+                              Icon(Icons.edit, color: kThemeColor, size: 22),
                         ),
                       ),
-                      Divider(),
+                      Divider(height: 1, color: Colors.grey.shade300),
                       ListTile(
                         title: Text(
                           'Email:',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                            fontSize: 18,
                             color: Colors.black87,
                           ),
                         ),
                         subtitle: Text(
                           user?.email ?? 'Email not received yet',
                           style: TextStyle(
-                            color: Colors.grey.shade600,
+                            color: Colors.grey.shade700,
                           ),
                         ),
-                        trailing: Icon(Icons.email, color: kThemeColor),
+                        trailing:
+                            Icon(Icons.email, color: kThemeColor, size: 22),
                       ),
-                      Divider(),
+                      Divider(height: 1, color: Colors.grey.shade300),
                       ListTile(
                         title: Text(
                           'Phone:',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                            fontSize: 18,
                             color: Colors.black87,
                           ),
                         ),
                         subtitle: Text(
-                          user?.phoneNumber ?? '9841100460',
+                          user?.phoneNumber ?? 'Phone number not available',
                           style: TextStyle(
-                            color: Colors.grey.shade600,
+                            color: Colors.grey.shade700,
                           ),
                         ),
-                        trailing: Icon(Icons.phone, color: kThemeColor),
+                        trailing:
+                            Icon(Icons.phone, color: kThemeColor, size: 22),
                       ),
                     ],
                   ),
@@ -127,6 +147,8 @@ class _InformationDetailsState extends State<InformationDetails> {
 }
 
 class ChangeNameDialog extends StatefulWidget {
+  const ChangeNameDialog({super.key});
+
   @override
   _ChangeNameDialogState createState() => _ChangeNameDialogState();
 }
@@ -153,14 +175,16 @@ class _ChangeNameDialogState extends State<ChangeNameDialog> {
   Widget build(BuildContext context) {
     return Dialog(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
+        borderRadius: BorderRadius.circular(12.0),
       ),
       child: Container(
         padding: EdgeInsets.all(16.0),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10.0),
+          borderRadius: BorderRadius.circular(12.0),
           gradient: LinearGradient(
             colors: [Colors.white, Colors.grey.shade200],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
         ),
         child: Column(
@@ -170,44 +194,17 @@ class _ChangeNameDialogState extends State<ChangeNameDialog> {
             Text(
               'Change Name',
               style: TextStyle(
-                fontSize: 20.0,
+                fontSize: 22.0,
                 fontWeight: FontWeight.bold,
                 color: kThemeColor,
               ),
             ),
             SizedBox(height: 20.0),
-            TextField(
-              controller: _firstNameController,
-              decoration: InputDecoration(
-                labelText: 'First Name',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                prefixIcon: Icon(Icons.person),
-              ),
-            ),
-            SizedBox(height: 10.0),
-            TextField(
-              controller: _middleNameController,
-              decoration: InputDecoration(
-                labelText: 'Middle Name',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                prefixIcon: Icon(Icons.person),
-              ),
-            ),
-            SizedBox(height: 10.0),
-            TextField(
-              controller: _lastNameController,
-              decoration: InputDecoration(
-                labelText: 'Last Name',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                prefixIcon: Icon(Icons.person),
-              ),
-            ),
+            _buildTextField(_firstNameController, 'First Name'),
+            SizedBox(height: 12.0),
+            _buildTextField(_middleNameController, 'Middle Name'),
+            SizedBox(height: 12.0),
+            _buildTextField(_lastNameController, 'Last Name'),
             SizedBox(height: 20.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -221,16 +218,17 @@ class _ChangeNameDialogState extends State<ChangeNameDialog> {
                     style: TextStyle(color: Colors.grey.shade600),
                   ),
                 ),
-                SizedBox(width: 10.0),
+                SizedBox(width: 12.0),
                 ElevatedButton(
                   onPressed: () {
                     Navigator.of(context).pop();
+                    // Add logic to save the new name
                   },
                   child: Text('Save'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: kThemeColor,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
+                      borderRadius: BorderRadius.circular(12.0),
                     ),
                   ),
                 ),
@@ -238,6 +236,19 @@ class _ChangeNameDialogState extends State<ChangeNameDialog> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildTextField(TextEditingController controller, String label) {
+    return TextField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: label,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        prefixIcon: Icon(Icons.person, color: kThemeColor),
       ),
     );
   }
