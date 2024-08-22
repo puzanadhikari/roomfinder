@@ -6,8 +6,10 @@ import 'package:location/location.dart';
 import 'package:meroapp/Constants/styleConsts.dart';
 import 'package:meroapp/dashBoard.dart';
 import 'package:meroapp/profilePage.dart';
+import 'package:meroapp/provider/pageProvider.dart';
 import 'package:meroapp/splashScreen.dart';
 import 'package:meroapp/wishlist.dart';
+import 'package:provider/provider.dart';
 import 'listing_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -18,8 +20,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _page = 0;
-  double? _latitude, _longitude;
+
+  double _latitude = 0.0;
+  double _longitude=0.0;
   String? _locationName;
 
   Future<void> _getLocation() async {
@@ -29,8 +32,8 @@ class _HomePageState extends State<HomePage> {
     try {
       currentLocation = await location.getLocation();
       setState(() {
-        _latitude = currentLocation!.latitude;
-        _longitude = currentLocation.longitude;
+        _latitude = currentLocation!.latitude!;
+        _longitude = currentLocation.longitude!;
         _locationName = "Current Location";
       });
     } catch (e) {
@@ -48,7 +51,7 @@ class _HomePageState extends State<HomePage> {
     return [
       if (_latitude != null && _longitude != null)
         DashBoard(_latitude!, _longitude!),
-      const Listing(),
+       Listing(_latitude!, _longitude!),
       const WishlistPage(),
       const ProfilePage(),
     ];
@@ -56,14 +59,18 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final pageProvider = Provider.of<PageProvider>(context);
     return WillPopScope(
       onWillPop: _onBackPressed,
       child: Scaffold(
         bottomNavigationBar: BottomNavigationBar(
-          currentIndex: _page,
+          currentIndex: pageProvider.page,
           onTap: (index) {
             setState(() {
-              _page = index;
+              if(index==1){
+                pageProvider.setChoice("From Main");
+              }
+              pageProvider.setPage(index);
             });
           },
           selectedItemColor: kThemeColor,
@@ -98,12 +105,11 @@ class _HomePageState extends State<HomePage> {
           transitionBuilder: (Widget child, Animation<double> animation) {
             return FadeTransition(opacity: animation, child: child);
           },
-          child: _buildPages()[_page],
+          child: _buildPages()[pageProvider.page],
         ),
       ),
     );
   }
-
   Future<bool> _onBackPressed() async {
     return await showDialog(
       context: context,

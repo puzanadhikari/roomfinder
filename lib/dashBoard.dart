@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:meroapp/Constants/styleConsts.dart';
+import 'package:meroapp/provider/pageProvider.dart';
 import 'package:meroapp/roomdetail.dart';
+import 'package:provider/provider.dart';
 import 'calculation.dart';
 import 'model/onSaleModel.dart';
 
@@ -143,6 +145,7 @@ class _DashBoardState extends State<DashBoard> {
 
   @override
   Widget build(BuildContext context) {
+    final pageProvider = Provider.of<PageProvider>(context);
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -489,7 +492,9 @@ class _DashBoardState extends State<DashBoard> {
                             TextButton(
                               onPressed: () {
                                 setState(() {
-                                  showAllMostSearch = true;
+                                  // showAllMostSearch = true;
+                                  pageProvider.setPage(1);
+                                  pageProvider.setChoice("From homepage");
                                 });
                               },
                               child: Text(
@@ -685,7 +690,9 @@ class _DashBoardState extends State<DashBoard> {
                             TextButton(
                               onPressed: () {
                                 setState(() {
-                                  showAllNearYou = true;
+                                  // showAllNearYou = true;
+                                  pageProvider.setPage(1);
+                                  pageProvider.setChoice("Suggested");
                                 });
                               },
                               child: Text(

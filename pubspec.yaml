@@ -52,6 +52,7 @@ dependencies:
   persistent_bottom_nav_bar_v2: ^4.0.2
   khalti_flutter:
   firebase_storage:
+  provider:
 
   flutter:
     sdk: flutter

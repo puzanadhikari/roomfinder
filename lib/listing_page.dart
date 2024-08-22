@@ -1,16 +1,785 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:meroapp/provider/pageProvider.dart';
+import 'package:meroapp/roomdetail.dart';
+import 'package:provider/provider.dart';
+
+import 'Constants/styleConsts.dart';
+import 'calculation.dart';
+import 'model/onSaleModel.dart';
+
+
+
 class Listing extends StatefulWidget {
-  const Listing({super.key});
+  double lat, lng;
+
+  Listing(this.lat, this.lng, {super.key});
 
   @override
   State<Listing> createState() => _ListingState();
 }
 
 class _ListingState extends State<Listing> {
+  String searchQuery = '';
+  List<Room> sortedRoomsByDistance(
+      List<Room> rooms, double userLat, double userLng) {
+    rooms.sort((a, b) {
+      double distanceA = haversineDistance(userLat, userLng, a.lat, a.lng);
+      double distanceB = haversineDistance(userLat, userLng, b.lat, b.lng);
+      return distanceA.compareTo(distanceB);
+    });
+    return rooms;
+  }
+  Future<List<Room>> fetchMostSearchedProducts() async {
+    final QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('searchHistory')
+        .orderBy('count', descending: true)
+        .limit(10)
+        .get();
+
+    List<Room> mostSearchedProducts = [];
+
+    for (var doc in snapshot.docs) {
+      final data = doc.data() as Map<String, dynamic>;
+      final productId = data['productId'];
+
+      final productSnapshot = await FirebaseFirestore.instance
+          .collection('onSale')
+          .doc(productId)
+          .get();
+      if (productSnapshot.exists) {
+        final productData = productSnapshot.data() as Map<String, dynamic>;
+        mostSearchedProducts.add(Room(
+          uid: productSnapshot.id,
+          name: productData['name'],
+          capacity: productData['capacity'],
+          description: productData['description'],
+          length: productData['length'],
+          breadth: productData['breadth'],
+          photo: List<String>.from(productData['photo']),
+          panoramaImg: productData['panoramaImg'],
+          electricity: productData['electricity'],
+          fohor: productData['fohor'],
+          lat: productData['lat'],
+          lng: productData['lng'],
+          active: productData['active'],
+          featured: productData['featured'],
+          locationName: productData["locationName"],
+          status: data['status'] != null
+              ? Map<String, dynamic>.from(data['status'])
+              : {},
+        ));
+      }
+    }
+    return mostSearchedProducts;
+  }
+  Future<List<Room>> fetchRooms() async {
+    final QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('onSale')
+        .where('active', isEqualTo: true)
+        .get();
+
+    return snapshot.docs.map((doc) {
+      final data = doc.data() as Map<String, dynamic>;
+      return Room(
+        uid: doc.id,
+        name: data['name'],
+        capacity: data['capacity'],
+        description: data['description'],
+        length: data['length'],
+        breadth: data['breadth'],
+        photo: List<String>.from(data['photo']),
+        panoramaImg: data['panoramaImg'],
+        electricity: data['electricity'],
+        fohor: data['fohor'],
+        lat: data['lat'],
+        lng: data['lng'],
+        active: data['active'],
+        featured: data['featured'],
+        locationName: data["locationName"],
+        status: data['status'] != null
+            ? Map<String, dynamic>.from(data['status'])
+            : {},
+      );
+    }).toList();
+  }
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    final pageProvider = Provider.of<PageProvider>(context);
+    return  WillPopScope(
+      onWillPop: ()async{
+        pageProvider.setChoice("From Main");
+        return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(title: Text(pageProvider.choice),),
+          body: pageProvider.choice=="From Main" ?
+              SingleChildScrollView(
+                child: Column(
+                  children: [
+                    FutureBuilder<List<Room>>(
+                      future: fetchMostSearchedProducts(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return SizedBox(
+                              height: 300,
+                              child: Center(
+                                  child: CircularProgressIndicator(
+                                      color: kThemeColor)));
+                        } else if (snapshot.hasError) {
+                          return Center(child: Text('Error: ${snapshot.error}'));
+                        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                          return const Center(child: Text('No products found.'));
+                        }
+                        final displayedProducts =
+                        snapshot.data!;
+                        return Column(
+                          children: [
+                            Text("Most searched"),
+                            ListView.builder(
+                              itemCount: displayedProducts.length,
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                final product = displayedProducts[index];
+                                return GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            RoomDetailPage(room: product),
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(16.0),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.shade300,
+                                          blurRadius: 5,
+                                          offset: Offset(0, 4),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Card(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(16.0),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8.0),
+                                        child: Row(
+                                          children: [
+                                            ClipRRect(
+                                              borderRadius:
+                                              const BorderRadius.horizontal(
+                                                left: Radius.circular(16.0),
+                                                right: Radius.circular(16.0),
+                                              ),
+                                              child: Image.network(
+                                                product.photo.isNotEmpty
+                                                    ? product.photo[0]
+                                                    : 'https://via.placeholder.com/150',
+                                                height: 100,
+                                                width: 100,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                            Expanded(
+                                              child: Padding(
+                                                padding:
+                                                const EdgeInsets.all(16.0),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                                  mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      product.name.toUpperCase(),
+                                                      style: TextStyle(
+                                                        color: kThemeColor,
+                                                        fontWeight:
+                                                        FontWeight.bold,
+                                                        fontSize: 18,
+                                                      ),
+                                                    ),
+                                                    const SizedBox(height: 8),
+                                                    Text(
+                                                      product.locationName,
+                                                      style: TextStyle(
+                                                        color:
+                                                        Colors.grey.shade700,
+                                                        fontSize: 14,
+                                                      ),
+                                                    ),
+                                                    const SizedBox(height: 8),
+                                                    Text(
+                                                      "Rs. 8000/ per month",
+                                                      style: TextStyle(
+                                                        color: kThemeColor,
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                        FontWeight.w600,
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 20),
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                      children: [
+                                                        Row(
+                                                          children: [
+                                                            Icon(
+                                                              Icons
+                                                                  .location_on_rounded,
+                                                              size: 16,
+                                                              color: kThemeColor,
+                                                            ),
 
+                                                          ],
+                                                        ),
+                                                        Row(
+                                                          children: [
+                                                            Icon(
+                                                              Icons
+                                                                  .do_not_disturb_on_total_silence,
+                                                              size: 16,
+                                                              color: kThemeColor,
+                                                            ),
+                                                            Text(
+                                                              "Available",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .black45),
+                                                            )
+                                                          ],
+                                                        )
+                                                      ],
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                    FutureBuilder<List<Room>>(
+                      future: fetchRooms(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return SizedBox(
+                              height: 300,
+                              child: Center(
+                                  child: CircularProgressIndicator(
+                                      color: kThemeColor)));
+                        } else if (snapshot.hasError) {
+                          return Center(child: Text('Error: ${snapshot.error}'));
+                        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                          return const Center(child: Text('No rooms available.'));
+                        }
+                        // Filter and sort rooms based on search query
+                        List<Room> filteredRooms = snapshot.data!
+                            .where((room) => room.name
+                            .toLowerCase()
+                            .contains(searchQuery.toLowerCase()))
+                            .toList();
+
+                        // Sort the filtered rooms by distance
+                        List<Room> sortedRooms = sortedRoomsByDistance(
+                            filteredRooms, widget.lat, widget.lng);
+
+                        sortedRooms =  snapshot.data!;
+
+                        return Column(
+                          children: [
+                            Text("Suggested"),
+                            ListView.builder(
+                              itemCount: sortedRooms.length,
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                final room = sortedRooms[index];
+                                return GestureDetector(
+                                  onTap: (){
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            RoomDetailPage(room: room),
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(16.0),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.shade300,
+                                          blurRadius: 5,
+                                          offset: Offset(0, 4),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Card(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(16.0),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8.0),
+                                        child: Row(
+                                          children: [
+                                            ClipRRect(
+                                              borderRadius:
+                                              const BorderRadius.horizontal(
+                                                left: Radius.circular(16.0),
+                                                right: Radius.circular(16.0),
+                                              ),
+                                              child: Image.network(
+                                                room.photo.isNotEmpty
+                                                    ? room.photo[0]
+                                                    : 'https://via.placeholder.com/150',
+                                                height: 100,
+                                                width: 100,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                            Expanded(
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(16.0),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                                  mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      room.name.toUpperCase(),
+                                                      style: TextStyle(
+                                                        color: kThemeColor,
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 18,
+                                                      ),
+                                                    ),
+                                                    const SizedBox(height: 8),
+                                                    Text(
+                                                      room.locationName,
+                                                      style: TextStyle(
+                                                        color: Colors.grey.shade700,
+                                                        fontSize: 14,
+                                                      ),
+                                                    ),
+                                                    const SizedBox(height: 8),
+                                                    Text(
+                                                      "Capacity: ${room.capacity}",
+                                                      style: TextStyle(
+                                                        color: kThemeColor,
+                                                        fontSize: 14,
+                                                        fontWeight: FontWeight.w600,
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 20),
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                      children: [
+                                                        Row(
+                                                          children: [
+                                                            Icon(
+                                                                Icons
+                                                                    .location_on_rounded,
+                                                                size: 16,
+                                                                color: kThemeColor),
+                                                            // Text(
+                                                            //   "${(sortedRooms[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
+                                                            //   style: TextStyle(
+                                                            //       color: Colors
+                                                            //           .black45),
+                                                            // ),
+                                                          ],
+                                                        ),
+                                                        Row(
+                                                          children: [
+                                                            Icon(Icons.check_circle,
+                                                                size: 16,
+                                                                color: kThemeColor),
+                                                            Text(
+                                                              "Available",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .black45),
+                                                            )
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+
+                          ],
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              )
+              :pageProvider.choice=="Suggested"?
+
+          FutureBuilder<List<Room>>(
+            future: fetchRooms(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return SizedBox(
+                    height: 300,
+                    child: Center(
+                        child: CircularProgressIndicator(
+                            color: kThemeColor)));
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return const Center(child: Text('No rooms available.'));
+              }
+              // Filter and sort rooms based on search query
+              List<Room> filteredRooms = snapshot.data!
+                  .where((room) => room.name
+                  .toLowerCase()
+                  .contains(searchQuery.toLowerCase()))
+                  .toList();
+
+              // Sort the filtered rooms by distance
+              List<Room> sortedRooms = sortedRoomsByDistance(
+                  filteredRooms, widget.lat, widget.lng);
+
+              sortedRooms =  snapshot.data!;
+
+              return SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Text("Suggested"),
+                    ListView.builder(
+                      itemCount: sortedRooms.length,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        final room = sortedRooms[index];
+                        return GestureDetector(
+                          onTap: (){
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    RoomDetailPage(room: room),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16.0),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.shade300,
+                                  blurRadius: 5,
+                                  offset: Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16.0),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8.0),
+                                child: Row(
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius:
+                                      const BorderRadius.horizontal(
+                                        left: Radius.circular(16.0),
+                                        right: Radius.circular(16.0),
+                                      ),
+                                      child: Image.network(
+                                        room.photo.isNotEmpty
+                                            ? room.photo[0]
+                                            : 'https://via.placeholder.com/150',
+                                        height: 100,
+                                        width: 100,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              room.name.toUpperCase(),
+                                              style: TextStyle(
+                                                color: kThemeColor,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 18,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 8),
+                                            Text(
+                                              room.locationName,
+                                              style: TextStyle(
+                                                color: Colors.grey.shade700,
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 8),
+                                            Text(
+                                              "Capacity: ${room.capacity}",
+                                              style: TextStyle(
+                                                color: kThemeColor,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                            SizedBox(height: 20),
+                                            Row(
+                                              mainAxisAlignment:
+                                              MainAxisAlignment
+                                                  .spaceBetween,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Icon(
+                                                        Icons
+                                                            .location_on_rounded,
+                                                        size: 16,
+                                                        color: kThemeColor),
+                                                    // Text(
+                                                    //   "${(sortedRooms[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
+                                                    //   style: TextStyle(
+                                                    //       color: Colors
+                                                    //           .black45),
+                                                    // ),
+                                                  ],
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    Icon(Icons.check_circle,
+                                                        size: 16,
+                                                        color: kThemeColor),
+                                                    Text(
+                                                      "Available",
+                                                      style: TextStyle(
+                                                          color: Colors
+                                                              .black45),
+                                                    )
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+
+                  ],
+                ),
+              );
+            },
+          )
+              :FutureBuilder<List<Room>>(
+              future: fetchMostSearchedProducts(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return SizedBox(
+                      height: 300,
+                      child: Center(
+                          child: CircularProgressIndicator(
+                              color: kThemeColor)));
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(child: Text('No products found.'));
+                }
+                final displayedProducts =
+                     snapshot.data!;
+                return SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      ListView.builder(
+                        itemCount: displayedProducts.length,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          final product = displayedProducts[index];
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      RoomDetailPage(room: product),
+                                ),
+                              );
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(16.0),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.shade300,
+                                    blurRadius: 5,
+                                    offset: Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16.0),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8.0),
+                                  child: Row(
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius:
+                                        const BorderRadius.horizontal(
+                                          left: Radius.circular(16.0),
+                                          right: Radius.circular(16.0),
+                                        ),
+                                        child: Image.network(
+                                          product.photo.isNotEmpty
+                                              ? product.photo[0]
+                                              : 'https://via.placeholder.com/150',
+                                          height: 100,
+                                          width: 100,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Padding(
+                                          padding:
+                                          const EdgeInsets.all(16.0),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                            mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                product.name.toUpperCase(),
+                                                style: TextStyle(
+                                                  color: kThemeColor,
+                                                  fontWeight:
+                                                  FontWeight.bold,
+                                                  fontSize: 18,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 8),
+                                              Text(
+                                                product.locationName,
+                                                style: TextStyle(
+                                                  color:
+                                                  Colors.grey.shade700,
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 8),
+                                              Text(
+                                                "Rs. 8000/ per month",
+                                                style: TextStyle(
+                                                  color: kThemeColor,
+                                                  fontSize: 14,
+                                                  fontWeight:
+                                                  FontWeight.w600,
+                                                ),
+                                              ),
+                                              SizedBox(height: 20),
+                                              Row(
+                                                mainAxisAlignment:
+                                                MainAxisAlignment
+                                                    .spaceBetween,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      Icon(
+                                                        Icons
+                                                            .location_on_rounded,
+                                                        size: 16,
+                                                        color: kThemeColor,
+                                                      ),
+
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Icon(
+                                                        Icons
+                                                            .do_not_disturb_on_total_silence,
+                                                        size: 16,
+                                                        color: kThemeColor,
+                                                      ),
+                                                      Text(
+                                                        "Available",
+                                                        style: TextStyle(
+                                                            color: Colors
+                                                                .black45),
+                                                      )
+                                                    ],
+                                                  )
+                                                ],
+                                              )
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+      ),
     );
   }
 }

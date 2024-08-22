@@ -1,11 +1,17 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:meroapp/provider/pageProvider.dart';
 import 'package:meroapp/splashScreen.dart';
+import 'package:provider/provider.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-runApp(MyApp());
+runApp(
+  ChangeNotifierProvider(
+  create: (_) => PageProvider(),
+  child: MyApp(),
+),);
 }
 
 class MyApp extends StatelessWidget {
