@@ -50,8 +50,8 @@ class _HomePageState extends State<HomePage> {
   List<Widget> _buildPages() {
     return [
       if (_latitude != null && _longitude != null)
-        DashBoard(_latitude!, _longitude!),
-       Listing(_latitude!, _longitude!),
+        DashBoard(_latitude, _longitude),
+       Listing(_latitude, _longitude),
       const WishlistPage(),
       const ProfilePage(),
     ];

@@ -317,16 +317,57 @@ class _DashBoardState extends State<DashBoard> {
                       ),
                     ),
                   ),
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      "Most searched",
-                      style: TextStyle(
-                        color: Color(0xFF072A2E),
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Most searched",
+                        style: TextStyle(
+                          color: Color(0xFF072A2E),
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
+                      FutureBuilder<List<Room>>(
+                        future: fetchMostSearchedProducts(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return Text(
+                              "Loading...",
+                              style: TextStyle(
+                                color: Color(0xFF072A2E),
+                                fontSize: 16,
+                              ),
+                            );
+                          } else if (snapshot.hasError) {
+                            return Text(
+                              "Error",
+                              style: TextStyle(
+                                color: Color(0xFF072A2E),
+                                fontSize: 16,
+                              ),
+                            );
+                          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                            return Text(
+                              "0 items",
+                              style: TextStyle(
+                                color: Color(0xFF072A2E),
+                                fontSize: 16,
+                              ),
+                            );
+                          }
+                          // Display the count of items
+                          final itemCount = snapshot.data!.length;
+                          return Text(
+                            "$itemCount items",
+                            style: TextStyle(
+                              color: Color(0xFF072A2E),
+                              fontSize: 14,
+                            ),
+                          );
+                        },
+                      ),
+                    ],
                   ),
                   FutureBuilder<List<Room>>(
                     future: fetchMostSearchedProducts(),
@@ -398,86 +439,85 @@ class _DashBoardState extends State<DashBoard> {
                                               fit: BoxFit.cover,
                                             ),
                                           ),
-                                          Expanded(
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(16.0),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Text(
-                                                    product.name.toUpperCase(),
-                                                    style: TextStyle(
-                                                      color: kThemeColor,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 18,
-                                                    ),
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.all(16.0),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  product.name.toUpperCase(),
+                                                  style: TextStyle(
+                                                    color: kThemeColor,
+                                                    fontWeight:
+                                                        FontWeight.bold,
+                                                    fontSize: 18,
                                                   ),
-                                                  const SizedBox(height: 8),
-                                                  Text(
-                                                    product.locationName,
-                                                    style: TextStyle(
-                                                      color:
-                                                          Colors.grey.shade700,
-                                                      fontSize: 14,
-                                                    ),
+                                                ),
+                                                const SizedBox(height: 8),
+                                                Text(
+                                                  product.locationName,
+                                                  style: TextStyle(
+                                                    color:
+                                                        Colors.grey.shade700,
+                                                    fontSize: 14,
                                                   ),
-                                                  const SizedBox(height: 8),
-                                                  Text(
-                                                    "Rs. 8000/ per month",
-                                                    style: TextStyle(
-                                                      color: kThemeColor,
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                    ),
+                                                ),
+                                                const SizedBox(height: 8),
+                                                Text(
+                                                  "Rs. 8000/ per month",
+                                                  style: TextStyle(
+                                                    color: kThemeColor,
+                                                    fontSize: 14,
+                                                    fontWeight:
+                                                        FontWeight.w600,
                                                   ),
-                                                  SizedBox(height: 20),
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Row(
-                                                        children: [
-                                                          Icon(
-                                                            Icons
-                                                                .location_on_rounded,
-                                                            size: 16,
-                                                            color: kThemeColor,
-                                                          ),
-                                                          Text(
-                                                            "${(displayedProducts[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .black45),
-                                                          )
-                                                        ],
-                                                      ),
-                                                      Row(
-                                                        children: [
-                                                          Icon(
-                                                            Icons
-                                                                .do_not_disturb_on_total_silence,
-                                                            size: 16,
-                                                            color: kThemeColor,
-                                                          ),
-                                                          Text(
-                                                            "Available",
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .black45),
-                                                          )
-                                                        ],
-                                                      )
-                                                    ],
-                                                  )
-                                                ],
-                                              ),
+                                                ),
+                                                SizedBox(height: 20),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        Icon(
+                                                          Icons
+                                                              .location_on_rounded,
+                                                          size: 16,
+                                                          color: kThemeColor,
+                                                        ),
+                                                        Text(
+                                                          "${(displayedProducts[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
+                                                          style: TextStyle(
+                                                              color: Colors
+                                                                  .black45),
+                                                        )
+                                                      ],
+                                                    ),
+                                                    Row(
+                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                      children: [
+                                                        Icon(
+                                                          Icons
+                                                              .do_not_disturb_on_total_silence,
+                                                          size: 16,
+                                                          color: kThemeColor,
+                                                        ),
+                                                        Text(
+                                                          "Available",
+                                                          style: TextStyle(
+                                                              color: Colors
+                                                                  .black45),
+                                                        )
+                                                      ],
+                                                    )
+                                                  ],
+                                                )
+                                              ],
                                             ),
                                           ),
                                         ],
@@ -492,7 +532,6 @@ class _DashBoardState extends State<DashBoard> {
                             TextButton(
                               onPressed: () {
                                 setState(() {
-                                  // showAllMostSearch = true;
                                   pageProvider.setPage(1);
                                   pageProvider.setChoice("From homepage");
                                 });
@@ -604,78 +643,76 @@ class _DashBoardState extends State<DashBoard> {
                                               fit: BoxFit.cover,
                                             ),
                                           ),
-                                          Expanded(
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(16.0),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Text(
-                                                    room.name.toUpperCase(),
-                                                    style: TextStyle(
-                                                      color: kThemeColor,
-                                                      fontWeight: FontWeight.bold,
-                                                      fontSize: 18,
+                                          Padding(
+                                            padding: const EdgeInsets.all(16.0),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  room.name.toUpperCase(),
+                                                  style: TextStyle(
+                                                    color: kThemeColor,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 18,
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 8),
+                                                Text(
+                                                  room.locationName,
+                                                  style: TextStyle(
+                                                    color: Colors.grey.shade700,
+                                                    fontSize: 14,
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 8),
+                                                Text(
+                                                  "Capacity: ${room.capacity}",
+                                                  style: TextStyle(
+                                                    color: kThemeColor,
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                                SizedBox(height: 20),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        Icon(
+                                                            Icons
+                                                                .location_on_rounded,
+                                                            size: 16,
+                                                            color: kThemeColor),
+                                                        Text(
+                                                          "${(sortedRooms[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
+                                                          style: TextStyle(
+                                                              color: Colors
+                                                                  .black45),
+                                                        ),
+                                                      ],
                                                     ),
-                                                  ),
-                                                  const SizedBox(height: 8),
-                                                  Text(
-                                                    room.locationName,
-                                                    style: TextStyle(
-                                                      color: Colors.grey.shade700,
-                                                      fontSize: 14,
+                                                    Row(
+                                                      children: [
+                                                        Icon(Icons.check_circle,
+                                                            size: 16,
+                                                            color: kThemeColor),
+                                                        Text(
+                                                          "Available",
+                                                          style: TextStyle(
+                                                              color: Colors
+                                                                  .black45),
+                                                        )
+                                                      ],
                                                     ),
-                                                  ),
-                                                  const SizedBox(height: 8),
-                                                  Text(
-                                                    "Capacity: ${room.capacity}",
-                                                    style: TextStyle(
-                                                      color: kThemeColor,
-                                                      fontSize: 14,
-                                                      fontWeight: FontWeight.w600,
-                                                    ),
-                                                  ),
-                                                  SizedBox(height: 20),
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: [
-                                                      Row(
-                                                        children: [
-                                                          Icon(
-                                                              Icons
-                                                                  .location_on_rounded,
-                                                              size: 16,
-                                                              color: kThemeColor),
-                                                          Text(
-                                                            "${(sortedRooms[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .black45),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      Row(
-                                                        children: [
-                                                          Icon(Icons.check_circle,
-                                                              size: 16,
-                                                              color: kThemeColor),
-                                                          Text(
-                                                            "Available",
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .black45),
-                                                          )
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
+                                                  ],
+                                                ),
+                                              ],
                                             ),
                                           ),
                                         ],
@@ -792,38 +829,34 @@ class _DashBoardState extends State<DashBoard> {
                                       right: 0,
                                       child: Container(
                                         padding: const EdgeInsets.all(12),
-                                        child: Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                room.name.toUpperCase(),
-                                                style: const TextStyle(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              room.name.toUpperCase(),
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 20,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.location_on_rounded,
                                                   color: Colors.white,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 20,
                                                 ),
-                                              ),
-                                              const SizedBox(height: 4),
-                                              Row(
-                                                children: [
-                                                  Icon(
-                                                    Icons.location_on_rounded,
-                                                    color: Colors.white,
-                                                  ),
-                                                  Expanded(
-                                                    child: Text(
-                                                      room.locationName,
-                                                      style: const TextStyle(
-                                                          fontSize: 12,
-                                                          color: Colors.white),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
+                                                Text(
+                                                  room.locationName,
+                                                  style: const TextStyle(
+                                                      fontSize: 12,
+                                                      color: Colors.white),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ),
