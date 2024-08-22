@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import 'Constants/styleConsts.dart';
+
 class Room {
   final String uid;
   final String name;
@@ -41,7 +43,6 @@ class Room {
     required this.status,
   });
 
-  // Add this method to convert a map to a Room object
   factory Room.fromMap(Map<String, dynamic> data, String documentId) {
     return Room(
       uid: documentId,
@@ -63,6 +64,7 @@ class Room {
     );
   }
 }
+
 Future<Map<String, dynamic>?> fetchUserData() async {
   User? user = FirebaseAuth.instance.currentUser;
 
@@ -73,20 +75,19 @@ Future<Map<String, dynamic>?> fetchUserData() async {
   try {
     DocumentSnapshot userDoc = await FirebaseFirestore.instance
         .collection('users')
-        .doc(user.uid) // Access the current user's document
+        .doc(user.uid)
         .get();
 
     if (userDoc.exists) {
-      return userDoc.data() as Map<String, dynamic>; // Return the data as a map
+      return userDoc.data() as Map<String, dynamic>;
     } else {
-      return null; // Document does not exist
+      return null;
     }
   } catch (e) {
     log("Error fetching user data: $e");
-    return null; // Handle the error as needed
+    return null;
   }
 }
-
 
 class OrderPage extends StatefulWidget {
   const OrderPage({super.key});
@@ -110,13 +111,13 @@ class _OrderPageState extends State<OrderPage> {
           .get();
 
       if (userDoc.exists) {
-        return userDoc.data() as Map<String, dynamic>; // Return the data as a map
+        return userDoc.data() as Map<String, dynamic>;
       } else {
-        return null; // Document does not exist
+        return null;
       }
     } catch (e) {
       log("Error fetching user data: $e");
-      return null; // Handle the error as needed
+      return null;
     }
   }
 
@@ -130,116 +131,232 @@ class _OrderPageState extends State<OrderPage> {
       if (roomDoc.exists) {
         return roomDoc.data() as Map<String, dynamic>;
       } else {
-        return {'status': 'Unknown'}; // Handle case where room does not exist
+        return {'status': 'Unknown'};
       }
     } catch (e) {
       log("Error fetching room status: $e");
-      return {'status': 'Error'}; // Handle the error as needed
+      return {'status': 'Error'};
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Orders")),
-      body: FutureBuilder(
-        future: fetchUserData(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!['rooms'].isEmpty) {
-            return const Center(child: Text('No rooms found.'));
-          }
-
-          final rooms = snapshot.data!['rooms'];
-          final userEmail = snapshot.data!['email'];
-
-          return ListView.builder(
-            itemCount: rooms.length,
-            itemBuilder: (context, index) {
-              final room = rooms[index];
-              final roomId = room['roomId'];
-
-              return FutureBuilder(
-                future: fetchRoomStatus(roomId),
-                builder: (context, roomSnapshot) {
-                  if (roomSnapshot.connectionState == ConnectionState.waiting) {
-                    return const Card(
-                      elevation: 4,
-                      margin: EdgeInsets.all(8.0),
-                      child: Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: Center(child: CircularProgressIndicator()),
-                      ),
+      body: Padding(
+        padding: const EdgeInsets.only(
+            top: 45.0, bottom: 18.0, left: 18.0, right: 18.0),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: IconButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      icon: Icon(
+                        Icons.arrow_back_ios,
+                        color: kThemeColor,
+                      )),
+                ),
+                Text("Orders",
+                    style: TextStyle(
+                        color: kThemeColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 25)),
+              ],
+            ),
+            Expanded(
+              child: FutureBuilder<Map<String, dynamic>?>(
+                future: fetchUserData(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(
+                      child: CircularProgressIndicator(color: kThemeColor),
                     );
-                  } else if (roomSnapshot.hasError) {
-                    return const Card(
-                      elevation: 4,
-                      margin: EdgeInsets.all(8.0),
-                      child: Padding(
-                        padding: EdgeInsets.all(16.0),
-                        child: Center(child: Text('Error fetching status')),
-                      ),
+                  } else if (snapshot.hasError) {
+                    return Center(
+                      child: Text('Error: ${snapshot.error}'),
                     );
-                  } else if (!roomSnapshot.hasData) {
-                    return Container(); // Handle case where no data
+                  } else if (!snapshot.hasData ||
+                      snapshot.data!['rooms'].isEmpty) {
+                    return const Center(
+                      child: Text('No rooms found.'),
+                    );
                   }
 
-                  final roomStatus = roomSnapshot.data!;
+                  final rooms = snapshot.data!['rooms'];
+                  final userEmail = snapshot.data!['email'];
 
-                  return Card(
-                    elevation: 4,
-                    margin: const EdgeInsets.all(8.0),
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Image.network(
-                            room['photo'][0] ?? '',
-                            height: 150,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                          ),
-                          const SizedBox(height: 8.0),
-                          Text(
-                            room['name'] ?? '',
-                            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(height: 4.0),
-                          Text(
-                            room['locationName'] ?? '',
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                          const SizedBox(height: 4.0),
-                          Text(
-                            'Email: $userEmail',
-                            style: const TextStyle(fontSize: 14, color: Colors.grey),
-                          ),
-                          const SizedBox(height: 4.0),
-                          Text(
-                            'Status: ${roomStatus['status']['statusDisplay'] ?? 'Unknown'}',
-                            style: const TextStyle(fontSize: 14),
-                          ),
-                          const SizedBox(height: 8.0),
-                          Text(
-                            room['description'] ?? '',
-                            style: const TextStyle(fontSize: 14),
-                          ),
-                        ],
-                      ),
-                    ),
+                  return ListView.builder(
+                    itemCount: rooms.length,
+                    itemBuilder: (context, index) {
+                      final room = rooms[index];
+                      final roomId = room['roomId'];
+
+                      return FutureBuilder<Map<String, dynamic>>(
+                        future: fetchRoomStatus(roomId),
+                        builder: (context, roomSnapshot) {
+                          if (roomSnapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Card(
+                              elevation: 4,
+                              margin: const EdgeInsets.all(8.0),
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Center(
+                                  child: CircularProgressIndicator(
+                                      color: kThemeColor),
+                                ),
+                              ),
+                            );
+                          } else if (roomSnapshot.hasError) {
+                            return const Card(
+                              elevation: 4,
+                              margin: EdgeInsets.all(8.0),
+                              child: Padding(
+                                padding: EdgeInsets.all(16.0),
+                                child: Center(
+                                  child: Text('Error fetching status'),
+                                ),
+                              ),
+                            );
+                          } else if (!roomSnapshot.hasData) {
+                            return Container();
+                          }
+
+                          final roomStatus = roomSnapshot.data!;
+
+                          return Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16.0),
+                              gradient: LinearGradient(
+                                colors: [Colors.white, Colors.grey.shade200],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                            ),
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16.0),
+                              ),
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: Row(
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius:
+                                          const BorderRadius.horizontal(
+                                        left: Radius.circular(16.0),
+                                      ),
+                                      child: Image.network(
+                                        room['photo'][0] ?? '',
+                                        height: 100,
+                                        width: 100,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              room['name'] ?? '',
+                                              style: TextStyle(
+                                                color: kThemeColor,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 18,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 8),
+                                            Row(
+                                              children: [
+                                                const Icon(
+                                                  Icons.location_on,
+                                                  color: Colors.grey,
+                                                  size: 16,
+                                                ),
+                                                const SizedBox(width: 4),
+                                                Expanded(
+                                                  child: Text(
+                                                    room['locationName'] ?? '',
+                                                    style: TextStyle(
+                                                      color:
+                                                          Colors.grey.shade700,
+                                                      fontSize: 14,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(height: 8),
+                                            Row(
+                                              children: [
+                                                const Icon(
+                                                  Icons.email,
+                                                  color: Colors.grey,
+                                                  size: 16,
+                                                ),
+                                                const SizedBox(width: 4),
+                                                Text(
+                                                  '$userEmail',
+                                                  style: const TextStyle(
+                                                    fontSize: 14,
+                                                    color: Colors.grey,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(height: 8),
+                                            Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.circle,
+                                                  color: roomStatus['status'][
+                                                              'statusDisplay'] ==
+                                                          'Available'
+                                                      ? Colors.green
+                                                      : roomStatus['status'][
+                                                                  'statusDisplay'] ==
+                                                              'Booked'
+                                                          ? Colors.red
+                                                          : Colors.orange,
+                                                  size: 14,
+                                                ),
+                                                const SizedBox(width: 4),
+                                                Text(
+                                                  'Status: ${roomStatus['status']['statusDisplay']}',
+                                                  style: const TextStyle(
+                                                      fontSize: 14),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
                   );
                 },
-              );
-            },
-          );
-        },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
-
-

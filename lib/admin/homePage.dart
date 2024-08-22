@@ -172,34 +172,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               shadowColor: appBarColor.withOpacity(0.5),
               child: ListTile(
-                leading: Icon(Icons.credit_card),
-                title: Text('Payment Methods'),
-                trailing: Icon(Icons.chevron_right, color: appBarColor),
-                onTap: () {
-                  // Navigator.push(context, MaterialPageRoute(builder: (context)=>InformationPage()));
-                },
-              ),
-            ),
-            Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              shadowColor: appBarColor.withOpacity(0.5),
-              child: ListTile(
-                leading: Icon(Icons.settings),
-                title: Text('Settings'),
-                trailing: Icon(Icons.chevron_right, color: appBarColor),
-                onTap: () {
-                  // Navigator.push(context, MaterialPageRoute(builder: (context)=>InformationPage()));
-                },
-              ),
-            ),
-            Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              shadowColor: appBarColor.withOpacity(0.5),
-              child: ListTile(
                   leading: Icon(Icons.logout),
                   title: Text('Logout'),
                   trailing: Icon(Icons.chevron_right, color: appBarColor),

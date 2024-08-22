@@ -16,30 +16,40 @@ class _InformationDetailsState extends State<InformationDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Details"),
+        title: Text("Details", style: TextStyle(fontSize: 24)),
         centerTitle: true,
         backgroundColor: kThemeColor,
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(12.0),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Center(
-                  child: Text(
-                "Personal Information",
-                style: TextStyle(
-                    fontSize: 16,
+                child: Text(
+                  "Personal Information",
+                  style: TextStyle(
+                    fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black),
-              )),
+                    color: Colors.black87,
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
               Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0),
                 ),
-                elevation: 4.0,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                elevation: 6.0,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15.0),
+                    gradient: LinearGradient(
+                      colors: [Colors.white, Colors.grey.shade200],
+                    ),
+                  ),
+                  padding: const EdgeInsets.all(20.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
@@ -53,27 +63,56 @@ class _InformationDetailsState extends State<InformationDetails> {
                         child: ListTile(
                           title: Text(
                             'Name:',
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                              color: Colors.black87,
+                            ),
                           ),
-                          subtitle:
-                              Text(user?.displayName ?? 'Name not saved yet'),
+                          subtitle: Text(
+                            user?.displayName ?? 'Name not saved yet',
+                            style: TextStyle(
+                              color: Colors.grey.shade600,
+                            ),
+                          ),
+                          trailing: Icon(Icons.edit, color: kThemeColor),
                         ),
                       ),
                       Divider(),
                       ListTile(
                         title: Text(
                           'Email:',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Colors.black87,
+                          ),
                         ),
-                        subtitle: Text(user?.email ?? 'Email not received yet'),
+                        subtitle: Text(
+                          user?.email ?? 'Email not received yet',
+                          style: TextStyle(
+                            color: Colors.grey.shade600,
+                          ),
+                        ),
+                        trailing: Icon(Icons.email, color: kThemeColor),
                       ),
                       Divider(),
                       ListTile(
                         title: Text(
                           'Phone:',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: Colors.black87,
+                          ),
                         ),
-                        subtitle: Text(user?.phoneNumber ?? '9841100460'),
+                        subtitle: Text(
+                          user?.phoneNumber ?? '9841100460',
+                          style: TextStyle(
+                            color: Colors.grey.shade600,
+                          ),
+                        ),
+                        trailing: Icon(Icons.phone, color: kThemeColor),
                       ),
                     ],
                   ),
@@ -118,6 +157,12 @@ class _ChangeNameDialogState extends State<ChangeNameDialog> {
       ),
       child: Container(
         padding: EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.0),
+          gradient: LinearGradient(
+            colors: [Colors.white, Colors.grey.shade200],
+          ),
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -125,23 +170,20 @@ class _ChangeNameDialogState extends State<ChangeNameDialog> {
             Text(
               'Change Name',
               style: TextStyle(
-                  fontSize: 18.0,
-                  fontWeight: FontWeight.bold,
-                  color: kThemeColor),
+                fontSize: 20.0,
+                fontWeight: FontWeight.bold,
+                color: kThemeColor,
+              ),
             ),
             SizedBox(height: 20.0),
-            Container(
-              height: 50.0,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16.0),
-                color: Colors.white,
-              ),
-              child: TextField(
-                controller: _firstNameController,
-                decoration: InputDecoration(
-                  labelText: 'First Name',
-                  border: OutlineInputBorder(),
+            TextField(
+              controller: _firstNameController,
+              decoration: InputDecoration(
+                labelText: 'First Name',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
                 ),
+                prefixIcon: Icon(Icons.person),
               ),
             ),
             SizedBox(height: 10.0),
@@ -149,7 +191,10 @@ class _ChangeNameDialogState extends State<ChangeNameDialog> {
               controller: _middleNameController,
               decoration: InputDecoration(
                 labelText: 'Middle Name',
-                border: OutlineInputBorder(),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                prefixIcon: Icon(Icons.person),
               ),
             ),
             SizedBox(height: 10.0),
@@ -157,7 +202,10 @@ class _ChangeNameDialogState extends State<ChangeNameDialog> {
               controller: _lastNameController,
               decoration: InputDecoration(
                 labelText: 'Last Name',
-                border: OutlineInputBorder(),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                prefixIcon: Icon(Icons.person),
               ),
             ),
             SizedBox(height: 20.0),
@@ -170,7 +218,7 @@ class _ChangeNameDialogState extends State<ChangeNameDialog> {
                   },
                   child: Text(
                     'Cancel',
-                    style: TextStyle(color: appBarColor),
+                    style: TextStyle(color: Colors.grey.shade600),
                   ),
                 ),
                 SizedBox(width: 10.0),
@@ -179,7 +227,12 @@ class _ChangeNameDialogState extends State<ChangeNameDialog> {
                     Navigator.of(context).pop();
                   },
                   child: Text('Save'),
-                  style: ElevatedButton.styleFrom(backgroundColor: kThemeColor),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: kThemeColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                  ),
                 ),
               ],
             ),
