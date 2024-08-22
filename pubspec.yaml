@@ -53,7 +53,7 @@ dependencies:
   khalti_flutter:
   firebase_storage:
   provider:
-
+  shimmer: ^3.0.0
   flutter:
     sdk: flutter
 

@@ -4,6 +4,7 @@ import 'package:meroapp/Constants/styleConsts.dart';
 import 'package:meroapp/provider/pageProvider.dart';
 import 'package:meroapp/roomdetail.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 import 'calculation.dart';
 import 'model/onSaleModel.dart';
 
@@ -168,7 +169,7 @@ class _DashBoardState extends State<DashBoard> {
                       CircleAvatar(
                         radius: 20,
                         backgroundColor: kThemeColor,
-                        backgroundImage: NetworkImage(
+                        backgroundImage: const NetworkImage(
                             "https://media.licdn.com/dms/image/D5603AQFD6ld3NWc2HQ/profile-displayphoto-shrink_200_200/0/1684164054868?e=2147483647&v=beta&t=cwQoyfhgAl_91URX5FTEXLwLDEHWe1H337EMebpgntQ"),
                       ),
                       Text("Home",
@@ -222,16 +223,17 @@ class _DashBoardState extends State<DashBoard> {
                                 color: Colors.grey.shade600, fontSize: 16),
                             fillColor: Colors.grey.shade200,
                             filled: true,
-                            contentPadding: EdgeInsets.symmetric(
+                            contentPadding: const EdgeInsets.symmetric(
                                 vertical: 14, horizontal: 20),
-                            labelStyle:
-                                TextStyle(color: Colors.grey, fontSize: 20),
+                            labelStyle: const TextStyle(
+                                color: Colors.grey, fontSize: 20),
                             border: InputBorder.none,
                           ),
-                          style: TextStyle(fontSize: 18, color: Colors.black),
+                          style: const TextStyle(
+                              fontSize: 18, color: Colors.black),
                           onChanged: updateFilteredRooms,
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         SizedBox(
                           width: double.infinity,
                           height: 50,
@@ -320,7 +322,7 @@ class _DashBoardState extends State<DashBoard> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
+                      const Text(
                         "Most searched",
                         style: TextStyle(
                           color: Color(0xFF072A2E),
@@ -331,8 +333,9 @@ class _DashBoardState extends State<DashBoard> {
                       FutureBuilder<List<Room>>(
                         future: fetchMostSearchedProducts(),
                         builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
-                            return Text(
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Text(
                               "Loading...",
                               style: TextStyle(
                                 color: Color(0xFF072A2E),
@@ -340,15 +343,16 @@ class _DashBoardState extends State<DashBoard> {
                               ),
                             );
                           } else if (snapshot.hasError) {
-                            return Text(
+                            return const Text(
                               "Error",
                               style: TextStyle(
                                 color: Color(0xFF072A2E),
                                 fontSize: 16,
                               ),
                             );
-                          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                            return Text(
+                          } else if (!snapshot.hasData ||
+                              snapshot.data!.isEmpty) {
+                            return const Text(
                               "0 items",
                               style: TextStyle(
                                 color: Color(0xFF072A2E),
@@ -360,7 +364,7 @@ class _DashBoardState extends State<DashBoard> {
                           final itemCount = snapshot.data!.length;
                           return Text(
                             "$itemCount items",
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Color(0xFF072A2E),
                               fontSize: 14,
                             ),
@@ -373,11 +377,27 @@ class _DashBoardState extends State<DashBoard> {
                     future: fetchMostSearchedProducts(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return SizedBox(
-                            height: 300,
-                            child: Center(
-                                child: CircularProgressIndicator(
-                                    color: kThemeColor)));
+                        return Shimmer.fromColors(
+                          baseColor: Colors.grey.shade300,
+                          highlightColor: Colors.grey.shade100,
+                          child: SizedBox(
+                            height: 500,
+                            child: ListView.builder(
+                              itemCount: 3,
+                              itemBuilder: (context, index) => Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8.0),
+                                child: Container(
+                                  height: 120,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(16.0),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
                       } else if (snapshot.hasError) {
                         return Center(child: Text('Error: ${snapshot.error}'));
                       } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -411,7 +431,7 @@ class _DashBoardState extends State<DashBoard> {
                                       BoxShadow(
                                         color: Colors.grey.shade300,
                                         blurRadius: 5,
-                                        offset: Offset(0, 4),
+                                        offset: const Offset(0, 4),
                                       ),
                                     ],
                                   ),
@@ -477,7 +497,7 @@ class _DashBoardState extends State<DashBoard> {
                                                           FontWeight.w600,
                                                     ),
                                                   ),
-                                                  SizedBox(height: 20),
+                                                  const SizedBox(height: 20),
                                                   Row(
                                                     mainAxisAlignment:
                                                         MainAxisAlignment
@@ -493,22 +513,24 @@ class _DashBoardState extends State<DashBoard> {
                                                           ),
                                                           Text(
                                                             "${(displayedProducts[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
-                                                            style: TextStyle(
+                                                            style: const TextStyle(
                                                                 color: Colors
                                                                     .black45),
                                                           )
                                                         ],
                                                       ),
                                                       Row(
-                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
                                                         children: [
                                                           Icon(
-                                                            Icons
-                                                                .do_not_disturb_on_total_silence,
-                                                            size: 16,
-                                                            color: kThemeColor,
-                                                          ),
-                                                          Text(
+                                                              Icons
+                                                                  .check_circle,
+                                                              size: 16,
+                                                              color:
+                                                                  kThemeColor),
+                                                          const Text(
                                                             "Available",
                                                             style: TextStyle(
                                                                 color: Colors
@@ -551,11 +573,11 @@ class _DashBoardState extends State<DashBoard> {
                       );
                     },
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
+                      const Text(
                         "Suggested Near You",
                         style: TextStyle(
                           color: Color(0xFF072A2E),
@@ -566,8 +588,9 @@ class _DashBoardState extends State<DashBoard> {
                       FutureBuilder<List<Room>>(
                         future: fetchRooms(),
                         builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
-                            return Text(
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Text(
                               "Loading...",
                               style: TextStyle(
                                 color: Color(0xFF072A2E),
@@ -575,15 +598,16 @@ class _DashBoardState extends State<DashBoard> {
                               ),
                             );
                           } else if (snapshot.hasError) {
-                            return Text(
+                            return const Text(
                               "Error",
                               style: TextStyle(
                                 color: Color(0xFF072A2E),
                                 fontSize: 14,
                               ),
                             );
-                          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                            return Text(
+                          } else if (!snapshot.hasData ||
+                              snapshot.data!.isEmpty) {
+                            return const Text(
                               "0 items",
                               style: TextStyle(
                                 color: Color(0xFF072A2E),
@@ -594,7 +618,7 @@ class _DashBoardState extends State<DashBoard> {
                           final itemCount = snapshot.data!.length;
                           return Text(
                             "$itemCount items",
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Color(0xFF072A2E),
                               fontSize: 14,
                             ),
@@ -607,11 +631,27 @@ class _DashBoardState extends State<DashBoard> {
                     future: fetchRooms(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return SizedBox(
-                            height: 300,
-                            child: Center(
-                                child: CircularProgressIndicator(
-                                    color: kThemeColor)));
+                        return Shimmer.fromColors(
+                          baseColor: Colors.grey.shade300,
+                          highlightColor: Colors.grey.shade100,
+                          child: SizedBox(
+                            height: 500,
+                            child: ListView.builder(
+                              itemCount: 3,
+                              itemBuilder: (context, index) => Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8.0),
+                                child: Container(
+                                  height: 120,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(16.0),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
                       } else if (snapshot.hasError) {
                         return Center(child: Text('Error: ${snapshot.error}'));
                       } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -641,7 +681,7 @@ class _DashBoardState extends State<DashBoard> {
                             itemBuilder: (context, index) {
                               final room = sortedRooms[index];
                               return GestureDetector(
-                                onTap: (){
+                                onTap: () {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -657,7 +697,7 @@ class _DashBoardState extends State<DashBoard> {
                                       BoxShadow(
                                         color: Colors.grey.shade300,
                                         blurRadius: 5,
-                                        offset: Offset(0, 4),
+                                        offset: const Offset(0, 4),
                                       ),
                                     ],
                                   ),
@@ -687,7 +727,8 @@ class _DashBoardState extends State<DashBoard> {
                                           ),
                                           Expanded(
                                             child: Padding(
-                                              padding: const EdgeInsets.all(16.0),
+                                              padding:
+                                                  const EdgeInsets.all(16.0),
                                               child: Column(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
@@ -698,7 +739,8 @@ class _DashBoardState extends State<DashBoard> {
                                                     room.name.toUpperCase(),
                                                     style: TextStyle(
                                                       color: kThemeColor,
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                       fontSize: 18,
                                                     ),
                                                   ),
@@ -706,7 +748,8 @@ class _DashBoardState extends State<DashBoard> {
                                                   Text(
                                                     room.locationName,
                                                     style: TextStyle(
-                                                      color: Colors.grey.shade700,
+                                                      color:
+                                                          Colors.grey.shade700,
                                                       fontSize: 14,
                                                     ),
                                                   ),
@@ -716,10 +759,11 @@ class _DashBoardState extends State<DashBoard> {
                                                     style: TextStyle(
                                                       color: kThemeColor,
                                                       fontSize: 14,
-                                                      fontWeight: FontWeight.w600,
+                                                      fontWeight:
+                                                          FontWeight.w600,
                                                     ),
                                                   ),
-                                                  SizedBox(height: 20),
+                                                  const SizedBox(height: 20),
                                                   Row(
                                                     mainAxisAlignment:
                                                         MainAxisAlignment
@@ -731,10 +775,11 @@ class _DashBoardState extends State<DashBoard> {
                                                               Icons
                                                                   .location_on_rounded,
                                                               size: 16,
-                                                              color: kThemeColor),
+                                                              color:
+                                                                  kThemeColor),
                                                           Text(
                                                             "${(sortedRooms[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
-                                                            style: TextStyle(
+                                                            style: const TextStyle(
                                                                 color: Colors
                                                                     .black45),
                                                           ),
@@ -742,10 +787,13 @@ class _DashBoardState extends State<DashBoard> {
                                                       ),
                                                       Row(
                                                         children: [
-                                                          Icon(Icons.check_circle,
+                                                          Icon(
+                                                              Icons
+                                                                  .check_circle,
                                                               size: 16,
-                                                              color: kThemeColor),
-                                                          Text(
+                                                              color:
+                                                                  kThemeColor),
+                                                          const Text(
                                                             "Available",
                                                             style: TextStyle(
                                                                 color: Colors
@@ -788,8 +836,8 @@ class _DashBoardState extends State<DashBoard> {
                       );
                     },
                   ),
-                  SizedBox(height: 30),
-                  Align(
+                  const SizedBox(height: 30),
+                  const Align(
                     alignment: Alignment.topLeft,
                     child: Text(
                       "Popular",
@@ -804,11 +852,27 @@ class _DashBoardState extends State<DashBoard> {
                     future: fetchRooms(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return SizedBox(
-                            height: 300,
-                            child: Center(
-                                child: CircularProgressIndicator(
-                                    color: kThemeColor)));
+                        return Shimmer.fromColors(
+                          baseColor: Colors.grey.shade300,
+                          highlightColor: Colors.grey.shade100,
+                          child: Container(
+                            height: 350,
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: 3, // Number of shimmer items to show
+                              itemBuilder: (context, index) => Container(
+                                width: 200,
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 8),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
                       }
                       if (snapshot.hasError) {
                         return Center(child: Text('Error: ${snapshot.error}'));
@@ -862,7 +926,7 @@ class _DashBoardState extends State<DashBoard> {
                                         child: ElevatedButton(
                                           style: ElevatedButton.styleFrom(
                                               backgroundColor: kThemeColor),
-                                          child: Text("For Rent"),
+                                          child: const Text("For Rent"),
                                           onPressed: () {},
                                         )),
                                     Positioned(
@@ -886,7 +950,7 @@ class _DashBoardState extends State<DashBoard> {
                                             const SizedBox(height: 4),
                                             Row(
                                               children: [
-                                                Icon(
+                                                const Icon(
                                                   Icons.location_on_rounded,
                                                   color: Colors.white,
                                                 ),

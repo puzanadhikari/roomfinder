@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:meroapp/Constants/styleConsts.dart';
@@ -20,118 +22,129 @@ class _ProfilePageState extends State<ProfilePage> {
     User? user = FirebaseAuth.instance.currentUser;
     return Scaffold(
       appBar: AppBar(
-        title: Text("Profile"),
-        centerTitle: true,
-        backgroundColor: kThemeColor,
         automaticallyImplyLeading: false,
+        elevation: 0,
+        centerTitle: true,
+        backgroundColor: Colors.grey.shade200,
+        title: Text("Profile",
+            style: TextStyle(
+                color: kThemeColor, fontWeight: FontWeight.bold, fontSize: 25)),
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 18.0, bottom: 10),
-              child: Center(
-                  child: CircleAvatar(
-                radius: 70,
-                backgroundColor: kThemeColor,
-                backgroundImage: NetworkImage(
-                    "https://media.licdn.com/dms/image/D5603AQFD6ld3NWc2HQ/profile-displayphoto-shrink_200_200/0/1684164054868?e=2147483647&v=beta&t=cwQoyfhgAl_91URX5FTEXLwLDEHWe1H337EMebpgntQ"),
-              )),
-            ),
-            Text(
-              user?.displayName ?? "Guest",
-              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 20),
-            Divider(
-              color: Colors.grey,
-            ),
-            Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
+      body: NotificationListener<OverscrollIndicatorNotification>(
+        onNotification: (overscroll) {
+          overscroll.disallowIndicator();
+          return true;
+        },
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 18.0, bottom: 10),
+                child: Center(
+                    child: CircleAvatar(
+                  radius: 70,
+                  backgroundColor: kThemeColor,
+                  backgroundImage: const NetworkImage(
+                      "https://media.licdn.com/dms/image/D5603AQFD6ld3NWc2HQ/profile-displayphoto-shrink_200_200/0/1684164054868?e=2147483647&v=beta&t=cwQoyfhgAl_91URX5FTEXLwLDEHWe1H337EMebpgntQ"),
+                )),
               ),
-              shadowColor: appBarColor.withOpacity(0.5),
-              child: ListTile(
-                leading: Icon(Icons.person_2_outlined),
-                title: Text('Information'),
-                trailing: Icon(Icons.chevron_right, color: appBarColor),
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => InformationDetails()));
-                },
+              Text(
+                user?.displayName ?? "Guest",
+                style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
               ),
-            ),
-            Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
+              const SizedBox(height: 20),
+              const Divider(
+                color: Colors.grey,
               ),
-              shadowColor: appBarColor.withOpacity(0.5),
-              child: ListTile(
-                leading: Icon(Icons.shopping_cart),
-                title: Text('Orders'),
-                trailing: Icon(Icons.chevron_right, color: appBarColor),
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>OrderPage()));
-                },
-              ),
-            ),
-            Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              shadowColor: appBarColor.withOpacity(0.5),
-              child: ListTile(
-                leading: Icon(Icons.favorite),
-                title: Text('Wishlist'),
-                trailing: Icon(Icons.chevron_right, color: appBarColor),
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=>WishlistPage()));
-                },
-              ),
-            ),
-            // Card(
-            //   shape: RoundedRectangleBorder(
-            //     borderRadius: BorderRadius.circular(10.0),
-            //   ),
-            //   shadowColor: appBarColor.withOpacity(0.5),
-            //   child: ListTile(
-            //     leading: Icon(Icons.credit_card),
-            //     title: Text('Payment Methods'),
-            //     trailing: Icon(Icons.chevron_right, color: appBarColor),
-            //     onTap: () {
-            //       // Navigator.push(context, MaterialPageRoute(builder: (context)=>InformationPage()));
-            //     },
-            //   ),
-            // ),
-            // Card(
-            //   shape: RoundedRectangleBorder(
-            //     borderRadius: BorderRadius.circular(10.0),
-            //   ),
-            //   shadowColor: appBarColor.withOpacity(0.5),
-            //   child: ListTile(
-            //     leading: Icon(Icons.settings),
-            //     title: Text('Settings'),
-            //     trailing: Icon(Icons.chevron_right, color: appBarColor),
-            //     onTap: () {
-            //       // Navigator.push(context, MaterialPageRoute(builder: (context)=>InformationPage()));
-            //     },
-            //   ),
-            // ),
-            Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              shadowColor: appBarColor.withOpacity(0.5),
-              child: ListTile(
-                  leading: Icon(Icons.logout),
-                  title: Text('Logout'),
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                shadowColor: appBarColor.withOpacity(0.5),
+                child: ListTile(
+                  leading: const Icon(Icons.person_2_outlined),
+                  title: const Text('Information'),
                   trailing: Icon(Icons.chevron_right, color: appBarColor),
-                  onTap: _signOut),
-            ),
-          ],
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const InformationDetails()));
+                  },
+                ),
+              ),
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                shadowColor: appBarColor.withOpacity(0.5),
+                child: ListTile(
+                  leading: const Icon(Icons.shopping_cart),
+                  title: const Text('Orders'),
+                  trailing: Icon(Icons.chevron_right, color: appBarColor),
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => const OrderPage()));
+                  },
+                ),
+              ),
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                shadowColor: appBarColor.withOpacity(0.5),
+                child: ListTile(
+                  leading: const Icon(Icons.favorite),
+                  title: const Text('Wishlist'),
+                  trailing: Icon(Icons.chevron_right, color: appBarColor),
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => const WishlistPage()));
+                  },
+                ),
+              ),
+              // Card(
+              //   shape: RoundedRectangleBorder(
+              //     borderRadius: BorderRadius.circular(10.0),
+              //   ),
+              //   shadowColor: appBarColor.withOpacity(0.5),
+              //   child: ListTile(
+              //     leading: Icon(Icons.credit_card),
+              //     title: Text('Payment Methods'),
+              //     trailing: Icon(Icons.chevron_right, color: appBarColor),
+              //     onTap: () {
+              //       // Navigator.push(context, MaterialPageRoute(builder: (context)=>InformationPage()));
+              //     },
+              //   ),
+              // ),
+              // Card(
+              //   shape: RoundedRectangleBorder(
+              //     borderRadius: BorderRadius.circular(10.0),
+              //   ),
+              //   shadowColor: appBarColor.withOpacity(0.5),
+              //   child: ListTile(
+              //     leading: Icon(Icons.settings),
+              //     title: Text('Settings'),
+              //     trailing: Icon(Icons.chevron_right, color: appBarColor),
+              //     onTap: () {
+              //       // Navigator.push(context, MaterialPageRoute(builder: (context)=>InformationPage()));
+              //     },
+              //   ),
+              // ),
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                shadowColor: appBarColor.withOpacity(0.5),
+                child: ListTile(
+                    leading: const Icon(Icons.logout),
+                    title: const Text('Logout'),
+                    trailing: Icon(Icons.chevron_right, color: appBarColor),
+                    onTap: _signOut),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -142,10 +155,10 @@ class _ProfilePageState extends State<ProfilePage> {
       await FirebaseAuth.instance.signOut();
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => SplashScreen()),
+        MaterialPageRoute(builder: (context) => const SplashScreen()),
       );
     } catch (e) {
-      print("Error signing out: $e");
+      log("Error signing out: $e");
     }
   }
 }

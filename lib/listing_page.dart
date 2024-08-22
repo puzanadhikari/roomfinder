@@ -3,12 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:meroapp/provider/pageProvider.dart';
 import 'package:meroapp/roomdetail.dart';
 import 'package:provider/provider.dart';
-
+import 'package:shimmer/shimmer.dart';
 import 'Constants/styleConsts.dart';
 import 'calculation.dart';
 import 'model/onSaleModel.dart';
-
-
 
 class Listing extends StatefulWidget {
   double lat, lng;
@@ -21,6 +19,7 @@ class Listing extends StatefulWidget {
 
 class _ListingState extends State<Listing> {
   String searchQuery = '';
+
   List<Room> sortedRoomsByDistance(
       List<Room> rooms, double userLat, double userLng) {
     rooms.sort((a, b) {
@@ -30,6 +29,7 @@ class _ListingState extends State<Listing> {
     });
     return rooms;
   }
+
   Future<List<Room>> fetchMostSearchedProducts() async {
     final QuerySnapshot snapshot = await FirebaseFirestore.instance
         .collection('searchHistory')
@@ -73,6 +73,7 @@ class _ListingState extends State<Listing> {
     }
     return mostSearchedProducts;
   }
+
   Future<List<Room>> fetchRooms() async {
     final QuerySnapshot snapshot = await FirebaseFirestore.instance
         .collection('onSale')
@@ -103,689 +104,1191 @@ class _ListingState extends State<Listing> {
       );
     }).toList();
   }
+
   @override
   Widget build(BuildContext context) {
     final pageProvider = Provider.of<PageProvider>(context);
-    return  WillPopScope(
-      onWillPop: ()async{
+    return WillPopScope(
+      onWillPop: () async {
         pageProvider.setChoice("From Main");
         return true;
       },
       child: Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           elevation: 0,
           centerTitle: true,
           backgroundColor: Colors.grey.shade200,
-          title: Text(pageProvider.choice,
+          title: Text(
+              // pageProvider.choice,
+              "Listing",
               style: TextStyle(
-                  color: kThemeColor, fontWeight: FontWeight.bold, fontSize: 25)),
+                  color: kThemeColor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 25)),
         ),
-          body: pageProvider.choice=="From Main" ?
-              SingleChildScrollView(
-                child: Column(
-                  children: [
-                    FutureBuilder<List<Room>>(
-                      future: fetchMostSearchedProducts(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return SizedBox(
-                              height: 300,
-                              child: Center(
-                                  child: CircularProgressIndicator(
-                                      color: kThemeColor)));
-                        } else if (snapshot.hasError) {
-                          return Center(child: Text('Error: ${snapshot.error}'));
-                        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                          return const Center(child: Text('No products found.'));
-                        }
-                        final displayedProducts =
-                        snapshot.data!;
-                        return Column(
-                          children: [
-                            Text("Most searched"),
-                            ListView.builder(
-                              itemCount: displayedProducts.length,
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemBuilder: (context, index) {
-                                final product = displayedProducts[index];
-                                return GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            RoomDetailPage(room: product),
-                                      ),
-                                    );
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(16.0),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.grey.shade300,
-                                          blurRadius: 5,
-                                          offset: Offset(0, 4),
-                                        ),
-                                      ],
-                                    ),
-                                    child: Card(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(16.0),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 8.0),
-                                        child: Row(
-                                          children: [
-                                            ClipRRect(
-                                              borderRadius:
-                                              const BorderRadius.horizontal(
-                                                left: Radius.circular(16.0),
-                                                right: Radius.circular(16.0),
-                                              ),
-                                              child: Image.network(
-                                                product.photo.isNotEmpty
-                                                    ? product.photo[0]
-                                                    : 'https://via.placeholder.com/150',
-                                                height: 100,
-                                                width: 100,
-                                                fit: BoxFit.cover,
-                                              ),
-                                            ),
-                                            Expanded(
-                                              child: Padding(
-                                                padding:
-                                                const EdgeInsets.all(16.0),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                                  mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                                  children: [
-                                                    Text(
-                                                      product.name.toUpperCase(),
-                                                      style: TextStyle(
-                                                        color: kThemeColor,
-                                                        fontWeight:
-                                                        FontWeight.bold,
-                                                        fontSize: 18,
-                                                      ),
-                                                    ),
-                                                    const SizedBox(height: 8),
-                                                    Text(
-                                                      product.locationName,
-                                                      style: TextStyle(
-                                                        color:
-                                                        Colors.grey.shade700,
-                                                        fontSize: 14,
-                                                      ),
-                                                    ),
-                                                    const SizedBox(height: 8),
-                                                    Text(
-                                                      "Rs. 8000/ per month",
-                                                      style: TextStyle(
-                                                        color: kThemeColor,
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                        FontWeight.w600,
-                                                      ),
-                                                    ),
-                                                    SizedBox(height: 20),
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                      children: [
-                                                        Row(
-                                                          children: [
-                                                            Icon(
-                                                              Icons
-                                                                  .location_on_rounded,
-                                                              size: 16,
-                                                              color: kThemeColor,
-                                                            ),
-
-                                                          ],
-                                                        ),
-                                                        Row(
-                                                          children: [
-                                                            Icon(
-                                                              Icons
-                                                                  .do_not_disturb_on_total_silence,
-                                                              size: 16,
-                                                              color: kThemeColor,
-                                                            ),
-                                                            Text(
-                                                              "Available",
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .black45),
-                                                            )
-                                                          ],
-                                                        )
-                                                      ],
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                    FutureBuilder<List<Room>>(
-                      future: fetchRooms(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return SizedBox(
-                              height: 300,
-                              child: Center(
-                                  child: CircularProgressIndicator(
-                                      color: kThemeColor)));
-                        } else if (snapshot.hasError) {
-                          return Center(child: Text('Error: ${snapshot.error}'));
-                        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                          return const Center(child: Text('No rooms available.'));
-                        }
-                        // Filter and sort rooms based on search query
-                        List<Room> filteredRooms = snapshot.data!
-                            .where((room) => room.name
-                            .toLowerCase()
-                            .contains(searchQuery.toLowerCase()))
-                            .toList();
-
-                        // Sort the filtered rooms by distance
-                        List<Room> sortedRooms = sortedRoomsByDistance(
-                            filteredRooms, widget.lat, widget.lng);
-
-                        sortedRooms =  snapshot.data!;
-
-                        return Column(
-                          children: [
-                            Text("Suggested"),
-                            ListView.builder(
-                              itemCount: sortedRooms.length,
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemBuilder: (context, index) {
-                                final room = sortedRooms[index];
-                                return GestureDetector(
-                                  onTap: (){
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            RoomDetailPage(room: room),
-                                      ),
-                                    );
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(16.0),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.grey.shade300,
-                                          blurRadius: 5,
-                                          offset: Offset(0, 4),
-                                        ),
-                                      ],
-                                    ),
-                                    child: Card(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(16.0),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 8.0),
-                                        child: Row(
-                                          children: [
-                                            ClipRRect(
-                                              borderRadius:
-                                              const BorderRadius.horizontal(
-                                                left: Radius.circular(16.0),
-                                                right: Radius.circular(16.0),
-                                              ),
-                                              child: Image.network(
-                                                room.photo.isNotEmpty
-                                                    ? room.photo[0]
-                                                    : 'https://via.placeholder.com/150',
-                                                height: 100,
-                                                width: 100,
-                                                fit: BoxFit.cover,
-                                              ),
-                                            ),
-                                            Expanded(
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(16.0),
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                                  mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                                  children: [
-                                                    Text(
-                                                      room.name.toUpperCase(),
-                                                      style: TextStyle(
-                                                        color: kThemeColor,
-                                                        fontWeight: FontWeight.bold,
-                                                        fontSize: 18,
-                                                      ),
-                                                    ),
-                                                    const SizedBox(height: 8),
-                                                    Text(
-                                                      room.locationName,
-                                                      style: TextStyle(
-                                                        color: Colors.grey.shade700,
-                                                        fontSize: 14,
-                                                      ),
-                                                    ),
-                                                    const SizedBox(height: 8),
-                                                    Text(
-                                                      "Capacity: ${room.capacity}",
-                                                      style: TextStyle(
-                                                        color: kThemeColor,
-                                                        fontSize: 14,
-                                                        fontWeight: FontWeight.w600,
-                                                      ),
-                                                    ),
-                                                    SizedBox(height: 20),
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                      children: [
-                                                        Row(
-                                                          children: [
-                                                            Icon(
-                                                                Icons
-                                                                    .location_on_rounded,
-                                                                size: 16,
-                                                                color: kThemeColor),
-                                                            // Text(
-                                                            //   "${(sortedRooms[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
-                                                            //   style: TextStyle(
-                                                            //       color: Colors
-                                                            //           .black45),
-                                                            // ),
-                                                          ],
-                                                        ),
-                                                        Row(
-                                                          children: [
-                                                            Icon(Icons.check_circle,
-                                                                size: 16,
-                                                                color: kThemeColor),
-                                                            Text(
-                                                              "Available",
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .black45),
-                                                            )
-                                                          ],
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-
-                          ],
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              )
-              :pageProvider.choice=="Suggested"?
-
-          FutureBuilder<List<Room>>(
-            future: fetchRooms(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return SizedBox(
-                    height: 300,
-                    child: Center(
-                        child: CircularProgressIndicator(
-                            color: kThemeColor)));
-              } else if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}'));
-              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return const Center(child: Text('No rooms available.'));
-              }
-              // Filter and sort rooms based on search query
-              List<Room> filteredRooms = snapshot.data!
-                  .where((room) => room.name
-                  .toLowerCase()
-                  .contains(searchQuery.toLowerCase()))
-                  .toList();
-
-              // Sort the filtered rooms by distance
-              List<Room> sortedRooms = sortedRoomsByDistance(
-                  filteredRooms, widget.lat, widget.lng);
-
-              sortedRooms =  snapshot.data!;
-
-              return SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Text("Suggested"),
-                    ListView.builder(
-                      itemCount: sortedRooms.length,
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        final room = sortedRooms[index];
-                        return GestureDetector(
-                          onTap: (){
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    RoomDetailPage(room: room),
-                              ),
-                            );
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(16.0),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.shade300,
-                                  blurRadius: 5,
-                                  offset: Offset(0, 4),
-                                ),
-                              ],
-                            ),
-                            child: Card(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16.0),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 8.0),
-                                child: Row(
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius:
-                                      const BorderRadius.horizontal(
-                                        left: Radius.circular(16.0),
-                                        right: Radius.circular(16.0),
-                                      ),
-                                      child: Image.network(
-                                        room.photo.isNotEmpty
-                                            ? room.photo[0]
-                                            : 'https://via.placeholder.com/150',
-                                        height: 100,
-                                        width: 100,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(16.0),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                          mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              room.name.toUpperCase(),
-                                              style: TextStyle(
-                                                color: kThemeColor,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 18,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 8),
-                                            Text(
-                                              room.locationName,
-                                              style: TextStyle(
-                                                color: Colors.grey.shade700,
-                                                fontSize: 14,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 8),
-                                            Text(
-                                              "Capacity: ${room.capacity}",
-                                              style: TextStyle(
-                                                color: kThemeColor,
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                            ),
-                                            SizedBox(height: 20),
-                                            Row(
-                                              mainAxisAlignment:
-                                              MainAxisAlignment
-                                                  .spaceBetween,
-                                              children: [
-                                                Row(
-                                                  children: [
-                                                    Icon(
-                                                        Icons
-                                                            .location_on_rounded,
-                                                        size: 16,
-                                                        color: kThemeColor),
-                                                    // Text(
-                                                    //   "${(sortedRooms[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
-                                                    //   style: TextStyle(
-                                                    //       color: Colors
-                                                    //           .black45),
-                                                    // ),
-                                                  ],
-                                                ),
-                                                Row(
-                                                  children: [
-                                                    Icon(Icons.check_circle,
-                                                        size: 16,
-                                                        color: kThemeColor),
-                                                    Text(
-                                                      "Available",
-                                                      style: TextStyle(
-                                                          color: Colors
-                                                              .black45),
-                                                    )
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-
-                  ],
-                ),
-              );
-            },
-          )
-              :FutureBuilder<List<Room>>(
-              future: fetchMostSearchedProducts(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return SizedBox(
-                      height: 300,
-                      child: Center(
-                          child: CircularProgressIndicator(
-                              color: kThemeColor)));
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text('No products found.'));
-                }
-                final displayedProducts =
-                     snapshot.data!;
-                return SingleChildScrollView(
+        body: pageProvider.choice == "From Main"
+            ? NotificationListener<OverscrollIndicatorNotification>(
+                onNotification: (overscroll) {
+                  overscroll.disallowIndicator();
+                  return true;
+                },
+                child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      ListView.builder(
-                        itemCount: displayedProducts.length,
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemBuilder: (context, index) {
-                          final product = displayedProducts[index];
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      RoomDetailPage(room: product),
-                                ),
-                              );
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(16.0),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.shade300,
-                                    blurRadius: 5,
-                                    offset: Offset(0, 4),
+                      FutureBuilder<List<Room>>(
+                        future: fetchMostSearchedProducts(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Shimmer.fromColors(
+                                    baseColor: Colors.grey.shade300,
+                                    highlightColor: Colors.grey.shade100,
+                                    child: Container(
+                                      width: 150,
+                                      height: 20,
+                                      color: Colors.white,
+                                    ),
                                   ),
-                                ],
-                              ),
-                              child: Card(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16.0),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 8.0),
-                                  child: Row(
-                                    children: [
-                                      ClipRRect(
-                                        borderRadius:
-                                        const BorderRadius.horizontal(
-                                          left: Radius.circular(16.0),
-                                          right: Radius.circular(16.0),
-                                        ),
-                                        child: Image.network(
-                                          product.photo.isNotEmpty
-                                              ? product.photo[0]
-                                              : 'https://via.placeholder.com/150',
-                                          height: 100,
-                                          width: 100,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Padding(
-                                          padding:
-                                          const EdgeInsets.all(16.0),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                            mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                  const SizedBox(height: 16),
+                                  ListView.builder(
+                                    itemCount: 3,
+                                    shrinkWrap: true,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    itemBuilder: (context, index) => Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 16.0),
+                                      child: Shimmer.fromColors(
+                                        baseColor: Colors.grey.shade300,
+                                        highlightColor: Colors.grey.shade100,
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(16.0),
+                                            color: Colors.white,
+                                          ),
+                                          child: Row(
                                             children: [
-                                              Text(
-                                                product.name.toUpperCase(),
-                                                style: TextStyle(
-                                                  color: kThemeColor,
-                                                  fontWeight:
-                                                  FontWeight.bold,
-                                                  fontSize: 18,
+                                              ClipRRect(
+                                                borderRadius: const BorderRadius
+                                                    .horizontal(
+                                                  left: Radius.circular(16.0),
+                                                  right: Radius.circular(16.0),
+                                                ),
+                                                child: Container(
+                                                  height: 100,
+                                                  width: 100,
+                                                  color: Colors.grey.shade300,
                                                 ),
                                               ),
-                                              const SizedBox(height: 8),
-                                              Text(
-                                                product.locationName,
-                                                style: TextStyle(
-                                                  color:
-                                                  Colors.grey.shade700,
-                                                  fontSize: 14,
-                                                ),
-                                              ),
-                                              const SizedBox(height: 8),
-                                              Text(
-                                                "Rs. 8000/ per month",
-                                                style: TextStyle(
-                                                  color: kThemeColor,
-                                                  fontSize: 14,
-                                                  fontWeight:
-                                                  FontWeight.w600,
-                                                ),
-                                              ),
-                                              SizedBox(height: 20),
-                                              Row(
-                                                mainAxisAlignment:
-                                                MainAxisAlignment
-                                                    .spaceBetween,
-                                                children: [
-                                                  Row(
+                                              Expanded(
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(
+                                                      16.0),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
                                                     children: [
-                                                      Icon(
-                                                        Icons
-                                                            .location_on_rounded,
-                                                        size: 16,
-                                                        color: kThemeColor,
+                                                      Container(
+                                                        width: double.infinity,
+                                                        height: 16.0,
+                                                        color: Colors
+                                                            .grey.shade300,
                                                       ),
-
+                                                      const SizedBox(height: 8),
+                                                      Container(
+                                                        width: 100,
+                                                        height: 16.0,
+                                                        color: Colors
+                                                            .grey.shade300,
+                                                      ),
+                                                      const SizedBox(height: 8),
+                                                      Container(
+                                                        width: 80,
+                                                        height: 16.0,
+                                                        color: Colors
+                                                            .grey.shade300,
+                                                      ),
+                                                      const SizedBox(
+                                                          height: 20),
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: [
+                                                          Container(
+                                                            width: 60,
+                                                            height: 16.0,
+                                                            color: Colors
+                                                                .grey.shade300,
+                                                          ),
+                                                          Container(
+                                                            width: 80,
+                                                            height: 16.0,
+                                                            color: Colors
+                                                                .grey.shade300,
+                                                          ),
+                                                        ],
+                                                      ),
                                                     ],
                                                   ),
-                                                  Row(
-                                                    children: [
-                                                      Icon(
-                                                        Icons
-                                                            .do_not_disturb_on_total_silence,
-                                                        size: 16,
-                                                        color: kThemeColor,
-                                                      ),
-                                                      Text(
-                                                        "Available",
-                                                        style: TextStyle(
-                                                            color: Colors
-                                                                .black45),
-                                                      )
-                                                    ],
-                                                  )
-                                                ],
-                                              )
+                                                ),
+                                              ),
                                             ],
                                           ),
                                         ),
                                       ),
-                                    ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          } else if (snapshot.hasError) {
+                            return Center(
+                                child: Text('Error: ${snapshot.error}'));
+                          } else if (!snapshot.hasData ||
+                              snapshot.data!.isEmpty) {
+                            return const Center(
+                                child: Text('No products found.'));
+                          }
+                          final displayedProducts = snapshot.data!;
+                          return Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  "Most searched",
+                                  style: TextStyle(
+                                    color: Color(0xFF072A2E),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
+                                ListView.builder(
+                                  itemCount: displayedProducts.length,
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemBuilder: (context, index) {
+                                    final product = displayedProducts[index];
+                                    return GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                RoomDetailPage(room: product),
+                                          ),
+                                        );
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(16.0),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.grey.shade300,
+                                              blurRadius: 5,
+                                              offset: const Offset(0, 4),
+                                            ),
+                                          ],
+                                        ),
+                                        child: Card(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(16.0),
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 8.0),
+                                            child: Row(
+                                              children: [
+                                                ClipRRect(
+                                                  borderRadius:
+                                                      const BorderRadius
+                                                          .horizontal(
+                                                    left: Radius.circular(16.0),
+                                                    right:
+                                                        Radius.circular(16.0),
+                                                  ),
+                                                  child: Image.network(
+                                                    product.photo.isNotEmpty
+                                                        ? product.photo[0]
+                                                        : 'https://via.placeholder.com/150',
+                                                    height: 100,
+                                                    width: 100,
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                ),
+                                                Expanded(
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            16.0),
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Text(
+                                                          product.name
+                                                              .toUpperCase(),
+                                                          style: TextStyle(
+                                                            color: kThemeColor,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 18,
+                                                          ),
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 8),
+                                                        Text(
+                                                          product.locationName,
+                                                          style: TextStyle(
+                                                            color: Colors
+                                                                .grey.shade700,
+                                                            fontSize: 14,
+                                                          ),
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 8),
+                                                        Text(
+                                                          "Rs. 8000/ per month",
+                                                          style: TextStyle(
+                                                            color: kThemeColor,
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                          ),
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 20),
+                                                        Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: [
+                                                            Row(
+                                                              children: [
+                                                                Icon(
+                                                                  Icons
+                                                                      .location_on_rounded,
+                                                                  size: 16,
+                                                                  color:
+                                                                      kThemeColor,
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            Row(
+                                                              children: [
+                                                                Icon(
+                                                                    Icons
+                                                                        .check_circle,
+                                                                    size: 16,
+                                                                    color:
+                                                                        kThemeColor),
+                                                                const Text(
+                                                                  "Available",
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .black45),
+                                                                )
+                                                              ],
+                                                            )
+                                                          ],
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                      FutureBuilder<List<Room>>(
+                        future: fetchRooms(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Shimmer.fromColors(
+                                    baseColor: Colors.grey.shade300,
+                                    highlightColor: Colors.grey.shade100,
+                                    child: Container(
+                                      width: 150,
+                                      height: 20,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  ListView.builder(
+                                    itemCount: 3,
+                                    shrinkWrap: true,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    itemBuilder: (context, index) => Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 16.0),
+                                      child: Shimmer.fromColors(
+                                        baseColor: Colors.grey.shade300,
+                                        highlightColor: Colors.grey.shade100,
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(16.0),
+                                            color: Colors.white,
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              ClipRRect(
+                                                borderRadius: const BorderRadius
+                                                    .horizontal(
+                                                  left: Radius.circular(16.0),
+                                                  right: Radius.circular(16.0),
+                                                ),
+                                                child: Container(
+                                                  height: 100,
+                                                  width: 100,
+                                                  color: Colors.grey.shade300,
+                                                ),
+                                              ),
+                                              Expanded(
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(
+                                                      16.0),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Container(
+                                                        width: double.infinity,
+                                                        height: 16.0,
+                                                        color: Colors
+                                                            .grey.shade300,
+                                                      ),
+                                                      const SizedBox(height: 8),
+                                                      Container(
+                                                        width: 100,
+                                                        height: 16.0,
+                                                        color: Colors
+                                                            .grey.shade300,
+                                                      ),
+                                                      const SizedBox(height: 8),
+                                                      Container(
+                                                        width: 80,
+                                                        height: 16.0,
+                                                        color: Colors
+                                                            .grey.shade300,
+                                                      ),
+                                                      const SizedBox(
+                                                          height: 20),
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: [
+                                                          Container(
+                                                            width: 60,
+                                                            height: 16.0,
+                                                            color: Colors
+                                                                .grey.shade300,
+                                                          ),
+                                                          Container(
+                                                            width: 80,
+                                                            height: 16.0,
+                                                            color: Colors
+                                                                .grey.shade300,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
+                            );
+                          } else if (snapshot.hasError) {
+                            return Center(
+                                child: Text('Error: ${snapshot.error}'));
+                          } else if (!snapshot.hasData ||
+                              snapshot.data!.isEmpty) {
+                            return const Center(
+                                child: Text('No rooms available.'));
+                          }
+                          // Filter and sort rooms based on search query
+                          List<Room> filteredRooms = snapshot.data!
+                              .where((room) => room.name
+                                  .toLowerCase()
+                                  .contains(searchQuery.toLowerCase()))
+                              .toList();
+
+                          // Sort the filtered rooms by distance
+                          List<Room> sortedRooms = sortedRoomsByDistance(
+                              filteredRooms, widget.lat, widget.lng);
+
+                          sortedRooms = snapshot.data!;
+
+                          return Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  "Suggested",
+                                  style: TextStyle(
+                                    color: Color(0xFF072A2E),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                ListView.builder(
+                                  itemCount: sortedRooms.length,
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemBuilder: (context, index) {
+                                    final room = sortedRooms[index];
+                                    return GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                RoomDetailPage(room: room),
+                                          ),
+                                        );
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(16.0),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.grey.shade300,
+                                              blurRadius: 5,
+                                              offset: const Offset(0, 4),
+                                            ),
+                                          ],
+                                        ),
+                                        child: Card(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(16.0),
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 8.0),
+                                            child: Row(
+                                              children: [
+                                                ClipRRect(
+                                                  borderRadius:
+                                                      const BorderRadius
+                                                          .horizontal(
+                                                    left: Radius.circular(16.0),
+                                                    right:
+                                                        Radius.circular(16.0),
+                                                  ),
+                                                  child: Image.network(
+                                                    room.photo.isNotEmpty
+                                                        ? room.photo[0]
+                                                        : 'https://via.placeholder.com/150',
+                                                    height: 100,
+                                                    width: 100,
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                ),
+                                                Expanded(
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            16.0),
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Text(
+                                                          room.name
+                                                              .toUpperCase(),
+                                                          style: TextStyle(
+                                                            color: kThemeColor,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 18,
+                                                          ),
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 8),
+                                                        Text(
+                                                          room.locationName,
+                                                          style: TextStyle(
+                                                            color: Colors
+                                                                .grey.shade700,
+                                                            fontSize: 14,
+                                                          ),
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 8),
+                                                        Text(
+                                                          "Capacity: ${room.capacity}",
+                                                          style: TextStyle(
+                                                            color: kThemeColor,
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                          ),
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 20),
+                                                        Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: [
+                                                            Row(
+                                                              children: [
+                                                                Icon(
+                                                                    Icons
+                                                                        .location_on_rounded,
+                                                                    size: 16,
+                                                                    color:
+                                                                        kThemeColor),
+                                                                // Text(
+                                                                //   "${(sortedRooms[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
+                                                                //   style: TextStyle(
+                                                                //       color: Colors
+                                                                //           .black45),
+                                                                // ),
+                                                              ],
+                                                            ),
+                                                            Row(
+                                                              children: [
+                                                                Icon(
+                                                                    Icons
+                                                                        .check_circle,
+                                                                    size: 16,
+                                                                    color:
+                                                                        kThemeColor),
+                                                                const Text(
+                                                                  "Available",
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .black45),
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
                             ),
                           );
                         },
                       ),
                     ],
                   ),
-                );
-              },
-            ),
+                ),
+              )
+            : pageProvider.choice == "Suggested"
+                ? FutureBuilder<List<Room>>(
+                    future: fetchRooms(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Shimmer.fromColors(
+                                baseColor: Colors.grey.shade300,
+                                highlightColor: Colors.grey.shade100,
+                                child: Container(
+                                  width: 150,
+                                  height: 20,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              ListView.builder(
+                                itemCount: 3,
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemBuilder: (context, index) => Padding(
+                                  padding: const EdgeInsets.only(bottom: 16.0),
+                                  child: Shimmer.fromColors(
+                                    baseColor: Colors.grey.shade300,
+                                    highlightColor: Colors.grey.shade100,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(16.0),
+                                        color: Colors.white,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius:
+                                                const BorderRadius.horizontal(
+                                              left: Radius.circular(16.0),
+                                              right: Radius.circular(16.0),
+                                            ),
+                                            child: Container(
+                                              height: 100,
+                                              width: 100,
+                                              color: Colors.grey.shade300,
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(16.0),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    width: double.infinity,
+                                                    height: 16.0,
+                                                    color: Colors.grey.shade300,
+                                                  ),
+                                                  const SizedBox(height: 8),
+                                                  Container(
+                                                    width: 100,
+                                                    height: 16.0,
+                                                    color: Colors.grey.shade300,
+                                                  ),
+                                                  const SizedBox(height: 8),
+                                                  Container(
+                                                    width: 80,
+                                                    height: 16.0,
+                                                    color: Colors.grey.shade300,
+                                                  ),
+                                                  const SizedBox(height: 20),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Container(
+                                                        width: 60,
+                                                        height: 16.0,
+                                                        color: Colors
+                                                            .grey.shade300,
+                                                      ),
+                                                      Container(
+                                                        width: 80,
+                                                        height: 16.0,
+                                                        color: Colors
+                                                            .grey.shade300,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Center(child: Text('Error: ${snapshot.error}'));
+                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return const Center(child: Text('No rooms available.'));
+                      }
+                      // Filter and sort rooms based on search query
+                      List<Room> filteredRooms = snapshot.data!
+                          .where((room) => room.name
+                              .toLowerCase()
+                              .contains(searchQuery.toLowerCase()))
+                          .toList();
+
+                      // Sort the filtered rooms by distance
+                      List<Room> sortedRooms = sortedRoomsByDistance(
+                          filteredRooms, widget.lat, widget.lng);
+
+                      sortedRooms = snapshot.data!;
+
+                      return NotificationListener<
+                          OverscrollIndicatorNotification>(
+                        onNotification: (overscroll) {
+                          overscroll.disallowIndicator();
+                          return true;
+                        },
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              const Text("Suggested"),
+                              ListView.builder(
+                                itemCount: sortedRooms.length,
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemBuilder: (context, index) {
+                                  final room = sortedRooms[index];
+                                  return GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              RoomDetailPage(room: room),
+                                        ),
+                                      );
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(16.0),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey.shade300,
+                                            blurRadius: 5,
+                                            offset: const Offset(0, 4),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Card(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(16.0),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 8.0),
+                                          child: Row(
+                                            children: [
+                                              ClipRRect(
+                                                borderRadius: const BorderRadius
+                                                    .horizontal(
+                                                  left: Radius.circular(16.0),
+                                                  right: Radius.circular(16.0),
+                                                ),
+                                                child: Image.network(
+                                                  room.photo.isNotEmpty
+                                                      ? room.photo[0]
+                                                      : 'https://via.placeholder.com/150',
+                                                  height: 100,
+                                                  width: 100,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                              Expanded(
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(
+                                                      16.0),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Text(
+                                                        room.name.toUpperCase(),
+                                                        style: TextStyle(
+                                                          color: kThemeColor,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 18,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(height: 8),
+                                                      Text(
+                                                        room.locationName,
+                                                        style: TextStyle(
+                                                          color: Colors
+                                                              .grey.shade700,
+                                                          fontSize: 14,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(height: 8),
+                                                      Text(
+                                                        "Capacity: ${room.capacity}",
+                                                        style: TextStyle(
+                                                          color: kThemeColor,
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(
+                                                          height: 20),
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: [
+                                                          Row(
+                                                            children: [
+                                                              Icon(
+                                                                  Icons
+                                                                      .location_on_rounded,
+                                                                  size: 16,
+                                                                  color:
+                                                                      kThemeColor),
+                                                              // Text(
+                                                              //   "${(sortedRooms[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
+                                                              //   style: TextStyle(
+                                                              //       color: Colors
+                                                              //           .black45),
+                                                              // ),
+                                                            ],
+                                                          ),
+                                                          Row(
+                                                            children: [
+                                                              Icon(
+                                                                  Icons
+                                                                      .check_circle,
+                                                                  size: 16,
+                                                                  color:
+                                                                      kThemeColor),
+                                                              const Text(
+                                                                "Available",
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .black45),
+                                                              )
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  )
+                : FutureBuilder<List<Room>>(
+                    future: fetchMostSearchedProducts(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Shimmer.fromColors(
+                                baseColor: Colors.grey.shade300,
+                                highlightColor: Colors.grey.shade100,
+                                child: Container(
+                                  width: 150,
+                                  height: 20,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              ListView.builder(
+                                itemCount: 3,
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemBuilder: (context, index) => Padding(
+                                  padding: const EdgeInsets.only(bottom: 16.0),
+                                  child: Shimmer.fromColors(
+                                    baseColor: Colors.grey.shade300,
+                                    highlightColor: Colors.grey.shade100,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(16.0),
+                                        color: Colors.white,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius:
+                                                const BorderRadius.horizontal(
+                                              left: Radius.circular(16.0),
+                                              right: Radius.circular(16.0),
+                                            ),
+                                            child: Container(
+                                              height: 100,
+                                              width: 100,
+                                              color: Colors.grey.shade300,
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(16.0),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    width: double.infinity,
+                                                    height: 16.0,
+                                                    color: Colors.grey.shade300,
+                                                  ),
+                                                  const SizedBox(height: 8),
+                                                  Container(
+                                                    width: 100,
+                                                    height: 16.0,
+                                                    color: Colors.grey.shade300,
+                                                  ),
+                                                  const SizedBox(height: 8),
+                                                  Container(
+                                                    width: 80,
+                                                    height: 16.0,
+                                                    color: Colors.grey.shade300,
+                                                  ),
+                                                  const SizedBox(height: 20),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Container(
+                                                        width: 60,
+                                                        height: 16.0,
+                                                        color: Colors
+                                                            .grey.shade300,
+                                                      ),
+                                                      Container(
+                                                        width: 80,
+                                                        height: 16.0,
+                                                        color: Colors
+                                                            .grey.shade300,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Center(child: Text('Error: ${snapshot.error}'));
+                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return const Center(child: Text('No products found.'));
+                      }
+                      final displayedProducts = snapshot.data!;
+                      return NotificationListener<
+                          OverscrollIndicatorNotification>(
+                        onNotification: (overscroll) {
+                          overscroll.disallowIndicator();
+                          return true;
+                        },
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              ListView.builder(
+                                itemCount: displayedProducts.length,
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemBuilder: (context, index) {
+                                  final product = displayedProducts[index];
+                                  return GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              RoomDetailPage(room: product),
+                                        ),
+                                      );
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(16.0),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.grey.shade300,
+                                            blurRadius: 5,
+                                            offset: const Offset(0, 4),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Card(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(16.0),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 8.0),
+                                          child: Row(
+                                            children: [
+                                              ClipRRect(
+                                                borderRadius: const BorderRadius
+                                                    .horizontal(
+                                                  left: Radius.circular(16.0),
+                                                  right: Radius.circular(16.0),
+                                                ),
+                                                child: Image.network(
+                                                  product.photo.isNotEmpty
+                                                      ? product.photo[0]
+                                                      : 'https://via.placeholder.com/150',
+                                                  height: 100,
+                                                  width: 100,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                              Expanded(
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(
+                                                      16.0),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Text(
+                                                        product.name
+                                                            .toUpperCase(),
+                                                        style: TextStyle(
+                                                          color: kThemeColor,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 18,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(height: 8),
+                                                      Text(
+                                                        product.locationName,
+                                                        style: TextStyle(
+                                                          color: Colors
+                                                              .grey.shade700,
+                                                          fontSize: 14,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(height: 8),
+                                                      Text(
+                                                        "Rs. 8000/ per month",
+                                                        style: TextStyle(
+                                                          color: kThemeColor,
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(
+                                                          height: 20),
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: [
+                                                          Row(
+                                                            children: [
+                                                              Icon(
+                                                                Icons
+                                                                    .location_on_rounded,
+                                                                size: 16,
+                                                                color:
+                                                                    kThemeColor,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          Row(
+                                                            children: [
+                                                              Icon(
+                                                                  Icons
+                                                                      .check_circle,
+                                                                  size: 16,
+                                                                  color:
+                                                                      kThemeColor),
+                                                              const Text(
+                                                                "Available",
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .black45),
+                                                              )
+                                                            ],
+                                                          )
+                                                        ],
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
       ),
     );
   }

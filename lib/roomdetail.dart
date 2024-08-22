@@ -24,30 +24,22 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
   bool _isBooking = false;
   final String _mapApiKey = 'AIzaSyAGFdLuw0m2pCFxNxmFA5EzJia6IzUM3iU';
 
-
   @override
   Widget build(BuildContext context) {
     final wishlistProvider = Provider.of<WishlistProvider>(context);
     log(wishlistProvider.isInWishlist(widget.room).toString());
     List<String> allImages = widget.room.photo;
-    final double carouselHeight = MediaQuery
-        .of(context)
-        .size
-        .height / 3;
+    final double carouselHeight = MediaQuery.of(context).size.height / 3;
     String mapImageUrl = 'https://maps.googleapis.com/maps/api/staticmap?'
         'center=${widget.room.lat},${widget.room.lng}&'
-        'zoom=15&size=800x300&markers=color:red%7C${widget.room.lat},${widget
-        .room.lng}&'
+        'zoom=15&size=800x300&markers=color:red%7C${widget.room.lat},${widget.room.lng}&'
         'key=$_mapApiKey';
 
     return Scaffold(
       body: ModalProgressHUD(
         inAsyncCall: _isBooking,
         child: SizedBox(
-          height: MediaQuery
-              .of(context)
-              .size
-              .height,
+          height: MediaQuery.of(context).size.height,
           child: Stack(
             children: [
               SizedBox(
@@ -85,7 +77,10 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                       Navigator.pop(context);
                     },
                     icon: const Icon(
-                      Icons.arrow_back_ios, color: Colors.white, size: 30,),
+                      Icons.arrow_back_ios,
+                      color: Colors.white,
+                      size: 30,
+                    ),
                   )),
               Positioned(
                 top: carouselHeight - 30,
@@ -102,7 +97,7 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                   child: Padding(
                     padding: const EdgeInsets.all(20.0),
                     child:
-                    NotificationListener<OverscrollIndicatorNotification>(
+                        NotificationListener<OverscrollIndicatorNotification>(
                       onNotification: (overscroll) {
                         overscroll.disallowIndicator();
                         return true;
@@ -140,8 +135,8 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                               children: [
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment
-                                        .start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       const Text(
                                         "1.5 km from Gwarko",
@@ -156,25 +151,31 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                                             color: Color(0xFF4D4D4D),
                                             fontSize: 16),
                                       ),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        "${widget.room.length} * ${widget.room.breadth}",
+                                        style: const TextStyle(
+                                            color: Color(0xFF4D4D4D),
+                                            fontSize: 16),
+                                      ),
                                     ],
                                   ),
                                 ),
                                 const SizedBox(width: 8),
                                 ConstrainedBox(
                                   constraints: BoxConstraints(
-                                    maxWidth: MediaQuery
-                                        .of(context)
-                                        .size
-                                        .width * 0.4, // Adjust as needed
+                                    maxWidth:
+                                        MediaQuery.of(context).size.width *
+                                            0.4, // Adjust as needed
                                   ),
                                   child: mapImageUrl.isNotEmpty
                                       ? Image.network(
-                                    mapImageUrl,
-                                    height: 120,
-                                    fit: BoxFit.cover,
-                                  )
+                                          mapImageUrl,
+                                          height: 120,
+                                          fit: BoxFit.cover,
+                                        )
                                       : Image.network(
-                                      "https://media.licdn.com/dms/image/D5603AQFD6ld3NWc2HQ/profile-displayphoto-shrink_200_200/0/1684164054868?e=2147483647&v=beta&t=cwQoyfhgAl_91URX5FTEXLwLDEHWe1H337EMebpgntQ"),
+                                          "https://media.licdn.com/dms/image/D5603AQFD6ld3NWc2HQ/profile-displayphoto-shrink_200_200/0/1684164054868?e=2147483647&v=beta&t=cwQoyfhgAl_91URX5FTEXLwLDEHWe1H337EMebpgntQ"),
                                 ),
                               ],
                             ),
@@ -298,10 +299,10 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                   top: carouselHeight - 50,
                   child: GestureDetector(
                     onTap: () {
-                      wishlistProvider.isInWishlist(widget.room) == true ?
-                      wishlistProvider.removeFromWishlist(widget.room)
-                      : wishlistProvider.addToWishlist(widget.room);
-                      },
+                      wishlistProvider.isInWishlist(widget.room) == true
+                          ? wishlistProvider.removeFromWishlist(widget.room)
+                          : wishlistProvider.addToWishlist(widget.room);
+                    },
                     child: CircleAvatar(
                       backgroundColor: Colors.white,
                       child: Icon(Icons.bookmark,
