@@ -22,7 +22,7 @@ class _DashBoardState extends State<DashBoard> {
 
       // Optionally, you can show a confirmation message or perform other actions
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Room approved successfully.')),
+        const SnackBar(content: Text('Room approved successfully.')),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -85,7 +85,7 @@ class _DashBoardState extends State<DashBoard> {
                       CircleAvatar(
                         radius: 20,
                         backgroundColor: kThemeColor,
-                        backgroundImage: NetworkImage(
+                        backgroundImage: const NetworkImage(
                             "https://media.licdn.com/dms/image/D5603AQFD6ld3NWc2HQ/profile-displayphoto-shrink_200_200/0/1684164054868?e=2147483647&v=beta&t=cwQoyfhgAl_91URX5FTEXLwLDEHWe1H337EMebpgntQ"),
                       ),
                       Text("Home",
@@ -104,77 +104,95 @@ class _DashBoardState extends State<DashBoard> {
                     ],
                   ),
                   const SizedBox(height: 20),
-                  Divider(color: Color(0xFFD9D6D6), height: 2, thickness: 1),
+                  const Divider(color: Color(0xFFD9D6D6), height: 2, thickness: 1),
                   const SizedBox(height: 10),
-                  StreamBuilder<List<Room>>(
-                    stream: fetchRooms(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(child: CircularProgressIndicator(color: kThemeColor));
-                      }
-                      if (snapshot.hasError) {
-                        return Center(child: Text('Error: ${snapshot.error}', style: TextStyle(color: kThemeColor)));
-                      }
-
-                      final rooms = snapshot.data ?? [];
-
-                      return ListView.builder(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemCount: rooms.length,
-                        itemBuilder: (context, index) {
-                          final room = rooms[index];
-                          return Card(
-                            margin: const EdgeInsets.symmetric(vertical: 8),
-                            elevation: 4,
-                            child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    child: Image.network(
-                                      room.photo.isNotEmpty ? room.photo[0] : '',
-                                      height: 150, // Adjust height as needed
-                                      width: double.infinity,
-                                      fit: BoxFit.cover,
-                                      errorBuilder: (context, error, stackTrace) => Icon(Icons.image_not_supported, size: 150, color: Colors.grey),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    room.name,
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                      color: kThemeColor,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text('Capacity: ${room.capacity}', style: TextStyle(color: kThemeColor)),
-                                  const SizedBox(height: 4),
-                                  Text('Price: \$${room.fohor}', style: TextStyle(color: kThemeColor)),
-                                  const SizedBox(height: 16),
-                                  SizedBox(
-                                    width: double.infinity,
-                                    child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: kThemeColor,
-                                      ),
-                                      onPressed: () {
-                                        approveRoom(room.uid);
-                                      },
-                                      child: const Text('Approve'),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                  Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            "Recently Added Properties",
+                            style: TextStyle(
+                              color: Color(0xFF072A2E),
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
                             ),
+                          ),
+                          IconButton(onPressed: (){}, icon: const Icon(Icons.add_circle_outline))
+                        ],
+                      ),
+                      StreamBuilder<List<Room>>(
+                        stream: fetchRooms(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return Center(child: CircularProgressIndicator(color: kThemeColor));
+                          }
+                          if (snapshot.hasError) {
+                            return Center(child: Text('Error: ${snapshot.error}', style: TextStyle(color: kThemeColor)));
+                          }
+
+                          final rooms = snapshot.data ?? [];
+
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: rooms.length,
+                            itemBuilder: (context, index) {
+                              final room = rooms[index];
+                              return Card(
+                                margin: const EdgeInsets.symmetric(vertical: 8),
+                                elevation: 4,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(10.0),
+                                        child: Image.network(
+                                          room.photo.isNotEmpty ? room.photo[0] : '',
+                                          height: 150, // Adjust height as needed
+                                          width: double.infinity,
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (context, error, stackTrace) => const Icon(Icons.image_not_supported, size: 150, color: Colors.grey),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        room.name,
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: kThemeColor,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text('Capacity: ${room.capacity}', style: TextStyle(color: kThemeColor)),
+                                      const SizedBox(height: 4),
+                                      Text('Price: \$${room.fohor}', style: TextStyle(color: kThemeColor)),
+                                      const SizedBox(height: 16),
+                                      SizedBox(
+                                        width: double.infinity,
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: kThemeColor,
+                                          ),
+                                          onPressed: () {
+                                            approveRoom(room.uid);
+                                          },
+                                          child: const Text('Approve'),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
                           );
                         },
-                      );
-                    },
+                      ),
+                    ],
                   ),
                 ],
               ),

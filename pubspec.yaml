@@ -54,6 +54,7 @@ dependencies:
   firebase_storage:
   provider:
   shimmer: ^3.0.0
+  expandable:
   flutter:
     sdk: flutter
 

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -5,9 +6,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
-
-import 'package:shared_preferences/shared_preferences.dart';
 
 class MapSearchScreen extends StatefulWidget {
   @override
@@ -26,7 +24,6 @@ class _MapSearchScreenState extends State<MapSearchScreen> {
   }
 
   Future<List<String>> _getCitySuggestions(String query) async {
-
     final response = await http.get(
       Uri.parse('https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$query&key=AIzaSyCzZwn-q2Dd8s9RX5nIr32ZJSGEVbFbyPI'),
     );
@@ -41,7 +38,6 @@ class _MapSearchScreenState extends State<MapSearchScreen> {
   }
 
   Future<void> _onCitySelected(String city) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       List<Location> locations = await locationFromAddress(city);
       if (locations.isNotEmpty) {
@@ -53,11 +49,12 @@ class _MapSearchScreenState extends State<MapSearchScreen> {
           _selectedCityName = city;
           _selectedLatLng = selectedLocation;
         });
-    prefs.setDouble("lat", selectedLocation.latitude);
-    prefs.setDouble("lng", selectedLocation.longitude);
-    prefs.setString("locationName", _selectedCityName!);
-        // You can use the latitude and longitude from selectedLocation
-        print("City: $city, Latitude: ${selectedLocation.latitude}, Longitude: ${selectedLocation.longitude}");
+
+        // Return the selected location to the previous page
+        Navigator.pop(context, {
+          'city': _selectedCityName,
+          'latLng': _selectedLatLng,
+        });
       }
     } catch (e) {
       print("Error occurred while selecting city: $e");
@@ -69,52 +66,78 @@ class _MapSearchScreenState extends State<MapSearchScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Search Location'),
+        backgroundColor: Color(0xFF072A2E),
       ),
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TypeAheadField<String>(
-              textFieldConfiguration: TextFieldConfiguration(
-                controller: _searchController,
-                decoration: InputDecoration(
-                  labelText: 'Enter city',
-                  suffixIcon: Icon(Icons.search),
-                ),
+            padding: const EdgeInsets.all(16.0),
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.3),
+                    spreadRadius: 2,
+                    blurRadius: 6,
+                    offset: Offset(0, 2),
+                  ),
+                ],
               ),
-              suggestionsCallback: (pattern) async {
-                return await _getCitySuggestions(pattern);
-              },
-              itemBuilder: (context, suggestion) {
-                return ListTile(
-                  title: Text(suggestion),
-                );
-              },
-              onSuggestionSelected: (suggestion) {
-                _onCitySelected(suggestion);
-              },
+              child: TypeAheadField<String>(
+                textFieldConfiguration: TextFieldConfiguration(
+                  controller: _searchController,
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    labelText: 'Enter city',
+                    suffixIcon: Icon(Icons.search, color: Color(0xFF072A2E)),
+                  ),
+                ),
+                suggestionsCallback: (pattern) async {
+                  return await _getCitySuggestions(pattern);
+                },
+                itemBuilder: (context, suggestion) {
+                  return ListTile(
+                    title: Text(suggestion),
+                    tileColor: Colors.white,
+                  );
+                },
+                onSuggestionSelected: (suggestion) {
+                  _onCitySelected(suggestion);
+                },
+              ),
             ),
           ),
           Expanded(
-            child: GoogleMap(
-              onMapCreated: _onMapCreated,
-              initialCameraPosition: CameraPosition(
-                target: _center,
-                zoom: 14.0,
+            child: Container(
+              margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.3),
+                    spreadRadius: 2,
+                    blurRadius: 6,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12.0),
+                child: GoogleMap(
+                  onMapCreated: _onMapCreated,
+                  initialCameraPosition: CameraPosition(
+                    target: _center,
+                    zoom: 14.0,
+                  ),
+                ),
               ),
             ),
           ),
-          if (_selectedCityName != null && _selectedLatLng != null)
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                'Selected City: $_selectedCityName\nLatitude: ${_selectedLatLng!.latitude}, Longitude: ${_selectedLatLng!.longitude}',
-                textAlign: TextAlign.center,
-              ),
-            ),
         ],
       ),
     );
   }
 }
-
