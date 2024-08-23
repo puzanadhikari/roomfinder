@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../Constants/styleConsts.dart';
 import '../model/onSaleModel.dart';
 
 Future<List<Room>> fetchMyListings() async {
@@ -34,10 +35,13 @@ Future<List<Room>> fetchMyListings() async {
       active: data['active'],
       featured: data['featured'],
       locationName: data['locationName'],
-      status: data['status'] != null ? Map<String, dynamic>.from(data['status']) : {},
+      status: data['status'] != null
+          ? Map<String, dynamic>.from(data['status'])
+          : {},
     );
   }).toList();
 }
+
 class MyListingsPage extends StatefulWidget {
   @override
   _MyListingsPageState createState() => _MyListingsPageState();
@@ -56,7 +60,13 @@ class _MyListingsPageState extends State<MyListingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("My Listings"),
+        automaticallyImplyLeading: false,
+        elevation: 0,
+        centerTitle: true,
+        backgroundColor: Colors.grey.shade200,
+        title: Text("Listings",
+            style: TextStyle(
+                color: kThemeColor, fontWeight: FontWeight.bold, fontSize: 25)),
       ),
       body: FutureBuilder<List<Room>>(
         future: myListings,
@@ -78,7 +88,7 @@ class _MyListingsPageState extends State<MyListingsPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(room.name),
-                      Text(room.status['statusDisplay']??""),
+                      Text(room.status['statusDisplay'] ?? ""),
                     ],
                   ),
                   subtitle: Text(room.description),

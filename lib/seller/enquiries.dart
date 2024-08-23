@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../Constants/styleConsts.dart';
 import '../model/onSaleModel.dart';
 
 Future<List<Room>> fetchEnquiries() async {
@@ -12,7 +13,8 @@ Future<List<Room>> fetchEnquiries() async {
   }
 
   // Create a reference to the collection
-  CollectionReference roomsCollection = FirebaseFirestore.instance.collection('onSale');
+  CollectionReference roomsCollection =
+      FirebaseFirestore.instance.collection('onSale');
 
   // Build a query to fetch all rooms for the current user
   final QuerySnapshot snapshot = await roomsCollection
@@ -38,15 +40,17 @@ Future<List<Room>> fetchEnquiries() async {
       active: data['active'],
       featured: data['featured'],
       locationName: data['locationName'],
-      status: data['status'] != null ? Map<String, dynamic>.from(data['status']) : {},
+      status: data['status'] != null
+          ? Map<String, dynamic>.from(data['status'])
+          : {},
     );
   }).toList();
 
   rooms = rooms.where((room) => room.status.isNotEmpty).toList();
-  rooms = rooms.where((room) => room.status['statusDisplay']=="To Buy").toList();
+  rooms =
+      rooms.where((room) => room.status['statusDisplay'] == "To Buy").toList();
   return rooms;
 }
-
 
 class EnquiriesPage extends StatefulWidget {
   @override
@@ -66,7 +70,13 @@ class _EnquiriesPageState extends State<EnquiriesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("My Enquiries"),
+        automaticallyImplyLeading: false,
+        elevation: 0,
+        centerTitle: true,
+        backgroundColor: Colors.grey.shade200,
+        title: Text("Enquiries",
+            style: TextStyle(
+                color: kThemeColor, fontWeight: FontWeight.bold, fontSize: 25)),
       ),
       body: FutureBuilder<List<Room>>(
         future: enquiries,
@@ -86,13 +96,13 @@ class _EnquiriesPageState extends State<EnquiriesPage> {
                 return ListTile(
                   title: Text(room.name),
                   subtitle: Text(room.description),
-                  trailing: Text(room.status['statusDisplay']??""), // Display the status
+                  trailing: Text(room.status['statusDisplay'] ?? ""),
+                  // Display the status
                   onTap: () {
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-
                           content: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -104,7 +114,7 @@ class _EnquiriesPageState extends State<EnquiriesPage> {
                           actions: [
                             TextButton(
                               onPressed: () {
-                                _approveRoomStatus(room.uid,room);
+                                _approveRoomStatus(room.uid, room);
                                 Navigator.of(context).pop(); // Close the dialog
                               },
                               child: Text("Approve"),
@@ -128,7 +138,8 @@ class _EnquiriesPageState extends State<EnquiriesPage> {
       ),
     );
   }
-  void _approveRoomStatus(String roomUid,Room room) async {
+
+  void _approveRoomStatus(String roomUid, Room room) async {
     try {
       User? user = FirebaseAuth.instance.currentUser;
 
@@ -151,14 +162,12 @@ class _EnquiriesPageState extends State<EnquiriesPage> {
       );
 
       setState(() {
-      room.status = newStatus; // Update the UI with new status
+        room.status = newStatus; // Update the UI with new status
       });
-
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to update status: $e')),
       );
     }
   }
-
 }

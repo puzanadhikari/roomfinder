@@ -114,9 +114,9 @@ class _CreateRoomState extends State<CreateRoom> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 0,
+        elevation: 1,
         centerTitle: true,
-        backgroundColor: Colors.grey.shade200,
+        backgroundColor: Colors.white,
         iconTheme: IconThemeData(
           color: kThemeColor,
         ),
@@ -157,7 +157,8 @@ class _CreateRoomState extends State<CreateRoom> {
                       ),
                       borderRadius: BorderRadius.all(Radius.circular(20)),
                     ),
-                    child: NotificationListener<OverscrollIndicatorNotification>(
+                    child:
+                        NotificationListener<OverscrollIndicatorNotification>(
                       onNotification: (overscroll) {
                         overscroll.disallowIndicator();
                         return true;
@@ -281,7 +282,8 @@ class _CreateRoomState extends State<CreateRoom> {
                               TextFormField(
                                 decoration: kFormFieldDecoration.copyWith(
                                   labelText: " Property Description",
-                                  contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                                  contentPadding: EdgeInsets.symmetric(
+                                      vertical: 10.0, horizontal: 10.0),
                                 ),
                                 minLines: 5,
                                 maxLines: null,
@@ -331,6 +333,22 @@ class _CreateRoomState extends State<CreateRoom> {
                           ),
                         ),
                         const SizedBox(height: 12.0),
+                        Wrap(
+                          spacing: 8.0,
+                          runSpacing: 8.0,
+                          children: _photos.map((photo) {
+                            return ClipRRect(
+                              borderRadius: BorderRadius.circular(10.0),
+                              child: Image.file(
+                                File(photo.path),
+                                width: 100,
+                                height: 100,
+                                fit: BoxFit.cover,
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                        const SizedBox(height: 20.0),
                         Center(
                           child: SizedBox(
                             width: MediaQuery.of(context).size.width / 1.5,
@@ -353,22 +371,6 @@ class _CreateRoomState extends State<CreateRoom> {
                               ),
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 20.0),
-                        Wrap(
-                          spacing: 8.0,
-                          runSpacing: 8.0,
-                          children: _photos.map((photo) {
-                            return ClipRRect(
-                              borderRadius: BorderRadius.circular(10.0),
-                              child: Image.file(
-                                File(photo.path),
-                                width: 100,
-                                height: 100,
-                                fit: BoxFit.cover,
-                              ),
-                            );
-                          }).toList(),
                         ),
                       ],
                     ),
@@ -440,7 +442,8 @@ class _CreateRoomState extends State<CreateRoom> {
                                   padding: const EdgeInsets.symmetric(
                                       vertical: 14.0, horizontal: 20.0),
                                   textStyle: TextStyle(
-                                      fontSize: 16, fontWeight: FontWeight.w500),
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500),
                                 ),
                               ),
                             ),
@@ -505,7 +508,7 @@ class _CreateRoomState extends State<CreateRoom> {
                         const SizedBox(height: 20),
                         Center(
                           child: SizedBox(
-                            width: MediaQuery.of(context).size.width/1.5,
+                            width: MediaQuery.of(context).size.width / 1.5,
                             height: 50,
                             child: ElevatedButton(
                               onPressed: () {
@@ -516,14 +519,17 @@ class _CreateRoomState extends State<CreateRoom> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8.0),
                                 ),
-                                padding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 20.0),
-                                textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 14.0, horizontal: 20.0),
+                                textStyle: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.w500),
                               ),
                               child: Text('Get Desired Location'),
                             ),
                           ),
                         ),
-                        SizedBox(height: 20), // Add space between button and result
+                        SizedBox(height: 20),
+                        // Add space between button and result
                         if (_selectedLocationName != null)
                           Container(
                             padding: EdgeInsets.all(16.0),
@@ -562,7 +568,7 @@ class _CreateRoomState extends State<CreateRoom> {
                                 SizedBox(height: 8),
                                 Text(
                                   'Latitude: ${_selectedLocationLatLng!.latitude}, '
-                                      'Longitude: ${_selectedLocationLatLng!.longitude}',
+                                  'Longitude: ${_selectedLocationLatLng!.longitude}',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontSize: 14,
@@ -614,8 +620,10 @@ class _CreateRoomState extends State<CreateRoom> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8.0),
                           ),
-                          padding: EdgeInsets.symmetric(vertical: 14.0, horizontal: 20.0),
-                          textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                          padding: EdgeInsets.symmetric(
+                              vertical: 14.0, horizontal: 20.0),
+                          textStyle: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w500),
                         ),
                         child: const Text('Submit'),
                       ),
