@@ -49,7 +49,7 @@ class _SellerHomePageState extends State<SellerHomePage> {
     return [
       const CreateRoom(),
       MyListingsPage(_latitude, _longitude),
-      EnquiriesPage(),
+      EnquiriesPage(_latitude, _longitude),
       const SellerProfile(),
     ];
   }
@@ -88,8 +88,8 @@ class _SellerHomePageState extends State<SellerHomePage> {
               label: 'Listing',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.favorite_border),
-              label: 'Wishlist',
+              icon: Icon(Icons.query_stats),
+              label: 'Enquiries',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.person_rounded),

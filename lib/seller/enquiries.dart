@@ -53,6 +53,10 @@ Future<List<Room>> fetchEnquiries() async {
 }
 
 class EnquiriesPage extends StatefulWidget {
+  final double lat, lng;
+
+  const EnquiriesPage(this.lat, this.lng, {super.key});
+
   @override
   _EnquiriesPageState createState() => _EnquiriesPageState();
 }
@@ -89,49 +93,157 @@ class _EnquiriesPageState extends State<EnquiriesPage> {
             return Center(child: Text("No enquiries found."));
           } else {
             final rooms = snapshot.data!;
-            return ListView.builder(
-              itemCount: rooms.length,
-              itemBuilder: (context, index) {
-                final room = rooms[index];
-                return ListTile(
-                  title: Text(room.name),
-                  subtitle: Text(room.description),
-                  trailing: Text(room.status['statusDisplay'] ?? ""),
-                  // Display the status
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          content: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("Buyer name : ${room.status["By"]}"),
-                              Text("Buyer Email : ${room.status["userEmail"]}"),
-                            ],
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                _approveRoomStatus(room.uid, room);
-                                Navigator.of(context).pop(); // Close the dialog
-                              },
-                              child: Text("Approve"),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: Text("Cancel"),
-                            ),
-                          ],
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: NotificationListener<OverscrollIndicatorNotification>(
+                onNotification: (overscroll) {
+                  overscroll.disallowIndicator();
+                  return true;
+                },
+                child: ListView.builder(
+                  itemCount: rooms.length,
+                  itemBuilder: (context, index) {
+                    final room = rooms[index];
+                    return GestureDetector(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              content: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("Buyer name : ${room.status["By"]}"),
+                                  Text(
+                                      "Buyer Email : ${room.status["userEmail"]}"),
+                                ],
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    _approveRoomStatus(room.uid, room);
+                                    Navigator.of(context)
+                                        .pop(); // Close the dialog
+                                  },
+                                  child: Text("Approve"),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text("Cancel"),
+                                ),
+                              ],
+                            );
+                          },
                         );
                       },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16.0),
+                        ),
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16.0),
+                          ),
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Row(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: const BorderRadius.horizontal(
+                                    left: Radius.circular(16.0),
+                                    right: Radius.circular(16.0),
+                                  ),
+                                  child: Image.network(
+                                    room.photo.isNotEmpty
+                                        ? room.photo[0]
+                                        : 'https://via.placeholder.com/150',
+                                    height: 100,
+                                    width: 100,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          room.name.toUpperCase(),
+                                          style: TextStyle(
+                                            color: kThemeColor,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Text(
+                                          room.locationName,
+                                          style: TextStyle(
+                                            color: Colors.grey.shade700,
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Text(
+                                          "Capacity: ${room.capacity}",
+                                          style: TextStyle(
+                                            color: kThemeColor,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 20),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Icon(Icons.location_on_rounded,
+                                                    size: 16,
+                                                    color: kThemeColor),
+                                                Text(
+                                                  "${(rooms[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
+                                                  style: TextStyle(
+                                                      color: Colors.black45),
+                                                ),
+                                              ],
+                                            ),
+                                            Row(
+                                              children: [
+                                                Icon(Icons.check_circle,
+                                                    size: 16,
+                                                    color: kThemeColor),
+                                                const Text(
+                                                  "Available",
+                                                  style: TextStyle(
+                                                      color: Colors.black45),
+                                                )
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
                     );
                   },
-                );
-              },
+                ),
+              ),
             );
           }
         },
@@ -143,26 +255,24 @@ class _EnquiriesPageState extends State<EnquiriesPage> {
     try {
       User? user = FirebaseAuth.instance.currentUser;
 
-      // Prepare the new status data
       Map<String, dynamic> newStatus = {
         'SoldBy': user?.displayName,
         'sellerId': user?.uid,
         'SellerEmail': user?.email,
-        'statusDisplay': 'Sold', // Change status to Sold
+        'statusDisplay': 'Sold',
       };
 
-      // Update the status in Firestore
       await FirebaseFirestore.instance
           .collection('onSale')
-          .doc(roomUid) // Use the room ID
-          .update({'status': newStatus}); // Update status
+          .doc(roomUid)
+          .update({'status': newStatus});
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Room status updated to Sold!')),
       );
 
       setState(() {
-        room.status = newStatus; // Update the UI with new status
+        room.status = newStatus;
       });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
