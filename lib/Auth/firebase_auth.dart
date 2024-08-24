@@ -169,20 +169,21 @@ class FirebaseAuthService {
   }
 
   Future<void> addSellerRoomDetail(
-    String name,
-    double capacity,
-    String description,
-    double length,
-    double breadth,
-    List<String> photo,
-    String? panorama,
-    double electricity,
-    double fohor,
-    double lat,
-    String locName,
-    double lng,
-  ) async {
+      String name,
+      double capacity,
+      String description,
+      double length,
+      double breadth,
+      List<String> photo,
+      String? panorama,
+      double electricity,
+      double fohor,
+      double lat,
+      String locName,
+      double lng,
+      ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+
     try {
       User? user = FirebaseAuth.instance.currentUser;
       if (user != null) {
@@ -205,17 +206,36 @@ class FirebaseAuthService {
           "userId": uid,
         };
 
-        // Use collection('onSale') to add a new document with a generated ID
-        CollectionReference collectionRef =
-            FirebaseFirestore.instance.collection('onSale');
+        CollectionReference collectionRef = FirebaseFirestore.instance.collection('onSale');
 
-        await collectionRef
-            .add(userData); // Add a new document with a generated ID
+        await collectionRef.add(userData);
+        await prefs.clear();
 
-        prefs.clear();
+        Fluttertoast.showToast(
+          msg: "Room details added successfully!",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+        );
+      } else {
+        Fluttertoast.showToast(
+          msg: "User is not authenticated. Please log in.",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+        );
       }
     } catch (e) {
       log('Error storing user data: $e');
+      Fluttertoast.showToast(
+        msg: "Failed to add room details. Please try again.",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+      );
     }
   }
 }
