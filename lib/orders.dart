@@ -5,65 +5,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'Constants/styleConsts.dart';
+import 'aggreement.dart';
+import 'model/onSaleModel.dart';
 
-class Room {
-  final String uid;
-  final String name;
-  final int capacity;
-  final String description;
-  final double length;
-  final double breadth;
-  final List<String> photo;
-  final String panoramaImg;
-  final int electricity;
-  final int fohor;
-  final double lat;
-  final double lng;
-  final bool active;
-  final bool featured;
-  final String locationName;
-  final Map<String, dynamic> status;
 
-  Room({
-    required this.uid,
-    required this.name,
-    required this.capacity,
-    required this.description,
-    required this.length,
-    required this.breadth,
-    required this.photo,
-    required this.panoramaImg,
-    required this.electricity,
-    required this.fohor,
-    required this.lat,
-    required this.lng,
-    required this.active,
-    required this.featured,
-    required this.locationName,
-    required this.status,
-  });
-
-  factory Room.fromMap(Map<String, dynamic> data, String documentId) {
-    return Room(
-      uid: documentId,
-      name: data['name'] ?? '',
-      capacity: data['capacity'] ?? 0,
-      description: data['description'] ?? '',
-      length: data['length'] ?? 0.0,
-      breadth: data['breadth'] ?? 0.0,
-      photo: List<String>.from(data['photo'] ?? []),
-      panoramaImg: data['panoramaImg'] ?? '',
-      electricity: data['electricity'] ?? 0,
-      fohor: data['fohor'] ?? 0,
-      lat: data['lat'] ?? 0.0,
-      lng: data['lng'] ?? 0.0,
-      active: data['active'] ?? false,
-      featured: data['featured'] ?? false,
-      locationName: data['locationName'] ?? '',
-      status: data['status'] ?? {},
-    );
-  }
-}
 
 Future<Map<String, dynamic>?> fetchUserData() async {
   User? user = FirebaseAuth.instance.currentUser;
@@ -233,110 +178,230 @@ class _OrderPageState extends State<OrderPage> {
                             end: Alignment.bottomRight,
                           ),
                         ),
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16.0),
-                          ),
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Row(
-                              children: [
-                                ClipRRect(
-                                  borderRadius: const BorderRadius.horizontal(
-                                    left: Radius.circular(16.0),
-                                  ),
-                                  child: Image.network(
-                                    room['photo'][0] ?? '',
-                                    height: 100,
-                                    width: 100,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(16.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          (room['name'] ?? '').toUpperCase(),
-                                          style: TextStyle(
-                                            color: kThemeColor,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 18,
-                                          ),
-                                        ),
-                                        const SizedBox(height: 8),
-                                        Row(
-                                          children: [
-                                            const Icon(
-                                              Icons.location_on,
-                                              color: Colors.grey,
-                                              size: 16,
-                                            ),
-                                            const SizedBox(width: 4),
-                                            Expanded(
-                                              child: Text(
-                                                room['locationName'] ?? '',
-                                                style: TextStyle(
-                                                  color: Colors.grey.shade700,
-                                                  fontSize: 14,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(height: 8),
-                                        Row(
-                                          children: [
-                                            const Icon(
-                                              Icons.email,
-                                              color: Colors.grey,
-                                              size: 16,
-                                            ),
-                                            const SizedBox(width: 4),
-                                            Text(
-                                              '$userEmail',
-                                              style: const TextStyle(
-                                                fontSize: 14,
-                                                color: Colors.grey,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(height: 8),
-                                        Row(
-                                          children: [
-                                            Icon(
-                                              Icons.circle,
-                                              color: roomStatus['status']
-                                                          ['statusDisplay'] ==
-                                                      'Available'
-                                                  ? Colors.green
-                                                  : roomStatus['status'][
-                                                              'statusDisplay'] ==
-                                                          'Booked'
-                                                      ? Colors.red
-                                                      : Colors.orange,
-                                              size: 14,
-                                            ),
-                                            const SizedBox(width: 4),
-                                            Text(
-                                              'Status: ${roomStatus['status']['statusDisplay']}',
-                                              style:
-                                                  const TextStyle(fontSize: 14),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
+                        child: GestureDetector(
+                          onTap: (){
+                            log(roomId);
+                           if(roomStatus['status']['statusDisplay']=="Sold") {
+                             Navigator.push(context, MaterialPageRoute(builder: (context)=>AgreementPage(
+                                 roomStatus['status']['SoldBy'],
+                                 roomStatus['status']['SellerEmail'],
+                                 roomId
+                             )));
+
+                           }else{}
+
+                          },
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16.0),
+                            ),
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Row(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: const BorderRadius.horizontal(
+                                      left: Radius.circular(16.0),
+                                    ),
+                                    child: Image.network(
+                                      room['photo'][0] ?? '',
+                                      height: 100,
+                                      width: 100,
+                                      fit: BoxFit.cover,
                                     ),
                                   ),
-                                ),
-                              ],
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Visibility(
+                                            visible:roomStatus['status']['statusDisplay']=="Owned",
+                                            child: GestureDetector(
+                                                onTap: (){
+                                                  showDialog(
+                                                    context: context,
+                                                    builder: (BuildContext context) {
+                                                      return AlertDialog(
+                                                        title: Text('Room Report'),
+                                                        content: SingleChildScrollView(
+                                                          child: Table(
+                                                            border: TableBorder.all(),
+                                                            columnWidths: {
+                                                              0: FlexColumnWidth(1),
+                                                              1: FlexColumnWidth(2),
+                                                            },
+                                                            children: [
+                                                              TableRow(
+                                                                children: [
+                                                                  Padding(
+                                                                    padding: const EdgeInsets.all(8.0),
+                                                                    child: Text('Electricity'),
+                                                                  ),
+                                                                  Padding(
+                                                                    padding: const EdgeInsets.all(8.0),
+                                                                    child: Text(roomStatus['report']['electricity'].toString()),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              TableRow(
+                                                                children: [
+                                                                  Padding(
+                                                                    padding: const EdgeInsets.all(8.0),
+                                                                    child: Text('Fohor'),
+                                                                  ),
+                                                                  Padding(
+                                                                    padding: const EdgeInsets.all(8.0),
+                                                                    child: Text(roomStatus['report']['fohor'].toString()),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              TableRow(
+                                                                children: [
+                                                                  Padding(
+                                                                    padding: const EdgeInsets.all(8.0),
+                                                                    child: Text('Generated Date'),
+                                                                  ),
+                                                                  Padding(
+                                                                    padding: const EdgeInsets.all(8.0),
+                                                                    child: Text(roomStatus['report']['generatedDate'].toString()),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              TableRow(
+                                                                children: [
+                                                                  Padding(
+                                                                    padding: const EdgeInsets.all(8.0),
+                                                                    child: Text('Room Cost'),
+                                                                  ),
+                                                                  Padding(
+                                                                    padding: const EdgeInsets.all(8.0),
+                                                                    child: Text(roomStatus['report']['roomCost'].toString()),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              TableRow(
+                                                                children: [
+                                                                  Padding(
+                                                                    padding: const EdgeInsets.all(8.0),
+                                                                    child: Text('Water'),
+                                                                  ),
+                                                                  Padding(
+                                                                    padding: const EdgeInsets.all(8.0),
+                                                                    child: Text(roomStatus['report']['water'].toString()),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              TableRow(
+                                                                children: [
+                                                                  Padding(
+                                                                    padding: const EdgeInsets.all(8.0),
+                                                                    child: Text('Total'),
+                                                                  ),
+                                                                  Padding(
+                                                                    padding: const EdgeInsets.all(8.0),
+                                                                    child: Text(roomStatus['report']['total'].toString()),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        actions: [
+                                                          TextButton(
+                                                            onPressed: () {
+                                                              Navigator.of(context).pop();
+                                                            },
+                                                            child: Text('Close'),
+                                                          ),
+                                                        ],
+                                                      );
+                                                    },
+                                                  );
+                                                },
+                                                child: Icon(Icons.picture_as_pdf)),
+                                          ),
+                                          Text(
+                                            (room['name'] ?? '').toUpperCase(),
+                                            style: TextStyle(
+                                              color: kThemeColor,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 18,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 8),
+                                          Row(
+                                            children: [
+                                              const Icon(
+                                                Icons.location_on,
+                                                color: Colors.grey,
+                                                size: 16,
+                                              ),
+                                              const SizedBox(width: 4),
+                                              Expanded(
+                                                child: Text(
+                                                  room['locationName'] ?? '',
+                                                  style: TextStyle(
+                                                    color: Colors.grey.shade700,
+                                                    fontSize: 14,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 8),
+                                          Row(
+                                            children: [
+                                              const Icon(
+                                                Icons.email,
+                                                color: Colors.grey,
+                                                size: 16,
+                                              ),
+                                              const SizedBox(width: 4),
+                                              Text(
+                                                '$userEmail',
+                                                style: const TextStyle(
+                                                  fontSize: 14,
+                                                  color: Colors.grey,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 8),
+                                          Row(
+                                            children: [
+                                              Icon(
+                                                Icons.circle,
+                                                color: roomStatus['status']
+                                                            ['statusDisplay'] ==
+                                                        'Available'
+                                                    ? Colors.green
+                                                    : roomStatus['status'][
+                                                                'statusDisplay'] ==
+                                                            'Booked'
+                                                        ? Colors.red
+                                                        : Colors.orange,
+                                                size: 14,
+                                              ),
+                                              const SizedBox(width: 4),
+                                              Text(
+                                                'Status: ${roomStatus['status']['statusDisplay']}',
+                                                style:
+                                                    const TextStyle(fontSize: 14),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -351,4 +416,8 @@ class _OrderPageState extends State<OrderPage> {
       ),
     );
   }
+
 }
+
+
+

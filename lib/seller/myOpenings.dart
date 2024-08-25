@@ -1,3 +1,5 @@
+import 'dart:developer';
+import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -26,9 +28,11 @@ Future<List<Room>> fetchMyListings() async {
       uid: doc.id,
       name: data['name'],
       capacity: data['capacity'],
+      price: data["price"],
       description: data['description'],
       length: data['length'],
       breadth: data['breadth'],
+      water: doc['water'],
       photo: List<String>.from(data['photo']),
       panoramaImg: data['panoramaImg'],
       electricity: data['electricity'],
@@ -37,10 +41,13 @@ Future<List<Room>> fetchMyListings() async {
       lng: data['lng'],
       active: data['active'],
       featured: data['featured'],
+      statusByAdmin: data["statusByAdmin"],
+      details: Map<String, String>.from(data["detail"]),
       locationName: data['locationName'],
       status: data['status'] != null
           ? Map<String, dynamic>.from(data['status'])
           : {},
+      report: data['report'] != null ? Map<String, dynamic>.from(data['report']) : {},
     );
   }).toList();
 }
@@ -56,7 +63,7 @@ class MyListingsPage extends StatefulWidget {
 
 class _MyListingsPageState extends State<MyListingsPage> {
   late Future<List<Room>> myListings;
-
+  final TextEditingController _electricityController = TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -107,9 +114,11 @@ class _MyListingsPageState extends State<MyListingsPage> {
                 } else if (snapshot.hasError) {
                   return Center(child: Text("Error: ${snapshot.error}"));
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+
                   return const Center(child: Text("No listings found."));
                 } else {
                   final rooms = snapshot.data!;
+                  final roomStatus = snapshot.data!;
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child:
@@ -122,6 +131,7 @@ class _MyListingsPageState extends State<MyListingsPage> {
                         itemCount: rooms.length,
                         itemBuilder: (context, index) {
                           final room = rooms[index];
+
                           return GestureDetector(
                             onTap: (){
                               Navigator.push(context, MaterialPageRoute(builder: (context) => SellerRoomDetails(room: room)));
@@ -163,6 +173,162 @@ class _MyListingsPageState extends State<MyListingsPage> {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
                                             children: [
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Visibility(
+                                                    visible:roomStatus[index].status['statusDisplay']=="Owned"?true:false,
+                                                    child: GestureDetector(
+                                                          onTap: (){
+                                                            showModalBottomSheet(
+                                                              context: context,
+                                                              enableDrag: true,
+                                                              isScrollControlled: true,
+                                                              builder: (BuildContext context) {
+                                                                return FractionallySizedBox(
+                                                                  heightFactor: 0.5,
+                                                                  child: Padding(
+                                                                    padding: const EdgeInsets.all(16.0),
+                                                                    child: Column(
+                                                                      mainAxisSize: MainAxisSize.min,
+                                                                      children: [
+
+                                                                        TextField(
+                                                                          controller: _electricityController,
+                                                                          keyboardType: TextInputType.number,
+                                                                          decoration: InputDecoration(
+                                                                            labelText: 'Electricity (Number)',
+                                                                            border: OutlineInputBorder(),
+                                                                          ),
+                                                                        ),
+                                                                        const SizedBox(height: 20),
+                                                                        ElevatedButton(
+                                                                          onPressed: () {
+                                                                            double electricity =double.parse( _electricityController.text);
+                                                                            print('Electricity: $electricity');
+                                                                            _generateReport(room.uid,room,electricity);
+                                                                            Navigator.of(context).pop();
+                                                                          },
+                                                                          child: const Text('Submit'),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                );
+                                                              },
+                                                            );
+                                                          },
+                                                        child: Icon(Icons.picture_as_pdf)),
+                                                  ),
+                                                  Visibility(
+                                                    visible:roomStatus[index].status['statusDisplay']=="Owned"?true:false,
+                                                    child: GestureDetector(
+                                                          onTap: (){
+                                                            showDialog(
+                                                              context: context,
+                                                              builder: (BuildContext context) {
+                                                                return AlertDialog(
+                                                                  title: Text('Room Report'),
+                                                                  content: SingleChildScrollView(
+                                                                    child: Table(
+                                                                      border: TableBorder.all(),
+                                                                      columnWidths: {
+                                                                        0: FlexColumnWidth(1),
+                                                                        1: FlexColumnWidth(2),
+                                                                      },
+                                                                      children: [
+                                                                        TableRow(
+                                                                          children: [
+                                                                            Padding(
+                                                                              padding: const EdgeInsets.all(8.0),
+                                                                              child: Text('Electricity'),
+                                                                            ),
+                                                                            Padding(
+                                                                              padding: const EdgeInsets.all(8.0),
+                                                                              child: Text(roomStatus[index].report['electricity'].toString()),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                        TableRow(
+                                                                          children: [
+                                                                            Padding(
+                                                                              padding: const EdgeInsets.all(8.0),
+                                                                              child: Text('Fohor'),
+                                                                            ),
+                                                                            Padding(
+                                                                              padding: const EdgeInsets.all(8.0),
+                                                                              child: Text(roomStatus[index].report['fohor'].toString()),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                        TableRow(
+                                                                          children: [
+                                                                            Padding(
+                                                                              padding: const EdgeInsets.all(8.0),
+                                                                              child: Text('Generated Date'),
+                                                                            ),
+                                                                            Padding(
+                                                                              padding: const EdgeInsets.all(8.0),
+                                                                              child: Text(roomStatus[index].report['generatedDate'].toString()),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                        TableRow(
+                                                                          children: [
+                                                                            Padding(
+                                                                              padding: const EdgeInsets.all(8.0),
+                                                                              child: Text('Room Cost'),
+                                                                            ),
+                                                                            Padding(
+                                                                              padding: const EdgeInsets.all(8.0),
+                                                                              child: Text(roomStatus[index].report['roomCost'].toString()),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                        TableRow(
+                                                                          children: [
+                                                                            Padding(
+                                                                              padding: const EdgeInsets.all(8.0),
+                                                                              child: Text('Water'),
+                                                                            ),
+                                                                            Padding(
+                                                                              padding: const EdgeInsets.all(8.0),
+                                                                              child: Text(roomStatus[index].report['water'].toString()),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                        TableRow(
+                                                                          children: [
+                                                                            Padding(
+                                                                              padding: const EdgeInsets.all(8.0),
+                                                                              child: Text('Total'),
+                                                                            ),
+                                                                            Padding(
+                                                                              padding: const EdgeInsets.all(8.0),
+                                                                              child: Text(roomStatus[index].report['total'].toString()),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                  actions: [
+                                                                    TextButton(
+                                                                      onPressed: () {
+                                                                        Navigator.of(context).pop();
+                                                                      },
+                                                                      child: Text('Close'),
+                                                                    ),
+                                                                  ],
+                                                                );
+                                                              },
+                                                            );
+                                                          },
+                                                        child: Icon(Icons.view_agenda)),
+                                                  ),
+                                                ],
+                                              ),
                                               Text(
                                                 room.name.toUpperCase(),
                                                 style: TextStyle(
@@ -222,7 +388,24 @@ class _MyListingsPageState extends State<MyListingsPage> {
                                                       )
                                                     ],
                                                   ),
+
                                                 ],
+                                              ),
+                                              Row(
+                                                children: [
+
+                                                  const SizedBox(width: 4),
+                                                  Text(
+                                                    'Status: ${roomStatus[index].status['statusDisplay']}',
+                                                    style:
+                                                    const TextStyle(fontSize: 14),
+                                                  ),
+                                                ],
+                                              ),
+                                              Text(
+                                                'Owner: ${roomStatus[index].status['ownedBy']}',
+                                                style:
+                                                const TextStyle(fontSize: 14),
                                               ),
                                             ],
                                           ),
@@ -246,7 +429,45 @@ class _MyListingsPageState extends State<MyListingsPage> {
       ),
     );
   }
+  String generateCurrentDateTime() {
+    final now = DateTime.now();
+    final formatter = DateFormat('yyyy-MM-dd HH:mm:ss'); // Adjust format as needed
+    return formatter.format(now);
+  }
+  void _generateReport(String? roomUid,Room room,double electricityUnit) async {
+log(electricityUnit.toString());
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+      final generatedDate = generateCurrentDateTime();
+    double total =room.price+(room.electricity*electricityUnit)+room.water+room.fohor;
+      Map<String, dynamic> report = {
+        'roomCost': room.price,
+        'electricity': room.electricity*electricityUnit,
+        'water': room.water,
+        'fohor': room.fohor,
+        "total":total,
+        "generatedDate":generatedDate
+      };
 
+      await FirebaseFirestore.instance
+          .collection('onSale')
+          .doc(roomUid)
+          .update({'report': report});
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Room status updated to Sold!')),
+      );
+
+      // setState(() {
+      //   room!.status = newStatus;
+      // });
+    } catch (e) {
+      log(e.toString());
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to update status: $e')),
+      );
+    }
+  }
   Widget _buildShimmerEffect() {
     return ListView.builder(
       itemCount: 8,

@@ -170,6 +170,7 @@ class FirebaseAuthService {
 
   Future<void> addSellerRoomDetail(
       String name,
+      double price,
       double capacity,
       String description,
       double length,
@@ -181,6 +182,10 @@ class FirebaseAuthService {
       double lat,
       String locName,
       double lng,
+      String sellerName,
+      String sellerEmail,
+      String sellerPhone,
+      double water
       ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -190,6 +195,7 @@ class FirebaseAuthService {
         String uid = user.uid;
         Map<String, dynamic> userData = {
           "name": name,
+          "price":price,
           "capacity": capacity,
           "description": description,
           "length": length,
@@ -204,6 +210,13 @@ class FirebaseAuthService {
           "locationName": locName,
           "featured": false,
           "userId": uid,
+          "statusByAdmin":"Pending",
+          "water":water,
+          "detail":{
+            "sellerName":sellerName,
+            "sellerEmail":sellerEmail,
+            "sellerPhone":sellerPhone
+          }
         };
 
         CollectionReference collectionRef = FirebaseFirestore.instance.collection('onSale');

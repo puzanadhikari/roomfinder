@@ -52,8 +52,11 @@ class _ListingState extends State<Listing> {
         mostSearchedProducts.add(Room(
           uid: productSnapshot.id,
           name: productData['name'],
+          price: data["price"],
+          details: Map<String, String>.from(data["detail"]),
           capacity: productData['capacity'],
           description: productData['description'],
+          water: doc['water'],
           length: productData['length'],
           breadth: productData['breadth'],
           photo: List<String>.from(productData['photo']),
@@ -63,11 +66,13 @@ class _ListingState extends State<Listing> {
           lat: productData['lat'],
           lng: productData['lng'],
           active: productData['active'],
+          statusByAdmin: data["statusByAdmin"],
           featured: productData['featured'],
           locationName: productData["locationName"],
           status: data['status'] != null
               ? Map<String, dynamic>.from(data['status'])
               : {},
+          report: data['report'] != null ? Map<String, dynamic>.from(data['report']) : {},
         ));
       }
     }
@@ -85,9 +90,13 @@ class _ListingState extends State<Listing> {
       return Room(
         uid: doc.id,
         name: data['name'],
+        price: data["price"],
+        details: Map<String, String>.from(data["detail"]),
         capacity: data['capacity'],
+        water: doc['water'],
         description: data['description'],
         length: data['length'],
+        statusByAdmin: data["statusByAdmin"],
         breadth: data['breadth'],
         photo: List<String>.from(data['photo']),
         panoramaImg: data['panoramaImg'],
@@ -101,6 +110,7 @@ class _ListingState extends State<Listing> {
         status: data['status'] != null
             ? Map<String, dynamic>.from(data['status'])
             : {},
+        report: data['report'] != null ? Map<String, dynamic>.from(data['report']) : {},
       );
     }).toList();
   }

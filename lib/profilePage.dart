@@ -153,6 +153,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   },
                 ),
               ),
+
               // Uncomment and update these cards as needed
               // Card(
               //   shape: RoundedRectangleBorder(

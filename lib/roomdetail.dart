@@ -8,7 +8,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:meroapp/Constants/styleConsts.dart';
 import 'package:meroapp/provider/wishlistProvider.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:panorama/panorama.dart';
 import 'package:provider/provider.dart';
+import 'package:sensors_plus/sensors_plus.dart';
 import 'model/onSaleModel.dart';
 
 class RoomDetailPage extends StatefulWidget {
@@ -21,9 +23,22 @@ class RoomDetailPage extends StatefulWidget {
 }
 
 class _RoomDetailPageState extends State<RoomDetailPage> {
+  double _yaw = 0.0;
+  double _pitch = 0.0;
   bool _isBooking = false;
   final String _mapApiKey = 'AIzaSyAGFdLuw0m2pCFxNxmFA5EzJia6IzUM3iU';
-
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    accelerometerEvents.listen((AccelerometerEvent event) {
+      // Calculate yaw and pitch based on accelerometer data
+      setState(() {
+        _yaw = event.x;
+        _pitch = event.y;
+      });
+    });
+  }
   @override
   Widget build(BuildContext context) {
     final wishlistProvider = Provider.of<WishlistProvider>(context);
@@ -106,6 +121,28 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            // Container(
+                            //   height: 300, // Adjust height as necessary
+                            //   decoration: BoxDecoration(
+                            //     borderRadius: BorderRadius.circular(16.0), // Rounded corners
+                            //     boxShadow: [
+                            //       BoxShadow(
+                            //         color: Colors.black.withOpacity(0.2), // Shadow color
+                            //         spreadRadius: 2, // Spread radius
+                            //         blurRadius: 10, // Blur radius
+                            //         offset: Offset(0, 3), // Offset for the shadow
+                            //       ),
+                            //     ],
+                            //     color: Colors.white, // Background color
+                            //   ),
+                            //   clipBehavior: Clip.hardEdge, // Clip child widgets to the rounded corners
+                            //   child: Panorama(
+                            //     child: Image.network(
+                            //       widget.room.panoramaImg, // Use network image for panorama
+                            //       fit: BoxFit.cover,
+                            //     ),
+                            //   ),
+                            // ),
                             Text(
                               widget.room.name.toUpperCase(),
                               style: const TextStyle(
@@ -299,9 +336,10 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                   top: carouselHeight - 50,
                   child: GestureDetector(
                     onTap: () {
-                      wishlistProvider.isInWishlist(widget.room) == true
-                          ? wishlistProvider.removeFromWishlist(widget.room)
-                          : wishlistProvider.addToWishlist(widget.room);
+                      addToWishlist( widget.room);
+                      // wishlistProvider.isInWishlist(widget.room) == true
+                      //     ? wishlistProvider.removeFromWishlist(widget.room)
+                      //     : wishlistProvider.addToWishlist(widget.room);
                     },
                     child: CircleAvatar(
                       backgroundColor: Colors.white,
@@ -316,6 +354,51 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
         ),
       ),
     );
+  }
+  Future<void> addToWishlist(Room room) async {
+    try {
+      String uid = FirebaseAuth.instance.currentUser!.uid;
+      CollectionReference wishlistRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .collection('wishlist');
+
+      await wishlistRef.doc(room.uid).set({
+        'name': room.name,
+        'capacity': room.capacity,
+        'description': room.description,
+        "price":room.price,
+        'length': room.length,
+        'breadth': room.breadth,
+        'photo': room.photo,
+        'panoramaImg': room.panoramaImg,
+        'electricity': room.electricity,
+        'fohor': room.fohor,
+        'lat': room.lat,
+        'lng': room.lng,
+        'active': room.active,
+        'featured': room.featured,
+        'locationName': room.locationName,
+        'details': room.details,
+        'status': room.status,
+        'water':room.water,
+        'isFavorite': room.isFavorite,
+        "detail":room.details,
+        "statusByAdmin":room.statusByAdmin,
+        "report":{
+
+        },
+      });
+
+      // Optionally, show a confirmation message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Room added to wishlist successfully.')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error adding room to wishlist: $e')),
+      );
+    }
   }
 
   void _bookRoom() async {

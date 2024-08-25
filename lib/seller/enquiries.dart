@@ -27,12 +27,14 @@ Future<List<Room>> fetchEnquiries() async {
     return Room(
       uid: doc.id,
       name: data['name'],
+      price: data["price"],
       capacity: data['capacity'],
       description: data['description'],
       length: data['length'],
       breadth: data['breadth'],
       photo: List<String>.from(data['photo']),
       panoramaImg: data['panoramaImg'],
+      water: doc['water'],
       electricity: data['electricity'],
       fohor: data['fohor'],
       lat: data['lat'],
@@ -40,9 +42,12 @@ Future<List<Room>> fetchEnquiries() async {
       active: data['active'],
       featured: data['featured'],
       locationName: data['locationName'],
+      statusByAdmin: data["statusByAdmin"],
+      details: Map<String, String>.from(data["detail"]),
       status: data['status'] != null
           ? Map<String, dynamic>.from(data['status'])
           : {},
+      report: data['report'] != null ? Map<String, dynamic>.from(data['report']) : {},
     );
   }).toList();
 

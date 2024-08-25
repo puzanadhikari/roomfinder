@@ -18,7 +18,31 @@ class _DashBoardState extends State<DashBoard> {
       DocumentReference roomRef = FirebaseFirestore.instance.collection('onSale').doc(uid);
 
       // Update the active field to true
-      await roomRef.update({'active': true});
+      await roomRef.update({
+        'active': true,
+        'statusByAdmin': 'Approved',
+      });
+
+      // Optionally, you can show a confirmation message or perform other actions
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Room approved successfully.')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error approving room: $e')),
+      );
+    }
+  }
+  Future<void> rejectRoom(String uid) async {
+    try {
+      // Reference to the specific room document using the uid
+      DocumentReference roomRef = FirebaseFirestore.instance.collection('onSale').doc(uid);
+
+      await roomRef.update({
+        'active': false,
+        'statusByAdmin': 'Rejected',
+      });
+
 
       // Optionally, you can show a confirmation message or perform other actions
       ScaffoldMessenger.of(context).showSnackBar(
@@ -34,7 +58,7 @@ class _DashBoardState extends State<DashBoard> {
   Stream<List<Room>> fetchRooms() {
     return FirebaseFirestore.instance
         .collection('onSale')
-        .where('active', isEqualTo: false) // Query for inactive rooms
+        .where('active', isEqualTo: false).where("statusByAdmin",isEqualTo: "Pending")
         .snapshots()
         .map((snapshot) {
       return snapshot.docs.map((doc) {
@@ -42,10 +66,12 @@ class _DashBoardState extends State<DashBoard> {
         return Room(
           uid: doc.id,
           name: data['name'],
+          price: data["price"],
           capacity: data['capacity'],
           description: data['description'],
           length: data['length'],
           breadth: data['breadth'],
+          water: doc['water'],
           photo: List<String>.from(data['photo']),
           panoramaImg: data['panoramaImg'],
           electricity: data['electricity'],
@@ -54,8 +80,11 @@ class _DashBoardState extends State<DashBoard> {
           lng: data['lng'],
           active: data['active'],
           featured: data['featured'],
+          details: Map<String, String>.from(data["detail"]),
           locationName: data['locationName'],
+          statusByAdmin: data["statusByAdmin"],
           status: data['status'] != null ? Map<String, dynamic>.from(data['status']) : {},
+          report: data['report'] != null ? Map<String, dynamic>.from(data['report']) : {},
         );
       }).toList();
     });
@@ -172,17 +201,28 @@ class _DashBoardState extends State<DashBoard> {
                                       const SizedBox(height: 4),
                                       Text('Price: \$${room.fohor}', style: TextStyle(color: kThemeColor)),
                                       const SizedBox(height: 16),
-                                      SizedBox(
-                                        width: double.infinity,
-                                        child: ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: kThemeColor,
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: kThemeColor,
+                                            ),
+                                            onPressed: () {
+                                              approveRoom(room.uid);
+                                            },
+                                            child: const Text('Approve'),
                                           ),
-                                          onPressed: () {
-                                            approveRoom(room.uid);
-                                          },
-                                          child: const Text('Approve'),
-                                        ),
+                                          ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.red,
+                                            ),
+                                            onPressed: () {
+                                              rejectRoom(room.uid);
+                                            },
+                                            child: const Text('Reject'),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),

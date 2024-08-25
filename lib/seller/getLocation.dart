@@ -6,6 +6,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MapSearchScreen extends StatefulWidget {
   @override
@@ -38,6 +39,8 @@ class _MapSearchScreenState extends State<MapSearchScreen> {
   }
 
   Future<void> _onCitySelected(String city) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
     try {
       List<Location> locations = await locationFromAddress(city);
       if (locations.isNotEmpty) {
@@ -48,6 +51,9 @@ class _MapSearchScreenState extends State<MapSearchScreen> {
           _center = selectedLocation;
           _selectedCityName = city;
           _selectedLatLng = selectedLocation;
+          prefs.setDouble("lat", locations.first.latitude);
+          prefs.setDouble("lng", locations.first.longitude);
+          prefs.setString("locationName", city);
         });
 
         // Return the selected location to the previous page

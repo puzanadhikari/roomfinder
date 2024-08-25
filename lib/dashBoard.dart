@@ -33,11 +33,15 @@ class _DashBoardState extends State<DashBoard> {
       return Room(
         uid: doc.id,
         name: data['name'],
+        price: data["price"],
+        details: Map<String, String>.from(data["detail"]),
         capacity: data['capacity'],
+        water: doc['water'],
         description: data['description'],
         length: data['length'],
         breadth: data['breadth'],
         photo: List<String>.from(data['photo']),
+        statusByAdmin: data["statusByAdmin"],
         panoramaImg: data['panoramaImg'],
         electricity: data['electricity'],
         fohor: data['fohor'],
@@ -49,6 +53,7 @@ class _DashBoardState extends State<DashBoard> {
         status: data['status'] != null
             ? Map<String, dynamic>.from(data['status'])
             : {},
+        report: data['report'] != null ? Map<String, dynamic>.from(data['report']) : {},
       );
     }).toList();
   }
@@ -95,8 +100,11 @@ class _DashBoardState extends State<DashBoard> {
         mostSearchedProducts.add(Room(
           uid: productSnapshot.id,
           name: productData['name'],
+          price: data["price"],
           capacity: productData['capacity'],
+          details: Map<String, String>.from(data["detail"]),
           description: productData['description'],
+          water: doc['water'],
           length: productData['length'],
           breadth: productData['breadth'],
           photo: List<String>.from(productData['photo']),
@@ -105,12 +113,14 @@ class _DashBoardState extends State<DashBoard> {
           fohor: productData['fohor'],
           lat: productData['lat'],
           lng: productData['lng'],
+          statusByAdmin: data["statusByAdmin"],
           active: productData['active'],
           featured: productData['featured'],
           locationName: productData["locationName"],
           status: data['status'] != null
               ? Map<String, dynamic>.from(data['status'])
               : {},
+          report: data['report'] != null ? Map<String, dynamic>.from(data['report']) : {},
         ));
       }
     }
@@ -863,8 +873,7 @@ class _DashBoardState extends State<DashBoard> {
                               itemCount: 3, // Number of shimmer items to show
                               itemBuilder: (context, index) => Container(
                                 width: 200,
-                                margin:
-                                    const EdgeInsets.symmetric(horizontal: 8),
+                                margin: const EdgeInsets.symmetric(horizontal: 8),
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(12),
@@ -874,50 +883,51 @@ class _DashBoardState extends State<DashBoard> {
                           ),
                         );
                       }
+
                       if (snapshot.hasError) {
                         return Center(child: Text('Error: ${snapshot.error}'));
                       }
+
                       if (!snapshot.hasData || snapshot.data!.isEmpty) {
                         return const Center(child: Text('No rooms available'));
                       }
 
-                      final rooms = snapshot.data!;
+                      // Filter out rooms that have the 'status' key
+                      final filteredRooms = snapshot.data!.where((room) => !room.status.containsKey('statusDisplay')).toList();
+
+                      if (filteredRooms.isEmpty) {
+                        return const Center(child: Text('No rooms available'));
+                      }
 
                       return Container(
                         height: 350,
                         padding: const EdgeInsets.symmetric(vertical: 10),
                         child: ListView.builder(
                           scrollDirection: Axis.horizontal,
-                          itemCount: rooms.length,
+                          itemCount: filteredRooms.length,
                           itemBuilder: (context, index) {
-                            final room = rooms[index];
+                            final room = filteredRooms[index];
 
                             return GestureDetector(
                               onTap: () {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) =>
-                                        RoomDetailPage(room: room),
+                                    builder: (context) => RoomDetailPage(room: room),
                                   ),
                                 );
                               },
                               child: Container(
                                 width: 200,
-                                margin:
-                                    const EdgeInsets.symmetric(horizontal: 8),
+                                margin: const EdgeInsets.symmetric(horizontal: 8),
                                 child: Stack(
                                   children: [
                                     ClipRRect(
                                       borderRadius: BorderRadius.circular(12),
-                                      // Rounded corners
                                       child: Image.network(
-                                        room.photo.isNotEmpty
-                                            ? room.photo[0]
-                                            : '',
+                                        room.photo.isNotEmpty ? room.photo[0] : '',
                                         width: 200,
                                         height: 350,
-                                        // Ensure image fits the container height
                                         fit: BoxFit.cover,
                                       ),
                                     ),
@@ -936,8 +946,7 @@ class _DashBoardState extends State<DashBoard> {
                                       child: Container(
                                         padding: const EdgeInsets.all(12),
                                         child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Text(
                                               room.name.toUpperCase(),
@@ -977,6 +986,7 @@ class _DashBoardState extends State<DashBoard> {
                       );
                     },
                   )
+
                 ],
               ),
             ),

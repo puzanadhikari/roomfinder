@@ -25,7 +25,7 @@ class _CreateRoomState extends State<CreateRoom> {
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
   final List<XFile> _photos = []; // Array to hold selected photos
-  String? _name, _description, _locationName;
+  String? _name, _description, _locationName,_sellerName,_sellerEmail,_sellerPhone;
   double? _price,
       _capacity,
       _length,
@@ -295,6 +295,57 @@ class _CreateRoomState extends State<CreateRoom> {
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
                                       return 'Please enter a description';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                kHeightSmall,
+                                TextFormField(
+                                  decoration: kFormFieldDecoration.copyWith(
+                                    labelText: " Seller Name",
+                                    contentPadding: EdgeInsets.symmetric(
+                                        vertical: 10.0, horizontal: 10.0),
+                                  ),
+                                  minLines: 5,
+                                  maxLines: null,
+                                  onSaved: (value) => _sellerName = value,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter a Seller name';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                kHeightSmall,
+                                TextFormField(
+                                  decoration: kFormFieldDecoration.copyWith(
+                                    labelText: " Seller Email",
+                                    contentPadding: EdgeInsets.symmetric(
+                                        vertical: 10.0, horizontal: 10.0),
+                                  ),
+                                  minLines: 5,
+                                  maxLines: null,
+                                  onSaved: (value) => _sellerEmail = value,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter a Seller Email';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                kHeightSmall,
+                                TextFormField(
+                                  decoration: kFormFieldDecoration.copyWith(
+                                    labelText: " Seller Phone",
+                                    contentPadding: EdgeInsets.symmetric(
+                                        vertical: 10.0, horizontal: 10.0),
+                                  ),
+                                  minLines: 5,
+                                  maxLines: null,
+                                  onSaved: (value) => _sellerPhone = value,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Please enter a Seller Phone';
                                     }
                                     return null;
                                   },
@@ -611,6 +662,7 @@ class _CreateRoomState extends State<CreateRoom> {
                                   await _uploadImagesPanorama(panorama!);
                               await _auth.addSellerRoomDetail(
                                 _name!,
+                                  _price!,
                                 _capacity!,
                                 _description!,
                                 _length!,
@@ -622,6 +674,10 @@ class _CreateRoomState extends State<CreateRoom> {
                                 lat!,
                                 location!,
                                 lng!,
+                                _sellerName!,
+                                _sellerEmail!,
+                                _sellerPhone!,
+                                _water!
                               );
                             }
                             setState(() {
