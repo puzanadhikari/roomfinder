@@ -501,7 +501,7 @@ class _DashBoardState extends State<DashBoard> {
                                                   ),
                                                   const SizedBox(height: 8),
                                                   Text(
-                                                    "Rs. 8000/ per month",
+                                                    "${product.price}/ per month",
                                                     style: TextStyle(
                                                       color: kThemeColor,
                                                       fontSize: 14,

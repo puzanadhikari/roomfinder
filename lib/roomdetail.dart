@@ -23,22 +23,9 @@ class RoomDetailPage extends StatefulWidget {
 }
 
 class _RoomDetailPageState extends State<RoomDetailPage> {
-  double _yaw = 0.0;
-  double _pitch = 0.0;
   bool _isBooking = false;
   final String _mapApiKey = 'AIzaSyAGFdLuw0m2pCFxNxmFA5EzJia6IzUM3iU';
-@override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    accelerometerEvents.listen((AccelerometerEvent event) {
-      // Calculate yaw and pitch based on accelerometer data
-      setState(() {
-        _yaw = event.x;
-        _pitch = event.y;
-      });
-    });
-  }
+
   @override
   Widget build(BuildContext context) {
     final wishlistProvider = Provider.of<WishlistProvider>(context);
@@ -145,16 +132,16 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                             // ),
                             Text(
                               widget.room.name.toUpperCase(),
-                              style: const TextStyle(
+                              style: TextStyle(
                                   fontSize: 25,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.black54),
+                                  color: Colors.grey.shade700),
                             ),
                             const SizedBox(height: 8),
                             Row(
                               children: [
                                 Text(
-                                  "Rs. 8000 /",
+                                  "${widget.room.price}/",
                                   style: TextStyle(
                                       color: kThemeColor,
                                       fontSize: 16,
@@ -247,7 +234,7 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                                 Row(
                                   children: [
                                     Icon(
-                                      Icons.do_not_disturb_on_total_silence,
+                                      Icons.check_circle,
                                       size: 16,
                                       color: kThemeColor,
                                     ),
@@ -266,45 +253,29 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                             const SizedBox(height: 30),
                             const Text(
                               "Facilities",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 16),
+                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                             ),
                             const SizedBox(height: 20),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Row(
-                                  children: [
-                                    Icon(Icons.check, color: kThemeColor),
-                                    const Text("Attach Bathroom")
-                                  ],
+                            if (widget.room.facilities.isNotEmpty) ...[
+                              Center(
+                                child: Wrap(
+                                  spacing: 8.0,
+                                  runSpacing: 8.0,
+                                  children: widget.room.facilities.map((facility) {
+                                    return Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(Icons.check, color: kThemeColor),
+                                        const SizedBox(width: 4),
+                                        Text(facility),
+                                      ],
+                                    );
+                                  }).toList(),
                                 ),
-                                Row(
-                                  children: [
-                                    Icon(Icons.check, color: kThemeColor),
-                                    const Text("1 Big Hall")
-                                  ],
-                                )
-                              ],
-                            ),
-                            const SizedBox(height: 12),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Row(
-                                  children: [
-                                    Icon(Icons.check, color: kThemeColor),
-                                    const Text("Bikes and Car Parking")
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    Icon(Icons.check, color: kThemeColor),
-                                    const Text("24/7 water Facilities")
-                                  ],
-                                )
-                              ],
-                            ),
+                              ),
+                            ] else ...[
+                              const Text("No facilities available"),
+                            ],
                             const SizedBox(height: 20),
                             SizedBox(
                               width: double.infinity,

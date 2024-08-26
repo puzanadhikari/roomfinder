@@ -17,7 +17,7 @@ class Room {
   final bool featured;
   final String locationName;
   final String statusByAdmin;
-  final Map<String, String> details; // Add the details field
+  final Map<String, String> details;
   late final Map<String, dynamic> status;
   late final Map<String, dynamic> report;
   bool? isFavorite;
