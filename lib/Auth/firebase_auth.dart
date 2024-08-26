@@ -185,7 +185,8 @@ class FirebaseAuthService {
       String sellerName,
       String sellerEmail,
       String sellerPhone,
-      double water
+      double water,
+      List<String> facilities
       ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -212,6 +213,7 @@ class FirebaseAuthService {
           "userId": uid,
           "statusByAdmin":"Pending",
           "water":water,
+          "facilities": facilities,
           "detail":{
             "sellerName":sellerName,
             "sellerEmail":sellerEmail,

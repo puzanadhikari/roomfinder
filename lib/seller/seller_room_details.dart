@@ -230,45 +230,29 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
                             const SizedBox(height: 30),
                             const Text(
                               "Facilities",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 16),
+                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                             ),
                             const SizedBox(height: 20),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Row(
-                                  children: [
-                                    Icon(Icons.check, color: kThemeColor),
-                                    const Text("Attach Bathroom")
-                                  ],
+                            if (widget.room.facilities.isNotEmpty) ...[
+                              Center(
+                                child: Wrap(
+                                  spacing: 8.0,
+                                  runSpacing: 8.0,
+                                  children: widget.room.facilities.map((facility) {
+                                    return Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(Icons.check, color: kThemeColor),
+                                        const SizedBox(width: 4),
+                                        Text(facility),
+                                      ],
+                                    );
+                                  }).toList(),
                                 ),
-                                Row(
-                                  children: [
-                                    Icon(Icons.check, color: kThemeColor),
-                                    const Text("1 Big Hall")
-                                  ],
-                                )
-                              ],
-                            ),
-                            const SizedBox(height: 12),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Row(
-                                  children: [
-                                    Icon(Icons.check, color: kThemeColor),
-                                    const Text("Bikes and Car Parking")
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    Icon(Icons.check, color: kThemeColor),
-                                    const Text("24/7 water Facilities")
-                                  ],
-                                )
-                              ],
-                            ),
+                              ),
+                            ] else ...[
+                              const Text("No facilities available"),
+                            ],
                             const SizedBox(height: 20),
                             SizedBox(
                               width: double.infinity,

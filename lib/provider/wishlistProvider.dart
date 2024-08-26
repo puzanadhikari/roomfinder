@@ -55,6 +55,7 @@ class WishlistProvider extends ChangeNotifier {
           statusByAdmin: doc["statusByAdmin"],
           status: doc['status'] != null ? Map<String, dynamic>.from(doc['status']) : {},
           report: doc['report'] != null ? Map<String, dynamic>.from(doc['report']) : {},
+          facilities: doc['facilities'] != null ? List<String>.from(doc['facilities']) : [],
         );
       }).toList();
       notifyListeners();

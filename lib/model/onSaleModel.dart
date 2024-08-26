@@ -21,6 +21,7 @@ class Room {
   late final Map<String, dynamic> status;
   late final Map<String, dynamic> report;
   bool? isFavorite;
+  final List<String> facilities;
 
   Room({
     required this.uid,
@@ -45,6 +46,7 @@ class Room {
     required this.status,
     required this.report,
     this.isFavorite = false,
+    required this.facilities,
   });
 
   void toggleFavorite() {

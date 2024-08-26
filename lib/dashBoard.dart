@@ -54,6 +54,7 @@ class _DashBoardState extends State<DashBoard> {
             ? Map<String, dynamic>.from(data['status'])
             : {},
         report: data['report'] != null ? Map<String, dynamic>.from(data['report']) : {},
+        facilities: data['facilities'] != null ? List<String>.from(data['facilities']) : [],
       );
     }).toList();
   }
@@ -121,6 +122,7 @@ class _DashBoardState extends State<DashBoard> {
               ? Map<String, dynamic>.from(data['status'])
               : {},
           report: data['report'] != null ? Map<String, dynamic>.from(data['report']) : {},
+          facilities: data['facilities'] != null ? List<String>.from(data['facilities']) : [],
         ));
       }
     }

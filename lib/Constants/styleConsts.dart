@@ -19,15 +19,15 @@ InputDecoration kFormFieldDecoration = InputDecoration(
   border: OutlineInputBorder(
     borderRadius: BorderRadius.circular(10),
     borderSide: BorderSide(
-      color: Colors.grey.shade300,
-      width: 2.0,
+      color: Colors.grey.shade500,
+      width: 1,
     ),
   ),
   enabledBorder: OutlineInputBorder(
     borderRadius: BorderRadius.circular(10),
     borderSide: BorderSide(
-      color: Colors.grey.shade300,
-      width: 2.0,
+      color: Colors.grey.shade500,
+      width: 1,
     ),
   ),
   focusedBorder: OutlineInputBorder(
