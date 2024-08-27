@@ -447,7 +447,7 @@ class _CreateRoomState extends State<CreateRoom> {
                                   fontWeight: FontWeight.w500,
                                   color: _selectedNames.contains(name)
                                       ? Colors.white
-                                      : Colors.black,
+                                      : Colors.grey.shade700,
                                 ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(30.0),

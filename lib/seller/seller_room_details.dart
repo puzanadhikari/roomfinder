@@ -15,14 +15,14 @@ import '../model/onSaleModel.dart';
 class SellerRoomDetails extends StatefulWidget {
   final Room room;
 
-  const SellerRoomDetails({super.key, required this.room});
+  const SellerRoomDetails({super.key, required this.room, List<Room>? status});
 
   @override
   State<SellerRoomDetails> createState() => _SellerRoomDetailsState();
 }
 
 class _SellerRoomDetailsState extends State<SellerRoomDetails> {
-  bool _isBooking = false;
+  final bool _isBooking = false;
   final String _mapApiKey = 'AIzaSyAGFdLuw0m2pCFxNxmFA5EzJia6IzUM3iU';
 
   @override
@@ -117,8 +117,7 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
                             const SizedBox(height: 8),
                             Row(
                               children: [
-                                Text(
-                                  "Rs. 8000 /",
+                                Text("${widget.room.price}/",
                                   style: TextStyle(
                                       color: kThemeColor,
                                       fontSize: 16,
@@ -152,11 +151,11 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
                                             color: Color(0xFF4D4D4D),
                                             fontSize: 16),
                                       ),
-                                      const SizedBox(height: 8),
+                                      const SizedBox(height: 14),
                                       Text(
-                                        "${widget.room.length} * ${widget.room.breadth}",
-                                        style: const TextStyle(
-                                            color: Color(0xFF4D4D4D),
+                                        "Dimension: ${widget.room.length} * ${widget.room.breadth}",
+                                        style: TextStyle(
+                                            color: Colors.grey.shade600,
                                             fontSize: 16),
                                       ),
                                     ],
@@ -211,18 +210,24 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
                                 Row(
                                   children: [
                                     Icon(
-                                      Icons.do_not_disturb_on_total_silence,
-                                      size: 16,
-                                      color: kThemeColor,
-                                    ),
-                                    const Text(
-                                      "Available",
+                                       widget.room
+                                            .status[
+                                        'statusDisplay'] ==
+                                            "Owned"
+                                            ? Icons
+                                            .check_circle
+                                            : Icons
+                                            .flag_circle,
+                                        size: 16,
+                                        color: kThemeColor),
+                                    Text(
+                                      '${ widget.room.status['statusDisplay'] ?? "To Buy"}',
                                       style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black45),
-                                    )
+                                          color:
+                                          Colors.black45),
+                                    ),
                                   ],
-                                )
+                                ),
                               ],
                             ),
                             const SizedBox(height: 18),
@@ -284,16 +289,14 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
                   top: carouselHeight - 50,
                   child: GestureDetector(
                     onTap: () {
-                      wishlistProvider.isInWishlist(widget.room) == true
-                          ? wishlistProvider.removeFromWishlist(widget.room)
-                          : wishlistProvider.addToWishlist(widget.room);
+                      // wishlistProvider.isInWishlist(widget.room) == true
+                      //     ? wishlistProvider.removeFromWishlist(widget.room)
+                      //     : wishlistProvider.addToWishlist(widget.room);
                     },
                     child: CircleAvatar(
                       backgroundColor: Colors.white,
                       child: Icon(Icons.bookmark,
-                          color: wishlistProvider.isInWishlist(widget.room)
-                              ? Colors.red
-                              : kThemeColor),
+                          color: kThemeColor),
                     ),
                   ))
             ],
