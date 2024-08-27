@@ -12,16 +12,16 @@ import 'package:provider/provider.dart';
 
 import '../model/onSaleModel.dart';
 
-class SellerRoomDetails extends StatefulWidget {
+class AdminRoomDetails extends StatefulWidget {
   final Room room;
 
-  const SellerRoomDetails({super.key, required this.room, List<Room>? status});
+  const AdminRoomDetails({super.key, required this.room, List<Room>? status});
 
   @override
-  State<SellerRoomDetails> createState() => _SellerRoomDetailsState();
+  State<AdminRoomDetails> createState() => _AdminRoomDetailsState();
 }
 
-class _SellerRoomDetailsState extends State<SellerRoomDetails> {
+class _AdminRoomDetailsState extends State<AdminRoomDetails> {
   final bool _isBooking = false;
   final String _mapApiKey = 'AIzaSyAGFdLuw0m2pCFxNxmFA5EzJia6IzUM3iU';
 
@@ -138,25 +138,46 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
                                     crossAxisAlignment:
                                     CrossAxisAlignment.start,
                                     children: [
-                                      const Text(
-                                        "1.5 km from Gwarko",
-                                        style: TextStyle(
-                                            color: Color(0xFF4D4D4D),
-                                            fontSize: 16),
-                                      ),
-                                      const SizedBox(height: 8),
-                                      Text(
-                                        widget.room.locationName,
-                                        style: const TextStyle(
-                                            color: Color(0xFF4D4D4D),
-                                            fontSize: 16),
+                                      Row(
+                                        children: [
+                                          Icon(Icons.location_on_rounded,color: kThemeColor),
+                                          Flexible(
+                                            child: Text(
+                                              widget.room.locationName,
+                                              style: const TextStyle(
+                                                  color: Color(0xFF4D4D4D),
+                                                  fontSize: 16),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                       const SizedBox(height: 14),
                                       Text(
                                         "Dimension: ${widget.room.length} * ${widget.room.breadth}",
                                         style: TextStyle(
-                                            color: Colors.grey.shade600,
+                                            color: Colors.grey.shade800,
                                             fontSize: 16),
+                                      ),
+                                      SizedBox(height: 5),
+                                      Text(
+                                        "Electricity: ${widget.room.electricity}",
+                                        style: TextStyle(
+                                            color: Colors.grey.shade800,
+                                            fontSize: 15),
+                                      ),
+                                      SizedBox(height: 5),
+                                      Text(
+                                        "Water: ${widget.room.water}",
+                                        style: TextStyle(
+                                            color: Colors.grey.shade800,
+                                            fontSize: 15),
+                                      ),
+                                      SizedBox(height: 5),
+                                      Text(
+                                        "Wastes: ${widget.room.fohor}",
+                                        style: TextStyle(
+                                            color: Colors.grey.shade800,
+                                            fontSize: 15),
                                       ),
                                     ],
                                   ),
@@ -191,7 +212,7 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
                                     Text(
                                       "Electricity",
                                       style: TextStyle(
-                                          fontWeight: FontWeight.bold,
+                                        fontWeight: FontWeight.bold,
                                           color: kThemeColor,
                                           fontSize: 16),
                                     ),
@@ -255,7 +276,7 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
                                 Row(
                                   children: [
                                     Icon(
-                                       widget.room
+                                        widget.room
                                             .status[
                                         'statusDisplay'] ==
                                             "Owned"
@@ -303,25 +324,6 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
                             ] else ...[
                               const Text("No facilities available"),
                             ],
-                            const SizedBox(height: 20),
-                            SizedBox(
-                              width: double.infinity,
-                              height: 45,
-                              child: ElevatedButton(
-                                onPressed: (){},
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFF072A2E),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5.0),
-                                  ),
-                                ),
-                                child: const Text(
-                                  "Edit",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 18),
-                                ),
-                              ),
-                            ),
                           ],
                         ),
                       ),
@@ -332,17 +334,10 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
               Positioned(
                   right: 40,
                   top: carouselHeight - 50,
-                  child: GestureDetector(
-                    onTap: () {
-                      // wishlistProvider.isInWishlist(widget.room) == true
-                      //     ? wishlistProvider.removeFromWishlist(widget.room)
-                      //     : wishlistProvider.addToWishlist(widget.room);
-                    },
-                    child: CircleAvatar(
-                      backgroundColor: Colors.white,
-                      child: Icon(Icons.bookmark,
-                          color: kThemeColor),
-                    ),
+                  child: CircleAvatar(
+                    backgroundColor: Colors.white,
+                    child: Icon(Icons.bookmark,
+                        color: kThemeColor),
                   ))
             ],
           ),

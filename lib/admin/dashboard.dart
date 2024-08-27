@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:meroapp/admin/admin_room_details.dart';
 
 import '../Constants/styleConsts.dart';
 import '../model/onSaleModel.dart';
@@ -154,62 +155,106 @@ class _DashBoardState extends State<DashBoard> {
                         itemCount: rooms.length,
                         itemBuilder: (context, index) {
                           final room = rooms[index];
-                          return Card(
-                            margin: const EdgeInsets.symmetric(vertical: 8),
-                            elevation: 4,
-                            child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    child: Image.network(
-                                      room.photo.isNotEmpty ? room.photo[0] : '',
-                                      height: 150, // Adjust height as needed
-                                      width: double.infinity,
-                                      fit: BoxFit.cover,
-                                      errorBuilder: (context, error, stackTrace) => const Icon(Icons.image_not_supported, size: 150, color: Colors.grey),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    room.name,
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                      color: kThemeColor,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text('Capacity: ${room.capacity}', style: TextStyle(color: kThemeColor)),
-                                  const SizedBox(height: 4),
-                                  Text('Price: \$${room.fohor}', style: TextStyle(color: kThemeColor)),
-                                  const SizedBox(height: 16),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: kThemeColor,
+                          return GestureDetector(
+                            onTap: (){
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      AdminRoomDetails(room: room),
+                                ),
+                              );
+                            },
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12.0),
+                              ),
+                              elevation: 6,
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(12.0),
+                                      child: Image.network(
+                                        room.photo.isNotEmpty ? room.photo[0] : '',
+                                        height: 150, // Adjust height as needed
+                                        width: double.infinity,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (context, error, stackTrace) => Container(
+                                          color: Colors.grey.shade200,
+                                          height: 150,
+                                          width: double.infinity,
+                                          child: const Icon(Icons.image_not_supported, size: 100, color: Colors.grey),
                                         ),
-                                        onPressed: () {
-                                          approveRoom(room.uid);
-                                        },
-                                        child: const Text('Approve'),
                                       ),
-                                      ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.red,
+                                    ),
+                                    const SizedBox(height: 12),
+                                    Text(
+                                      room.name.toUpperCase(),
+                                      style: TextStyle(
+                                        color: kThemeColor,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Text(
+                                      room.locationName,
+                                      style: TextStyle(
+                                        color: Colors.grey.shade700,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Text(
+                                      "${room.price}/ per month",
+                                      style: TextStyle(
+                                        color: kThemeColor,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 16),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              primary: kThemeColor,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(12.0),
+                                              ),
+                                              padding: const EdgeInsets.symmetric(vertical: 12.0),
+                                            ),
+                                            onPressed: () {
+                                              _showApproveDialog(context, room.uid);
+                                            },
+                                            child: const Text('Approve'),
+                                          ),
                                         ),
-                                        onPressed: () {
-                                          rejectRoom(room.uid);
-                                        },
-                                        child: const Text('Reject'),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                                        const SizedBox(width: 8),
+                                        Expanded(
+                                          child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              primary: Colors.red,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(12.0),
+                                              ),
+                                              padding: const EdgeInsets.symmetric(vertical: 12.0),
+                                            ),
+                                            onPressed: () {
+                                              _showRejectDialog(context, room.uid);
+                                            },
+                                            child: const Text('Reject'),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           );
@@ -222,6 +267,84 @@ class _DashBoardState extends State<DashBoard> {
             ),
           ),
         ),
+      ),
+    );
+  }
+  void _showApproveDialog(BuildContext context, String roomUid) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        title: Text(
+          'Confirm Approval',
+          style: TextStyle(color: kThemeColor, fontWeight: FontWeight.bold),
+        ),
+        content: Text('Are you sure you want to approve this room?'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text(
+              'Cancel',
+              style: TextStyle(color: Colors.grey.shade600),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              approveRoom(roomUid);
+            },
+            style: ElevatedButton.styleFrom(
+              primary: kThemeColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+            ),
+            child: const Text('Approve'),
+          ),
+        ],
+      ),
+    );
+  }
+  void _showRejectDialog(BuildContext context, String roomUid) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        title: Text(
+          'Confirm Rejection',
+          style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+        ),
+        content: Text('Are you sure you want to reject this room?'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text(
+              'Cancel',
+              style: TextStyle(color: Colors.grey.shade600),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              rejectRoom(roomUid);
+            },
+            style: ElevatedButton.styleFrom(
+              primary: Colors.red,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+            ),
+            child: const Text('Reject'),
+          ),
+        ],
       ),
     );
   }

@@ -208,13 +208,58 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                                 color: Colors.black54, height: 2, thickness: 1),
                             const SizedBox(height: 12),
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  '${widget.room.capacity} BHK',
-                                  style: const TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black54),
+                                Column(
+                                  children: [
+                                    Text(
+                                      "Electricity",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: kThemeColor,
+                                          fontSize: 16),
+                                    ),
+                                    Text(
+                                      "NPR.${widget.room.electricity}",
+                                      style: TextStyle(
+                                          color: Colors.grey.shade800,
+                                          fontSize: 14),
+                                    ),
+                                  ],
+                                ),
+                                Column(
+                                  children: [
+                                    Text(
+                                      "Water",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: kThemeColor,
+                                          fontSize: 16),
+                                    ),
+                                    Text(
+                                      "NPR.${widget.room.water}",
+                                      style: TextStyle(
+                                          color: Colors.grey.shade800,
+                                          fontSize: 14),
+                                    ),
+                                  ],
+                                ),
+                                Column(
+                                  children: [
+                                    Text(
+                                      "Wastes",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: kThemeColor,
+                                          fontSize: 16),
+                                    ),
+                                    Text(
+                                      "NPR.${widget.room.fohor}",
+                                      style: TextStyle(
+                                          color: Colors.grey.shade800,
+                                          fontSize: 14),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),

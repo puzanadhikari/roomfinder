@@ -393,7 +393,7 @@ class _MyListingsPageState extends State<MyListingsPage> {
                                                                           controller: _electricityController,
                                                                           keyboardType: TextInputType.number,
                                                                           decoration: InputDecoration(
-                                                                            labelText: 'Electricity (kWh)',
+                                                                            labelText: 'Electricity (Unit)',
                                                                             labelStyle: TextStyle(color: kThemeColor),
                                                                             border: OutlineInputBorder(
                                                                               borderRadius: BorderRadius.circular(10.0),

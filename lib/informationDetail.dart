@@ -19,9 +19,7 @@ class _InformationDetailsState extends State<InformationDetails> {
         elevation: 0,
         centerTitle: true,
         backgroundColor: Colors.grey.shade200,
-        iconTheme: IconThemeData(
-          color: kThemeColor,
-        ),
+        iconTheme: IconThemeData(color: kThemeColor),
         title: Text(
           "Details",
           style: TextStyle(
@@ -37,7 +35,7 @@ class _InformationDetailsState extends State<InformationDetails> {
           return true;
         },
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(12.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -54,19 +52,15 @@ class _InformationDetailsState extends State<InformationDetails> {
               SizedBox(height: 20),
               Card(
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.0),
+                  borderRadius: BorderRadius.circular(12.0),
                 ),
-                elevation: 8.0,
+                elevation: 4,
                 child: Container(
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15.0),
-                    gradient: LinearGradient(
-                      colors: [Colors.white, Colors.grey.shade200],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
+                    borderRadius: BorderRadius.circular(12.0),
+                    color: Colors.white,
                   ),
-                  padding: const EdgeInsets.all(20.0),
+                  padding: const EdgeInsets.all(16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
@@ -74,7 +68,7 @@ class _InformationDetailsState extends State<InformationDetails> {
                         onTap: () {
                           showDialog(
                             context: context,
-                            builder: (context) => ChangeNameDialog(),
+                            builder: (context) => const ChangeNameDialog(),
                           );
                         },
                         child: ListTile(
@@ -93,7 +87,7 @@ class _InformationDetailsState extends State<InformationDetails> {
                             ),
                           ),
                           trailing:
-                              Icon(Icons.edit, color: kThemeColor, size: 22),
+                          Icon(Icons.edit, color: kThemeColor, size: 22),
                         ),
                       ),
                       Divider(height: 1, color: Colors.grey.shade300),
@@ -113,7 +107,7 @@ class _InformationDetailsState extends State<InformationDetails> {
                           ),
                         ),
                         trailing:
-                            Icon(Icons.email, color: kThemeColor, size: 22),
+                        Icon(Icons.email, color: kThemeColor, size: 22),
                       ),
                       Divider(height: 1, color: Colors.grey.shade300),
                       ListTile(
@@ -132,7 +126,7 @@ class _InformationDetailsState extends State<InformationDetails> {
                           ),
                         ),
                         trailing:
-                            Icon(Icons.phone, color: kThemeColor, size: 22),
+                        Icon(Icons.phone, color: kThemeColor, size: 22),
                       ),
                     ],
                   ),
@@ -145,7 +139,6 @@ class _InformationDetailsState extends State<InformationDetails> {
     );
   }
 }
-
 class ChangeNameDialog extends StatefulWidget {
   const ChangeNameDialog({super.key});
 
@@ -157,11 +150,6 @@ class _ChangeNameDialogState extends State<ChangeNameDialog> {
   TextEditingController _firstNameController = TextEditingController();
   TextEditingController _middleNameController = TextEditingController();
   TextEditingController _lastNameController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   void dispose() {
@@ -181,11 +169,7 @@ class _ChangeNameDialogState extends State<ChangeNameDialog> {
         padding: EdgeInsets.all(16.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12.0),
-          gradient: LinearGradient(
-            colors: [Colors.white, Colors.grey.shade200],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+          color: Colors.white,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,

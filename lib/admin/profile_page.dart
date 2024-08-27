@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 
 import '../Constants/styleConsts.dart';
 import '../splashScreen.dart';
-class SellerProfile extends StatefulWidget {
-  const SellerProfile({super.key});
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({super.key});
 
   @override
-  State<SellerProfile> createState() => _SellerProfileState();
+  State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _SellerProfileState extends State<SellerProfile> {
+class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     User? user = FirebaseAuth.instance.currentUser;
@@ -192,6 +192,7 @@ class _SellerProfileState extends State<SellerProfile> {
       ),
     );
   }
+
   void _signOut() async {
     try {
       await FirebaseAuth.instance.signOut();

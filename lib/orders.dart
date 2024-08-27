@@ -385,132 +385,139 @@ class _OrderPageState extends State<OrderPage> {
                                                         ['statusDisplay'] ==
                                                     "Owned",
                                                 child: GestureDetector(
-                                                    onTap: () {
-                                                      roomStatus['report'][
-                                                                  'electricity'] ==
-                                                              null
-                                                          ? ScaffoldMessenger
-                                                                  .of(context)
-                                                              .showSnackBar(
-                                                              const SnackBar(
-                                                                content: Text(
-                                                                    "No Report Generated Yet."),
-                                                              ),
-                                                            )
-                                                          : showDialog(
-                                                              context: context,
-                                                              builder:
-                                                                  (BuildContext
-                                                                      context) {
-                                                                return AlertDialog(
-                                                                  title: Text(
-                                                                      'Room Report'),
-                                                                  content:
-                                                                      SingleChildScrollView(
-                                                                    child:
-                                                                        Table(
-                                                                      border: TableBorder
-                                                                          .all(),
-                                                                      columnWidths: {
-                                                                        0: FlexColumnWidth(
-                                                                            1),
-                                                                        1: FlexColumnWidth(
-                                                                            2),
-                                                                      },
-                                                                      children: [
-                                                                        TableRow(
-                                                                          children: [
-                                                                            Padding(
-                                                                              padding: const EdgeInsets.all(8.0),
-                                                                              child: Text('Electricity'),
-                                                                            ),
-                                                                            Padding(
-                                                                              padding: const EdgeInsets.all(8.0),
-                                                                              child: Text(roomStatus['report']['electricity'].toString()),
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                        TableRow(
-                                                                          children: [
-                                                                            Padding(
-                                                                              padding: const EdgeInsets.all(8.0),
-                                                                              child: Text('Fohor'),
-                                                                            ),
-                                                                            Padding(
-                                                                              padding: const EdgeInsets.all(8.0),
-                                                                              child: Text(roomStatus['report']['fohor'].toString()),
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                        TableRow(
-                                                                          children: [
-                                                                            Padding(
-                                                                              padding: const EdgeInsets.all(8.0),
-                                                                              child: Text('Generated Date'),
-                                                                            ),
-                                                                            Padding(
-                                                                              padding: const EdgeInsets.all(8.0),
-                                                                              child: Text(roomStatus['report']['generatedDate'].toString()),
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                        TableRow(
-                                                                          children: [
-                                                                            Padding(
-                                                                              padding: const EdgeInsets.all(8.0),
-                                                                              child: Text('Room Cost'),
-                                                                            ),
-                                                                            Padding(
-                                                                              padding: const EdgeInsets.all(8.0),
-                                                                              child: Text(roomStatus['report']['roomCost'].toString()),
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                        TableRow(
-                                                                          children: [
-                                                                            Padding(
-                                                                              padding: const EdgeInsets.all(8.0),
-                                                                              child: Text('Water'),
-                                                                            ),
-                                                                            Padding(
-                                                                              padding: const EdgeInsets.all(8.0),
-                                                                              child: Text(roomStatus['report']['water'].toString()),
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                        TableRow(
-                                                                          children: [
-                                                                            Padding(
-                                                                              padding: const EdgeInsets.all(8.0),
-                                                                              child: Text('Total'),
-                                                                            ),
-                                                                            Padding(
-                                                                              padding: const EdgeInsets.all(8.0),
-                                                                              child: Text(roomStatus['report']['total'].toString()),
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                      ],
-                                                                    ),
+                                                  onTap: () {
+                                                    if (roomStatus['report']
+                                                            ['electricity'] ==
+                                                        null) {
+                                                      ScaffoldMessenger.of(
+                                                              context)
+                                                          .showSnackBar(
+                                                        const SnackBar(
+                                                          content: Text(
+                                                              "No Report Generated Yet."),
+                                                        ),
+                                                      );
+                                                    } else {
+                                                      showDialog(
+                                                        context: context,
+                                                        builder: (BuildContext
+                                                            context) {
+                                                          return AlertDialog(
+                                                            shape:
+                                                                RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          20.0),
+                                                            ),
+                                                            title: Row(
+                                                              children: [
+                                                                Icon(
+                                                                    Icons
+                                                                        .picture_as_pdf,
+                                                                    color:
+                                                                        kThemeColor),
+                                                                SizedBox(
+                                                                    width: 10),
+                                                                Text(
+                                                                  'Room Report',
+                                                                  style:
+                                                                      TextStyle(
+                                                                    fontSize:
+                                                                        20,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    color:
+                                                                        kThemeColor,
                                                                   ),
-                                                                  actions: [
-                                                                    TextButton(
-                                                                      onPressed:
-                                                                          () {
-                                                                        Navigator.of(context)
-                                                                            .pop();
-                                                                      },
-                                                                      child: Text(
-                                                                          'Close'),
-                                                                    ),
-                                                                  ],
-                                                                );
-                                                              },
-                                                            );
-                                                    },
-                                                    child: Icon(
-                                                        Icons.picture_as_pdf)),
-                                              ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            content:
+                                                                SingleChildScrollView(
+                                                              child: Table(
+                                                                border:
+                                                                    TableBorder(
+                                                                  horizontalInside:
+                                                                      BorderSide(
+                                                                    width: 1,
+                                                                    color: Colors
+                                                                        .grey
+                                                                        .shade300,
+                                                                  ),
+                                                                ),
+                                                                columnWidths: const {
+                                                                  0: FlexColumnWidth(
+                                                                      1),
+                                                                  1: FlexColumnWidth(
+                                                                      2),
+                                                                },
+                                                                children: [
+                                                                  _buildTableRow(
+                                                                      'Electricity',
+                                                                      roomStatus[
+                                                                              'report']
+                                                                          [
+                                                                          'electricity']),
+                                                                  _buildTableRow(
+                                                                      'Fohor',
+                                                                      roomStatus[
+                                                                              'report']
+                                                                          [
+                                                                          'fohor']),
+                                                                  _buildTableRow(
+                                                                      'Generated Date',
+                                                                      roomStatus[
+                                                                              'report']
+                                                                          [
+                                                                          'generatedDate']),
+                                                                  _buildTableRow(
+                                                                      'Room Cost',
+                                                                      roomStatus[
+                                                                              'report']
+                                                                          [
+                                                                          'roomCost']),
+                                                                  _buildTableRow(
+                                                                      'Water',
+                                                                      roomStatus[
+                                                                              'report']
+                                                                          [
+                                                                          'water']),
+                                                                  _buildTableRow(
+                                                                      'Total',
+                                                                      roomStatus[
+                                                                              'report']
+                                                                          [
+                                                                          'total']),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                            actions: [
+                                                              TextButton(
+                                                                onPressed: () {
+                                                                  Navigator.of(
+                                                                          context)
+                                                                      .pop();
+                                                                },
+                                                                child: Text(
+                                                                  'Close',
+                                                                  style: TextStyle(
+                                                                      color:
+                                                                          kThemeColor),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          );
+                                                        },
+                                                      );
+                                                    }
+                                                  },
+                                                  child: Icon(
+                                                      Icons.picture_as_pdf,
+                                                      color: kThemeColor),
+                                                ),
+                                              )
                                             ],
                                           ),
                                         ],
@@ -531,6 +538,32 @@ class _OrderPageState extends State<OrderPage> {
           },
         ),
       ),
+    );
+  }
+
+  TableRow _buildTableRow(String label, dynamic value) {
+    return TableRow(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Text(
+            label,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Text(
+            value.toString(),
+            style: TextStyle(
+              color: Colors.black54,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
