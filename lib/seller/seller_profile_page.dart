@@ -1,10 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:meroapp/seller/createRoom.dart';
+import 'package:meroapp/seller/enquiries.dart';
 
 import '../Constants/styleConsts.dart';
 import '../splashScreen.dart';
 class SellerProfile extends StatefulWidget {
-  const SellerProfile({super.key});
+  final double lat, lng;
+  const SellerProfile(this.lat, this.lng, {super.key});
 
   @override
   State<SellerProfile> createState() => _SellerProfileState();
@@ -122,32 +125,32 @@ class _SellerProfileState extends State<SellerProfile> {
               ),
               // Orders Card
               _buildProfileCard(
-                icon: Icons.shopping_cart,
-                title: 'Orders',
+                icon: Icons.room_preferences_sharp,
+                title: 'Add Property',
                 iconColor: kThemeColor,
                 textColor: kThemeColor,
                 onTap: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => const OrderPage(),
-                  //   ),
-                  // );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const CreateRoom(),
+                    ),
+                  );
                 },
               ),
               // Wishlist Card
               _buildProfileCard(
-                icon: Icons.favorite,
-                title: 'Wishlist',
+                icon: Icons.query_stats,
+                title: 'Enquiries',
                 iconColor: kThemeColor,
                 textColor: kThemeColor,
                 onTap: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => const WishlistPage(),
-                  //   ),
-                  // );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => EnquiriesPage(widget.lat, widget.lng),
+                    ),
+                  );
                 },
               ),
               // Logout Card

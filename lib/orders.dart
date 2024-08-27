@@ -255,8 +255,7 @@ class _OrderPageState extends State<OrderPage> {
                       return GestureDetector(
                         onTap: () {
                           log(roomId);
-                          if (roomStatus['status']['statusDisplay'] ==
-                              "Sold") {
+                          if (roomStatus['status']['statusDisplay'] == "Sold") {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -278,8 +277,10 @@ class _OrderPageState extends State<OrderPage> {
                                 Row(
                                   children: [
                                     ClipRRect(
-                                      borderRadius: const BorderRadius.horizontal(
+                                      borderRadius:
+                                          const BorderRadius.horizontal(
                                         left: Radius.circular(16.0),
+                                        right: Radius.circular(16.0),
                                       ),
                                       child: Image.network(
                                         room['photo'][0] ?? '',
@@ -298,7 +299,8 @@ class _OrderPageState extends State<OrderPage> {
                                               MainAxisAlignment.center,
                                           children: [
                                             Text(
-                                              (room['name'] ?? '').toUpperCase(),
+                                              (room['name'] ?? '')
+                                                  .toUpperCase(),
                                               style: TextStyle(
                                                 color: kThemeColor,
                                                 fontWeight: FontWeight.bold,
@@ -306,24 +308,21 @@ class _OrderPageState extends State<OrderPage> {
                                               ),
                                             ),
                                             const SizedBox(height: 8),
-                                            Row(
-                                              children: [
-                                                const Icon(
-                                                  Icons.location_on,
-                                                  color: Colors.grey,
-                                                  size: 16,
-                                                ),
-                                                const SizedBox(width: 4),
-                                                Expanded(
-                                                  child: Text(
-                                                    room['locationName'] ?? '',
-                                                    style: TextStyle(
-                                                      color: Colors.grey.shade700,
-                                                      fontSize: 14,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
+                                            Text(
+                                              room['locationName'] ?? '',
+                                              style: TextStyle(
+                                                color: Colors.grey.shade700,
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 8),
+                                            Text(
+                                              "${room['price']}/ per month",
+                                              style: TextStyle(
+                                                color: kThemeColor,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w600,
+                                              ),
                                             ),
                                             const SizedBox(height: 8),
                                             Row(
@@ -346,17 +345,24 @@ class _OrderPageState extends State<OrderPage> {
                                             const SizedBox(height: 8),
                                             Row(
                                               mainAxisAlignment:
-                                                  MainAxisAlignment.spaceBetween,
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
                                                 Row(
                                                   children: [
                                                     Icon(
-                                                      Icons.circle,
-                                                      color: roomStatus['status'][
+                                                      roomStatus['status'][
+                                                                  'statusDisplay'] ==
+                                                              'Owned'
+                                                          ? Icons.check_circle
+                                                          : Icons.flag_circle,
+                                                      color: roomStatus[
+                                                                      'status'][
                                                                   'statusDisplay'] ==
                                                               'Owned'
                                                           ? Colors.green
-                                                          : roomStatus['status'][
+                                                          : roomStatus['status']
+                                                                      [
                                                                       'statusDisplay'] ==
                                                                   'Sold'
                                                               ? Colors.red
@@ -411,7 +417,8 @@ class _OrderPageState extends State<OrderPage> {
                                                                       color:
                                                                           kThemeColor),
                                                                   SizedBox(
-                                                                      width: 10),
+                                                                      width:
+                                                                          10),
                                                                   Text(
                                                                     'Room Report',
                                                                     style:
@@ -449,38 +456,32 @@ class _OrderPageState extends State<OrderPage> {
                                                                   children: [
                                                                     _buildTableRow(
                                                                         'Electricity',
-                                                                        roomStatus[
-                                                                                'report']
+                                                                        roomStatus['report']
                                                                             [
                                                                             'electricity']),
                                                                     _buildTableRow(
                                                                         'Fohor',
-                                                                        roomStatus[
-                                                                                'report']
+                                                                        roomStatus['report']
                                                                             [
                                                                             'fohor']),
                                                                     _buildTableRow(
                                                                         'Generated Date',
-                                                                        roomStatus[
-                                                                                'report']
+                                                                        roomStatus['report']
                                                                             [
                                                                             'generatedDate']),
                                                                     _buildTableRow(
                                                                         'Room Cost',
-                                                                        roomStatus[
-                                                                                'report']
+                                                                        roomStatus['report']
                                                                             [
                                                                             'roomCost']),
                                                                     _buildTableRow(
                                                                         'Water',
-                                                                        roomStatus[
-                                                                                'report']
+                                                                        roomStatus['report']
                                                                             [
                                                                             'water']),
                                                                     _buildTableRow(
                                                                         'Total',
-                                                                        roomStatus[
-                                                                                'report']
+                                                                        roomStatus['report']
                                                                             [
                                                                             'total']),
                                                                   ],
@@ -488,7 +489,8 @@ class _OrderPageState extends State<OrderPage> {
                                                               ),
                                                               actions: [
                                                                 TextButton(
-                                                                  onPressed: () {
+                                                                  onPressed:
+                                                                      () {
                                                                     Navigator.of(
                                                                             context)
                                                                         .pop();
@@ -524,7 +526,7 @@ class _OrderPageState extends State<OrderPage> {
                                   padding: const EdgeInsets.all(8.0),
                                   child: Visibility(
                                     visible: roomStatus['status']
-                                    ['statusDisplay'] ==
+                                            ['statusDisplay'] ==
                                         "Sold",
                                     child: Text(
                                       'Please Approve our agreement paper to own this property.',

@@ -50,7 +50,7 @@ class _SellerHomePageState extends State<SellerHomePage> {
       const CreateRoom(),
       MyListingsPage(_latitude, _longitude),
       EnquiriesPage(_latitude, _longitude),
-      const SellerProfile(),
+      SellerProfile(_latitude, _longitude),
     ];
   }
 
