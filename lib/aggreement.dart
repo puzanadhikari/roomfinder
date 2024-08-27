@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import 'Constants/styleConsts.dart';
+
 class AgreementPage extends StatefulWidget {
   final String? sellerName;
   final String? sellerEmail;
@@ -51,9 +53,17 @@ class _AgreementPageState extends State<AgreementPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Room Booking Agreement'),
+        elevation: 5,
         centerTitle: true,
-        backgroundColor: Colors.indigo,
+        backgroundColor: Colors.grey.shade200,
+        iconTheme: IconThemeData(
+          color: kThemeColor,
+        ),
+        title: Text(
+          "Room Booking Agreement",
+          style: TextStyle(
+              color: kThemeColor, fontWeight: FontWeight.bold, fontSize: 25),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -62,16 +72,13 @@ class _AgreementPageState extends State<AgreementPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildSectionHeader('Seller Information'),
-              _buildInfoText('Seller Name: ${widget.sellerName}'),
+              _buildInfoText('Seller Name: ${widget.sellerName?.toUpperCase()}'),
               _buildInfoText('Seller Email: ${widget.sellerEmail}'),
               const SizedBox(height: 20),
-
               _buildSectionHeader('Agreement Terms'),
               _buildAgreementTerms(),
-
               const SizedBox(height: 20),
               _buildAcceptanceCheckbox(),
-
               const SizedBox(height: 30),
               _buildSubmitButton(),
             ],
@@ -84,13 +91,19 @@ class _AgreementPageState extends State<AgreementPage> {
   Widget _buildSectionHeader(String title) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8.0),
-      child: Text(
-        title,
-        style: TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-          color: Colors.indigo,
-        ),
+      child: Row(
+        children: [
+          Icon(Icons.info, color: kThemeColor, size: 24),
+          const SizedBox(width: 8),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: kThemeColor,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -110,11 +123,18 @@ class _AgreementPageState extends State<AgreementPage> {
 
   Widget _buildAgreementTerms() {
     return Container(
-      padding: const EdgeInsets.all(12.0),
+      padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        color: Colors.indigo.shade50,
+        color: Colors.grey.shade200,
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.indigo.shade100),
+        border: Border.all(color: kThemeColor),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black26,
+            blurRadius: 4,
+            offset: Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -170,15 +190,17 @@ class _AgreementPageState extends State<AgreementPage> {
   }
 
   Widget _buildSubmitButton() {
-    return Center(
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      height: 50,
       child: ElevatedButton(
         onPressed: _acceptTerms
             ? () {
-          _approveRoomStatus(widget.roomUid);
-        }
+                _approveRoomStatus(widget.roomUid);
+              }
             : null,
         style: ElevatedButton.styleFrom(
-          primary: Colors.indigo,
+          primary: kThemeColor,
           onPrimary: Colors.white,
           padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
           shape: RoundedRectangleBorder(

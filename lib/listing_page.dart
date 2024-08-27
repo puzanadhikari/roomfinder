@@ -375,12 +375,12 @@ class _ListingState extends State<Listing> {
                                                         const SizedBox(
                                                             height: 8),
                                                         Text(
-                                                          "Rs. 8000/ per month",
+                                                          "${product.price}/ per month",
                                                           style: TextStyle(
                                                             color: kThemeColor,
                                                             fontSize: 14,
                                                             fontWeight:
-                                                                FontWeight.w600,
+                                                            FontWeight.w600,
                                                           ),
                                                         ),
                                                         const SizedBox(
@@ -403,20 +403,23 @@ class _ListingState extends State<Listing> {
                                                             ),
                                                             Row(
                                                               children: [
-                                                                Icon(
-                                                                    Icons
-                                                                        .check_circle,
+                                                                Icon(displayedProducts[index].status[
+                                                                'statusDisplay'] ==
+                                                                    "Owned"
+                                                                    ? Icons
+                                                                    .check_circle
+                                                                    : Icons
+                                                                    .flag_circle,
                                                                     size: 16,
-                                                                    color:
-                                                                        kThemeColor),
-                                                                const Text(
-                                                                  "Available",
+                                                                    color: kThemeColor),
+                                                                Text(
+                                                                  '${displayedProducts[index].status['statusDisplay']}',
                                                                   style: TextStyle(
-                                                                      color: Colors
-                                                                          .black45),
-                                                                )
+                                                                      color:
+                                                                      Colors.black45),
+                                                                ),
                                                               ],
-                                                            )
+                                                            ),
                                                           ],
                                                         )
                                                       ],
@@ -675,12 +678,12 @@ class _ListingState extends State<Listing> {
                                                         const SizedBox(
                                                             height: 8),
                                                         Text(
-                                                          "Capacity: ${room.capacity}",
+                                                          "${room.price}/ per month",
                                                           style: TextStyle(
                                                             color: kThemeColor,
                                                             fontSize: 14,
                                                             fontWeight:
-                                                                FontWeight.w600,
+                                                            FontWeight.w600,
                                                           ),
                                                         ),
                                                         const SizedBox(
@@ -708,18 +711,21 @@ class _ListingState extends State<Listing> {
                                                             ),
                                                             Row(
                                                               children: [
-                                                                Icon(
-                                                                    Icons
-                                                                        .check_circle,
+                                                                Icon(room.status[
+                                                                'statusDisplay'] ==
+                                                                    "Owned"
+                                                                    ? Icons
+                                                                    .check_circle
+                                                                    : Icons
+                                                                    .flag_circle,
                                                                     size: 16,
-                                                                    color:
-                                                                        kThemeColor),
-                                                                const Text(
-                                                                  "Available",
+                                                                    color: kThemeColor),
+                                                                Text(
+                                                                  '${room.status['statusDisplay'] ?? "To Buy"}',
                                                                   style: TextStyle(
-                                                                      color: Colors
-                                                                          .black45),
-                                                                )
+                                                                      color:
+                                                                      Colors.black45),
+                                                                ),
                                                               ],
                                                             ),
                                                           ],

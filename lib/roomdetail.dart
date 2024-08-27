@@ -278,19 +278,23 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                                 ),
                                 Row(
                                   children: [
-                                    Icon(
-                                      Icons.check_circle,
-                                      size: 16,
-                                      color: kThemeColor,
-                                    ),
-                                    const Text(
-                                      "Available",
+                                    Icon(widget.room.status[
+                                    'statusDisplay'] ==
+                                        "Owned"
+                                        ? Icons
+                                        .check_circle
+                                        : Icons
+                                        .flag_circle,
+                                        size: 16,
+                                        color: kThemeColor),
+                                    Text(
+                                      '${widget.room.status['statusDisplay'] ?? "To Buy"}',
                                       style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black45),
-                                    )
+                                          color:
+                                          Colors.black45),
+                                    ),
                                   ],
-                                )
+                                ),
                               ],
                             ),
                             const SizedBox(height: 18),

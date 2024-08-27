@@ -532,24 +532,24 @@ class _DashBoardState extends State<DashBoard> {
                                                         ],
                                                       ),
                                                       Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
                                                         children: [
-                                                          Icon(
-                                                              Icons
-                                                                  .check_circle,
+                                                          Icon(displayedProducts[index].status[
+                                                          'statusDisplay'] ==
+                                                              "Owned"
+                                                              ? Icons
+                                                              .check_circle
+                                                              : Icons
+                                                              .flag_circle,
                                                               size: 16,
-                                                              color:
-                                                                  kThemeColor),
-                                                          const Text(
-                                                            "Available",
+                                                              color: kThemeColor),
+                                                          Text(
+                                                            '${displayedProducts[index].status['statusDisplay'] ?? "To Buy"}',
                                                             style: TextStyle(
-                                                                color: Colors
-                                                                    .black45),
-                                                          )
+                                                                color:
+                                                                Colors.black45),
+                                                          ),
                                                         ],
-                                                      )
+                                                      ),
                                                     ],
                                                   )
                                                 ],
@@ -767,12 +767,12 @@ class _DashBoardState extends State<DashBoard> {
                                                   ),
                                                   const SizedBox(height: 8),
                                                   Text(
-                                                    "Capacity: ${room.capacity}",
+                                                    "${room.price}/ per month",
                                                     style: TextStyle(
                                                       color: kThemeColor,
                                                       fontSize: 14,
                                                       fontWeight:
-                                                          FontWeight.w600,
+                                                      FontWeight.w600,
                                                     ),
                                                   ),
                                                   const SizedBox(height: 20),
@@ -799,18 +799,21 @@ class _DashBoardState extends State<DashBoard> {
                                                       ),
                                                       Row(
                                                         children: [
-                                                          Icon(
-                                                              Icons
-                                                                  .check_circle,
+                                                          Icon(room.status[
+                                                          'statusDisplay'] ==
+                                                              "Owned"
+                                                              ? Icons
+                                                              .check_circle
+                                                              : Icons
+                                                              .flag_circle,
                                                               size: 16,
-                                                              color:
-                                                                  kThemeColor),
-                                                          const Text(
-                                                            "Available",
+                                                              color: kThemeColor),
+                                                          Text(
+                                                            '${room.status['statusDisplay'] ?? "To Buy"}',
                                                             style: TextStyle(
-                                                                color: Colors
-                                                                    .black45),
-                                                          )
+                                                                color:
+                                                                Colors.black45),
+                                                          ),
                                                         ],
                                                       ),
                                                     ],
