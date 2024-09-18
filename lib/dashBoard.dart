@@ -190,10 +190,13 @@ class _DashBoardState extends State<DashBoard> {
                               fontWeight: FontWeight.bold,
                               fontSize: 25)),
                       IconButton(
-                        icon: Icon(
-                          Icons.notifications_none_outlined,
-                          color: kThemeColor,
-                          size: 30,
+                        icon: Badge.count(
+                          count: 5,
+                          child: Icon(
+                            Icons.notifications_none_outlined,
+                            color: kThemeColor,
+                            size: 30,
+                          ),
                         ),
                         onPressed: () {},
                       ),
