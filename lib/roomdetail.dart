@@ -405,18 +405,29 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
         'isFavorite': room.isFavorite,
         "detail":room.details,
         "statusByAdmin":room.statusByAdmin,
+        "facilities": room.facilities,
         "report":{
 
         },
       });
-
-      // Optionally, show a confirmation message
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Room added to wishlist successfully.')),
+      Fluttertoast.showToast(
+        msg: "Room added to wishlist successfully.",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 2,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 16.0,
       );
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error adding room to wishlist: $e')),
+      Fluttertoast.showToast(
+        msg: "Error adding room to wishlist: $e",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 3,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
       );
     }
   }

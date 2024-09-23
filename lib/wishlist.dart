@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:meroapp/provider/wishlistProvider.dart';
 import 'package:provider/provider.dart';
 
@@ -211,15 +212,25 @@ class _WishlistPageState extends State<WishlistPage> {
 
       await roomRef.delete();
 
-      // Optionally, show a confirmation message
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Room removed from wishlist successfully.')),
+      Fluttertoast.showToast(
+        msg: "Room removed from wishlist successfully.",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 2,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 16.0,
       );
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error removing room from wishlist: $e')),
+      Fluttertoast.showToast(
+        msg: "Error removing room from wishlist: $e",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 3,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
       );
     }
   }
-
 }
