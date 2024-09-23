@@ -209,9 +209,11 @@ class _WishlistPageState extends State<WishlistPage> {
           .doc(uid)
           .collection('wishlist')
           .doc(roomId);
-
       await roomRef.delete();
+      final wishlistProvider = Provider.of<WishlistProvider>(context, listen: false);
+      wishlistProvider.removeFromWishlistLocally(roomId);
 
+      // Show success toast
       Fluttertoast.showToast(
         msg: "Room removed from wishlist successfully.",
         toastLength: Toast.LENGTH_SHORT,
@@ -222,6 +224,7 @@ class _WishlistPageState extends State<WishlistPage> {
         fontSize: 16.0,
       );
     } catch (e) {
+      // Show error toast
       Fluttertoast.showToast(
         msg: "Error removing room from wishlist: $e",
         toastLength: Toast.LENGTH_LONG,
@@ -233,4 +236,5 @@ class _WishlistPageState extends State<WishlistPage> {
       );
     }
   }
+
 }
