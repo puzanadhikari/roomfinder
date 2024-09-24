@@ -47,8 +47,8 @@ class _SellerHomePageState extends State<SellerHomePage> {
 
   List<Widget> _buildPages() {
     return [
-      const CreateRoom(),
       MyListingsPage(_latitude, _longitude),
+      const CreateRoom(),
       EnquiriesPage(_latitude, _longitude),
       SellerProfile(_latitude, _longitude),
     ];
@@ -85,7 +85,7 @@ class _SellerHomePageState extends State<SellerHomePage> {
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.list_alt_outlined, weight: 20),
-              label: 'Listing',
+              label: 'Add',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.query_stats),
