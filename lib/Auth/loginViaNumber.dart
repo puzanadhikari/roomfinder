@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -20,7 +22,7 @@ class _LoginVIaNumberState extends State<LoginVIaNumber> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Login Via Number"),
+        title: const Text("Login Via Number"),
         centerTitle: true,
         backgroundColor: kThemeColor,
       ),
@@ -29,7 +31,7 @@ class _LoginVIaNumberState extends State<LoginVIaNumber> {
             color:kThemeColor,
             size: 60,
             secondRingColor: appBarColor,
-            thirdRingColor: Color(0xFFD9D9D9),
+            thirdRingColor: const Color(0xFFD9D9D9),
           )) : ListView(
         children: [
           Padding(
@@ -47,7 +49,7 @@ class _LoginVIaNumberState extends State<LoginVIaNumber> {
                     ),
                   ),
                 ),
-                SizedBox(width: 10), // Add some space between the fields
+                const SizedBox(width: 10), // Add some space between the fields
                 Expanded(
                   child: TextFormField(
                     keyboardType: TextInputType.number,
@@ -62,7 +64,7 @@ class _LoginVIaNumberState extends State<LoginVIaNumber> {
           Padding(
             padding: const EdgeInsets.symmetric(
                 horizontal: 25.0),
-            child: Container(
+            child: SizedBox(
               width: MediaQuery.of(context).size.width,
               height: 50,
               child: ElevatedButton(
@@ -72,15 +74,15 @@ class _LoginVIaNumberState extends State<LoginVIaNumber> {
                   });
                   _sendOTP();
                 },
-                child: Text("Send OTP",
-                    style:
-                    TextStyle(color: Colors.black, fontSize: 18)),
                 style: ElevatedButton.styleFrom(
-                  primary: appBarColor,
+                  backgroundColor: appBarColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0),
                   ),
                 ),
+                child: const Text("Send OTP",
+                    style:
+                    TextStyle(color: Colors.black, fontSize: 18)),
               ),
             ),
           ),
@@ -90,40 +92,40 @@ class _LoginVIaNumberState extends State<LoginVIaNumber> {
   }
   void _sendOTP() async {
     FirebaseAuth auth = FirebaseAuth.instance;
-    String phoneNumber = '+977' + _phoneController.text.trim();
-    print('Sending OTP to $phoneNumber');
+    String phoneNumber = '+977${_phoneController.text.trim()}';
+    log('Sending OTP to $phoneNumber');
 
     try {
       await auth.verifyPhoneNumber(
         phoneNumber: phoneNumber,
         verificationCompleted: (PhoneAuthCredential credential) async {
           await auth.signInWithCredential(credential);
-          print('Phone number automatically verified and user signed in: ${auth.currentUser}');
+          log('Phone number automatically verified and user signed in: ${auth.currentUser}');
           setState(() {
             isLoading = false;
           });
         },
         verificationFailed: (FirebaseAuthException e) {
-          print('Verification failed with error code: ${e.code}, message: ${e.message}');
+          log('Verification failed with error code: ${e.code}, message: ${e.message}');
           setState(() {
             isLoading = false;
           });
           if (e.code == 'invalid-phone-number') {
-            print('The provided phone number is not valid.');
+            log('The provided phone number is not valid.');
           } else if (e.code == 'quota-exceeded') {
-            print('SMS quota for the project has been exceeded.');
+            log('SMS quota for the project has been exceeded.');
           } else if (e.code == 'missing-client-identifier') {
-            print('This request is missing a valid app identifier.');
+            log('This request is missing a valid app identifier.');
           } else if (e.code == 'invalid-play-integrity-token') {
-            print('Invalid Play Integrity token; app not recognized by Play Store.');
+            log('Invalid Play Integrity token; app not recognized by Play Store.');
           } else if (e.code == 'internal-error') {
-            print('An internal error occurred.');
+            log('An internal error occurred.');
           } else {
-            print('Unknown error: ${e.code}');
+            log('Unknown error: ${e.code}');
           }
         },
         codeSent: (String verificationId, int? resendToken) async {
-          print('Code sent to $phoneNumber');
+          log('Code sent to $phoneNumber');
           setState(() {
             isLoading=false;
             _verificationId = verificationId;
@@ -143,7 +145,7 @@ class _LoginVIaNumberState extends State<LoginVIaNumber> {
               fontSize: 16.0);
         },
         codeAutoRetrievalTimeout: (String verificationId) {
-          print('Auto retrieval timeout with verification ID: $verificationId');
+          log('Auto retrieval timeout with verification ID: $verificationId');
           setState(() {
             isLoading = false;
             _verificationId = verificationId;
@@ -151,7 +153,7 @@ class _LoginVIaNumberState extends State<LoginVIaNumber> {
         },
       );
     } catch (e) {
-      print('Error during phone number verification: $e');
+      log('Error during phone number verification: $e');
       setState(() {
         isLoading = false;
       });

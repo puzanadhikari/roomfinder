@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
@@ -5,12 +7,10 @@ import 'package:meroapp/Constants/styleConsts.dart';
 import 'package:meroapp/homePage.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
-import '../dashBoard.dart';
-
 class OTPPage extends StatefulWidget {
   final String verificationId;
 
-  OTPPage({required this.verificationId});
+  const OTPPage({super.key, required this.verificationId});
 
   @override
   _OTPPageState createState() => _OTPPageState();
@@ -24,7 +24,7 @@ class _OTPPageState extends State<OTPPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('OTP Verification'),
+        title: const Text('OTP Verification'),
         backgroundColor: kThemeColor,
       ),
       body: isLoading
@@ -33,7 +33,7 @@ class _OTPPageState extends State<OTPPage> {
           color: kThemeColor,
           size: 60,
           secondRingColor: appBarColor,
-          thirdRingColor: Color(0xFFD9D9D9),
+          thirdRingColor: const Color(0xFFD9D9D9),
         ),
       )
           : Padding(
@@ -53,14 +53,14 @@ class _OTPPageState extends State<OTPPage> {
                 activeFillColor: Colors.white,
               ),
               onChanged: (value) {
-                print(value);
+                log(value);
               },
               onCompleted: (value) {
-                print("Completed: $value");
+                log("Completed: $value");
               },
             ),
-            SizedBox(height: 20),
-            Container(
+            const SizedBox(height: 20),
+            SizedBox(
               width: MediaQuery.of(context).size.width,
               height: 50,
               child: ElevatedButton(
@@ -70,15 +70,15 @@ class _OTPPageState extends State<OTPPage> {
                   });
                   _verifyOTP();
                 },
-                child: Text(
-                  "Submit",
-                  style: TextStyle(color: Colors.black, fontSize: 18),
-                ),
                 style: ElevatedButton.styleFrom(
-                  primary: appBarColor,
+                  backgroundColor: appBarColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0),
                   ),
+                ),
+                child: const Text(
+                  "Submit",
+                  style: TextStyle(color: Colors.black, fontSize: 18),
                 ),
               ),
             ),
@@ -101,15 +101,15 @@ class _OTPPageState extends State<OTPPage> {
       // OTP verification successful, navigate to the next screen
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => HomePage()),
+        MaterialPageRoute(builder: (context) => const HomePage()),
       );
     } catch (e) {
       setState(() {
         isLoading = false;
       });
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to verify OTP')));
-      print('Error verifying OTP: $e');
+          const SnackBar(content: Text('Failed to verify OTP')));
+      log('Error verifying OTP: $e');
       // Handle error here
     }
   }

@@ -71,7 +71,7 @@ class _SellerHomePageState extends State<SellerHomePage> {
             });
           },
           selectedItemColor: kThemeColor,
-          unselectedItemColor: Color(0xAA111111),
+          unselectedItemColor: const Color(0xAA111111),
           showUnselectedLabels: true,
           selectedFontSize: 14,
           unselectedFontSize: 12,
@@ -131,17 +131,17 @@ class _SellerHomePageState extends State<SellerHomePage> {
             actions: <Widget>[
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.red.withOpacity(0.1),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
                 child: const Text(
                   'No',
                   style: TextStyle(
                     color: Colors.red,
                     fontWeight: FontWeight.bold,
-                  ),
-                ),
-                style: TextButton.styleFrom(
-                  backgroundColor: Colors.red.withOpacity(0.1),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
                   ),
                 ),
               ),
@@ -154,17 +154,17 @@ class _SellerHomePageState extends State<SellerHomePage> {
                         builder: (context) => const SplashScreen()),
                   );
                 },
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.green.withOpacity(0.1),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
                 child: const Text(
                   'Yes',
                   style: TextStyle(
                     color: Colors.green,
                     fontWeight: FontWeight.bold,
-                  ),
-                ),
-                style: TextButton.styleFrom(
-                  backgroundColor: Colors.green.withOpacity(0.1),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
                   ),
                 ),
               ),

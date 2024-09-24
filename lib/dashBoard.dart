@@ -282,7 +282,7 @@ class _DashBoardState extends State<DashBoard> {
                               highlightColor: Colors.grey.shade100,
                               child: ListView.builder(
                                 shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
+                                physics: const NeverScrollableScrollPhysics(),
                                 itemCount: 3,
                                 itemBuilder: (context, index) => Padding(
                                   padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -312,7 +312,7 @@ class _DashBoardState extends State<DashBoard> {
 
                           return ListView.builder(
                             shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
+                            physics: const NeverScrollableScrollPhysics(),
                             itemCount: sortedRooms.length,
                             itemBuilder: (context, index) {
                               final room = sortedRooms[index];
@@ -411,7 +411,7 @@ class _DashBoardState extends State<DashBoard> {
                                                               color: kThemeColor),
                                                           Text(
                                                             '${room.status['statusDisplay'] ?? "To Buy"}',
-                                                            style: TextStyle(color: Colors.black45),
+                                                            style: const TextStyle(color: Colors.black45),
                                                           ),
                                                         ],
                                                       ),
@@ -647,7 +647,7 @@ class _DashBoardState extends State<DashBoard> {
                                                               color: kThemeColor),
                                                           Text(
                                                             '${displayedProducts[index].status['statusDisplay'] ?? "To Buy"}',
-                                                            style: TextStyle(
+                                                            style: const TextStyle(
                                                                 color:
                                                                 Colors.black45),
                                                           ),
@@ -913,7 +913,7 @@ class _DashBoardState extends State<DashBoard> {
                                                               color: kThemeColor),
                                                           Text(
                                                             '${room.status['statusDisplay'] ?? "To Buy"}',
-                                                            style: TextStyle(
+                                                            style: const TextStyle(
                                                                 color:
                                                                 Colors.black45),
                                                           ),

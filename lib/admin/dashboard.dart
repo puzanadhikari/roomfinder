@@ -223,7 +223,7 @@ class _DashBoardState extends State<DashBoard> {
                                         Expanded(
                                           child: ElevatedButton(
                                             style: ElevatedButton.styleFrom(
-                                              primary: kThemeColor,
+                                              backgroundColor: kThemeColor,
                                               shape: RoundedRectangleBorder(
                                                 borderRadius: BorderRadius.circular(12.0),
                                               ),
@@ -239,7 +239,7 @@ class _DashBoardState extends State<DashBoard> {
                                         Expanded(
                                           child: ElevatedButton(
                                             style: ElevatedButton.styleFrom(
-                                              primary: Colors.red,
+                                              backgroundColor: Colors.red,
                                               shape: RoundedRectangleBorder(
                                                 borderRadius: BorderRadius.circular(12.0),
                                               ),
@@ -281,7 +281,7 @@ class _DashBoardState extends State<DashBoard> {
           'Confirm Approval',
           style: TextStyle(color: kThemeColor, fontWeight: FontWeight.bold),
         ),
-        content: Text('Are you sure you want to approve this room?'),
+        content: const Text('Are you sure you want to approve this room?'),
         actions: [
           TextButton(
             onPressed: () {
@@ -298,7 +298,7 @@ class _DashBoardState extends State<DashBoard> {
               approveRoom(roomUid);
             },
             style: ElevatedButton.styleFrom(
-              primary: kThemeColor,
+              backgroundColor: kThemeColor,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12.0),
               ),
@@ -316,11 +316,11 @@ class _DashBoardState extends State<DashBoard> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.0),
         ),
-        title: Text(
+        title: const Text(
           'Confirm Rejection',
           style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
         ),
-        content: Text('Are you sure you want to reject this room?'),
+        content: const Text('Are you sure you want to reject this room?'),
         actions: [
           TextButton(
             onPressed: () {
@@ -337,7 +337,7 @@ class _DashBoardState extends State<DashBoard> {
               rejectRoom(roomUid);
             },
             style: ElevatedButton.styleFrom(
-              primary: Colors.red,
+              backgroundColor: Colors.red,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12.0),
               ),

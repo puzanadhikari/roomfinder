@@ -7,7 +7,6 @@ import 'package:shimmer/shimmer.dart';
 
 import 'Constants/styleConsts.dart';
 import 'aggreement.dart';
-import 'model/onSaleModel.dart';
 
 Future<Map<String, dynamic>?> fetchUserData() async {
   User? user = FirebaseAuth.instance.currentUser;
@@ -416,7 +415,7 @@ class _OrderPageState extends State<OrderPage> {
                                                                           .picture_as_pdf,
                                                                       color:
                                                                           kThemeColor),
-                                                                  SizedBox(
+                                                                  const SizedBox(
                                                                       width:
                                                                           10),
                                                                   Text(
@@ -561,7 +560,7 @@ class _OrderPageState extends State<OrderPage> {
           padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: Text(
             label,
-            style: TextStyle(
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
               color: Colors.black87,
             ),
@@ -571,7 +570,7 @@ class _OrderPageState extends State<OrderPage> {
           padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: Text(
             value.toString(),
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.black54,
             ),
           ),

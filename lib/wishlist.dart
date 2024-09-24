@@ -69,7 +69,7 @@ class _WishlistPageState extends State<WishlistPage> {
             child: Column(
               children: [
                 if (wishlistProvider.wishlist.isEmpty)
-                  Center(
+                  const Center(
                     child: Text(
                       'Your wishlist is empty.',
                       style: TextStyle(
@@ -181,7 +181,7 @@ class _WishlistPageState extends State<WishlistPage> {
                                               onTap: (){
                                                 removeFromWishlist(room.uid);
                                               },
-                                              child: Text("Remove"))
+                                              child: const Text("Remove"))
                                         ],
                                       ),
                                     ),

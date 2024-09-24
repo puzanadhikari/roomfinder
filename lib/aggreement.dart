@@ -11,7 +11,7 @@ class AgreementPage extends StatefulWidget {
   final String? sellerEmail;
   final String? roomUid;
 
-  AgreementPage(this.sellerName, this.sellerEmail, this.roomUid);
+  const AgreementPage(this.sellerName, this.sellerEmail, this.roomUid, {super.key});
 
   @override
   State<AgreementPage> createState() => _AgreementPageState();
@@ -113,7 +113,7 @@ class _AgreementPageState extends State<AgreementPage> {
       padding: const EdgeInsets.only(bottom: 8.0),
       child: Text(
         text,
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 16,
           color: Colors.black87,
         ),
@@ -128,7 +128,7 @@ class _AgreementPageState extends State<AgreementPage> {
         color: Colors.grey.shade200,
         borderRadius: BorderRadius.circular(10),
         border: Border.all(color: kThemeColor),
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: Colors.black26,
             blurRadius: 4,
@@ -200,9 +200,8 @@ class _AgreementPageState extends State<AgreementPage> {
               }
             : null,
         style: ElevatedButton.styleFrom(
-          primary: kThemeColor,
-          onPrimary: Colors.white,
-          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          foregroundColor: Colors.white, backgroundColor: kThemeColor,
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:meroapp/seller/createRoom.dart';
@@ -200,10 +202,10 @@ class _SellerProfileState extends State<SellerProfile> {
       await FirebaseAuth.instance.signOut();
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => SplashScreen()),
+        MaterialPageRoute(builder: (context) => const SplashScreen()),
       );
     } catch (e) {
-      print("Error signing out: $e");
+      log("Error signing out: $e");
     }
   }
 }

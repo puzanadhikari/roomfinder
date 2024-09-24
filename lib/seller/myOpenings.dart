@@ -95,7 +95,7 @@ class _MyListingsPageState extends State<MyListingsPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                const Text(
                   "Recently added properties",
                   style: TextStyle(
                       color: Color(0xFF072A2E),
@@ -107,9 +107,9 @@ class _MyListingsPageState extends State<MyListingsPage> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => CreateRoom()));
+                              builder: (context) => const CreateRoom()));
                     },
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.add_circle_outline,
                       color: Color(0xFF072A2E),
                     ))
@@ -224,7 +224,7 @@ class _MyListingsPageState extends State<MyListingsPage> {
                                                           color: kThemeColor),
                                                       Text(
                                                         "${(rooms[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
-                                                        style: TextStyle(
+                                                        style: const TextStyle(
                                                             color:
                                                                 Colors.black45),
                                                       ),
@@ -245,7 +245,7 @@ class _MyListingsPageState extends State<MyListingsPage> {
                                                           color: kThemeColor),
                                                       Text(
                                                         '${roomStatus[index].status['statusDisplay'] ?? "To Buy"}',
-                                                        style: TextStyle(
+                                                        style: const TextStyle(
                                                             color:
                                                                 Colors.black45),
                                                       ),
@@ -289,7 +289,7 @@ class _MyListingsPageState extends State<MyListingsPage> {
                                                                   title: Row(
                                                                     children: [
                                                                       Icon(Icons.report, color: kThemeColor),
-                                                                      SizedBox(width: 8),
+                                                                      const SizedBox(width: 8),
                                                                       Text(
                                                                         'Room Report',
                                                                         style: TextStyle(
@@ -334,8 +334,8 @@ class _MyListingsPageState extends State<MyListingsPage> {
                                                                       onPressed: () {
                                                                         Navigator.of(context).pop();
                                                                       },
-                                                                      icon: Icon(Icons.close, color: Colors.white),
-                                                                      label: Text('Close'),
+                                                                      icon: const Icon(Icons.close, color: Colors.white),
+                                                                      label: const Text('Close'),
                                                                       style: ElevatedButton.styleFrom(
                                                                         backgroundColor: kThemeColor,
                                                                         shape: RoundedRectangleBorder(
@@ -360,7 +360,7 @@ class _MyListingsPageState extends State<MyListingsPage> {
                                                               context: context,
                                                               enableDrag: true,
                                                               isScrollControlled: true,
-                                                              shape: RoundedRectangleBorder(
+                                                              shape: const RoundedRectangleBorder(
                                                                 borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
                                                               ),
                                                               builder: (BuildContext context) {
@@ -388,7 +388,7 @@ class _MyListingsPageState extends State<MyListingsPage> {
                                                                             color: kThemeColor,
                                                                           ),
                                                                         ),
-                                                                        SizedBox(height: 20),
+                                                                        const SizedBox(height: 20),
                                                                         TextField(
                                                                           controller: _electricityController,
                                                                           keyboardType: TextInputType.number,
@@ -406,22 +406,22 @@ class _MyListingsPageState extends State<MyListingsPage> {
                                                                             prefixIcon: Icon(Icons.electric_bolt_rounded, color: kThemeColor),
                                                                           ),
                                                                         ),
-                                                                        SizedBox(height: 30),
+                                                                        const SizedBox(height: 30),
                                                                         ElevatedButton.icon(
                                                                           onPressed: () {
                                                                             double electricity = double.parse(_electricityController.text);
-                                                                            print('Electricity: $electricity');
+                                                                            log('Electricity: $electricity');
                                                                             _generateReport(room.uid, room, electricity);
                                                                             Navigator.of(context).pop();
                                                                           },
-                                                                          icon: Icon(Icons.send_rounded, color: Colors.white),
-                                                                          label: Text('Submit'),
+                                                                          icon: const Icon(Icons.send_rounded, color: Colors.white),
+                                                                          label: const Text('Submit'),
                                                                           style: ElevatedButton.styleFrom(
                                                                             backgroundColor: kThemeColor,
                                                                             shape: RoundedRectangleBorder(
                                                                               borderRadius: BorderRadius.circular(12.0),
                                                                             ),
-                                                                            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                                                                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                                                                           ),
                                                                         ),
                                                                       ],
@@ -468,7 +468,7 @@ class _MyListingsPageState extends State<MyListingsPage> {
           padding: const EdgeInsets.all(12.0),
           child: Text(
             label,
-            style: TextStyle(
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
               color: Colors.black54,
             ),
@@ -478,7 +478,7 @@ class _MyListingsPageState extends State<MyListingsPage> {
           padding: const EdgeInsets.all(12.0),
           child: Text(
             value.toString(),
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.black87,
             ),
           ),
@@ -519,7 +519,7 @@ class _MyListingsPageState extends State<MyListingsPage> {
           .update({'report': report});
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Room status updated to Sold!')),
+        const SnackBar(content: Text('Room status updated to Sold!')),
       );
 
       // setState(() {

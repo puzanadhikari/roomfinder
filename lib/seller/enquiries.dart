@@ -93,11 +93,11 @@ class _EnquiriesPageState extends State<EnquiriesPage> {
         future: enquiries,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text("Error: ${snapshot.error}"));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text("No enquiries found."));
+            return const Center(child: Text("No enquiries found."));
           } else {
             final rooms = snapshot.data!;
             return Padding(
@@ -196,7 +196,7 @@ class _EnquiriesPageState extends State<EnquiriesPage> {
                                                     color: kThemeColor),
                                                 Text(
                                                   '${room.status['statusDisplay']}',
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                       color:
                                                       Colors.black45),
                                                 ),
@@ -216,7 +216,7 @@ class _EnquiriesPageState extends State<EnquiriesPage> {
                                                     color: kThemeColor),
                                                 Text(
                                                   "${(rooms[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                       color: Colors.black45),
                                                 ),
                                               ],
@@ -236,7 +236,7 @@ class _EnquiriesPageState extends State<EnquiriesPage> {
                                                         title: Row(
                                                           children: [
                                                             Icon(Icons.info, color: kThemeColor),
-                                                            SizedBox(width: 8),
+                                                            const SizedBox(width: 8),
                                                             Text(
                                                               "Approve Room Status",
                                                               style: TextStyle(
@@ -250,29 +250,29 @@ class _EnquiriesPageState extends State<EnquiriesPage> {
                                                           mainAxisSize: MainAxisSize.min,
                                                           crossAxisAlignment: CrossAxisAlignment.start,
                                                           children: [
-                                                            SizedBox(height: 10),
+                                                            const SizedBox(height: 10),
                                                             Row(
                                                               children: [
                                                                 Icon(Icons.person, color: kThemeColor),
-                                                                SizedBox(width: 8),
-                                                                Text(
+                                                                const SizedBox(width: 8),
+                                                                const Text(
                                                                   "Buyer Name:",
                                                                   style: TextStyle(fontWeight: FontWeight.bold),
                                                                 ),
-                                                                SizedBox(width: 8),
+                                                                const SizedBox(width: 8),
                                                                 Text(room.status["By"] ?? ""),
                                                               ],
                                                             ),
-                                                            SizedBox(height: 10),
+                                                            const SizedBox(height: 10),
                                                             Row(
                                                               children: [
                                                                 Icon(Icons.email, color: kThemeColor),
-                                                                SizedBox(width: 8),
-                                                                Text(
+                                                                const SizedBox(width: 8),
+                                                                const Text(
                                                                   "Buyer Email:",
                                                                   style: TextStyle(fontWeight: FontWeight.bold),
                                                                 ),
-                                                                SizedBox(width: 8),
+                                                                const SizedBox(width: 8),
                                                                 Text(room.status["userEmail"] ?? ""),
                                                               ],
                                                             ),
@@ -291,7 +291,7 @@ class _EnquiriesPageState extends State<EnquiriesPage> {
                                                                 borderRadius: BorderRadius.circular(10.0),
                                                               ),
                                                             ),
-                                                            child: Text("Approve"),
+                                                            child: const Text("Approve"),
                                                           ),
                                                           OutlinedButton(
                                                             onPressed: () {
@@ -314,7 +314,7 @@ class _EnquiriesPageState extends State<EnquiriesPage> {
                                                   );
                                                 },
                                                 style: ElevatedButton.styleFrom(backgroundColor: kThemeColor),
-                                                child: Text("Approve"),
+                                                child: const Text("Approve"),
                                               ),
                                             )
                                           ],
@@ -356,7 +356,7 @@ class _EnquiriesPageState extends State<EnquiriesPage> {
           .update({'status': newStatus});
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Room status updated to Sold!')),
+        const SnackBar(content: Text('Room status updated to Sold!')),
       );
 
       setState(() {

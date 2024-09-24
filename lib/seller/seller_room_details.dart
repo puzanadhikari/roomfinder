@@ -1,10 +1,7 @@
 import 'dart:developer';
 
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:meroapp/Constants/styleConsts.dart';
 import 'package:meroapp/provider/wishlistProvider.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
@@ -267,7 +264,7 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
                                         color: kThemeColor),
                                     Text(
                                       '${ widget.room.status['statusDisplay'] ?? "To Buy"}',
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           color:
                                           Colors.black45),
                                     ),
