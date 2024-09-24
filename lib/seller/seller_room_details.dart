@@ -1,7 +1,10 @@
 import 'dart:developer';
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:meroapp/Constants/styleConsts.dart';
 import 'package:meroapp/provider/wishlistProvider.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
@@ -305,7 +308,10 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
                               width: double.infinity,
                               height: 45,
                               child: ElevatedButton(
-                                onPressed: (){},
+                                onPressed: (){
+                                  _approveRoomStatus(widget.room.uid, widget.room);
+                                  Navigator.of(context).pop(); // Close the dialog
+                                },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: const Color(0xFF072A2E),
                                   shape: RoundedRectangleBorder(
@@ -313,7 +319,7 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
                                   ),
                                 ),
                                 child: const Text(
-                                  "Edit",
+                                  "Approve",
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 18),
                                 ),
@@ -346,5 +352,46 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
         ),
       ),
     );
+  }
+  void _approveRoomStatus(String roomUid, Room room) async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+
+      Map<String, dynamic> newStatus = {
+        'SoldBy': user?.displayName,
+        'sellerId': user?.uid,
+        'SellerEmail': user?.email,
+        'statusDisplay': 'Sold',
+      };
+
+      await FirebaseFirestore.instance
+          .collection('onSale')
+          .doc(roomUid)
+          .update({'status': newStatus});
+
+      Fluttertoast.showToast(
+        msg: "Room status updated to Sold!",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+
+      setState(() {
+        room.status = newStatus;
+      });
+    } catch (e) {
+      Fluttertoast.showToast(
+        msg: "Failed to update status: $e",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 2,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+    }
   }
 }

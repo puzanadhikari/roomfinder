@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:meroapp/seller/seller_room_details.dart';
 
 import '../Constants/styleConsts.dart';
@@ -355,16 +356,28 @@ class _EnquiriesPageState extends State<EnquiriesPage> {
           .doc(roomUid)
           .update({'status': newStatus});
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Room status updated to Sold!')),
+      Fluttertoast.showToast(
+        msg: "Room status updated to Sold!",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 16.0,
       );
 
       setState(() {
         room.status = newStatus;
       });
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to update status: $e')),
+      Fluttertoast.showToast(
+        msg: "Failed to update status: $e",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 2,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
       );
     }
   }
