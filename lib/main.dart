@@ -38,7 +38,6 @@ class MyApp extends StatelessWidget {
           home: SplashScreen(),
           theme: ThemeData(
             primarySwatch: Colors.blueGrey,
-            // textTheme: GoogleFonts.openSansTextTheme(Theme.of(context).textTheme),
           ),
 
           supportedLocales: const [
@@ -47,9 +46,7 @@ class MyApp extends StatelessWidget {
           ],
           localizationsDelegates: const [
             KhaltiLocalizations.delegate,
-
           ],
-
         );
       },
     );
