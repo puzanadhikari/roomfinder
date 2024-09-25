@@ -40,14 +40,14 @@ dependencies:
   loading_animation_widget:
   location:
   flutter_typeahead:
-  panorama:
+#  panorama:
   google_maps_flutter:
   geocoding:
   image_picker:
   flutter_advanced_drawer:
   carousel_slider: ^4.2.1
   curved_navigation_bar: ^1.0.0
-  sensors_plus:
+#  sensors_plus:
   pin_code_fields:
   modal_progress_hud_nsn:
   persistent_bottom_nav_bar_v2: ^4.0.2
