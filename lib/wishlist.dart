@@ -49,9 +49,9 @@ class _WishlistPageState extends State<WishlistPage> {
           Padding(
             padding: const EdgeInsets.only(right: 16.0),
             child: IconButton(
-              icon: const Icon(
+              icon: Icon(
                 Icons.favorite,
-                color: Colors.redAccent,
+                color: kThemeColor,
               ),
               onPressed: () {},
             ),

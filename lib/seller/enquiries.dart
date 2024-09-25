@@ -83,7 +83,7 @@ class _EnquiriesPageState extends State<EnquiriesPage> {
         backgroundColor: Colors.grey.shade200,
         title: Text("Enquiries",
             style: TextStyle(
-                color: kThemeColor, fontWeight: FontWeight.bold, fontSize: 25)),
+                color: kThemeColor, fontWeight: FontWeight.bold, fontSize: 20)),
       ),
       body:  StreamBuilder<List<Room>>(
         stream: enquiries,

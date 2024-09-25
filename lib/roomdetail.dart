@@ -131,7 +131,7 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                             Text(
                               widget.room.name.toUpperCase(),
                               style: TextStyle(
-                                  fontSize: 25,
+                                  fontSize: 22,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.grey.shade700),
                             ),
@@ -324,21 +324,24 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                               const Text("No facilities available"),
                             ],
                             const SizedBox(height: 20),
-                            SizedBox(
-                              width: double.infinity,
-                              height: 45,
-                              child: ElevatedButton(
-                                onPressed: _bookRoom,
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFF072A2E),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5.0),
+                            Visibility(
+                              visible: widget.room.status["statusDisplay"] == "Owned" ? false : true,
+                              child: SizedBox(
+                                width: double.infinity,
+                                height: 45,
+                                child: ElevatedButton(
+                                  onPressed: _bookRoom,
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xFF072A2E),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(5.0),
+                                    ),
                                   ),
-                                ),
-                                child: const Text(
-                                  "Book Now",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 18),
+                                  child: const Text(
+                                    "Book Now",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 18),
+                                  ),
                                 ),
                               ),
                             ),

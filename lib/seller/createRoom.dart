@@ -136,7 +136,7 @@ class _CreateRoomState extends State<CreateRoom> {
             style: TextStyle(
               color: kThemeColor,
               fontWeight: FontWeight.bold,
-              fontSize: 25,
+              fontSize: 20,
             ),
           ),
         ),

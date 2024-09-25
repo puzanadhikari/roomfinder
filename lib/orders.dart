@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:khalti_flutter/khalti_flutter.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -492,48 +493,72 @@ class _OrderPageState extends State<OrderPage> {
                                                                 ),
                                                               ),
                                                               actions: [
-                                                                TextButton(
-                                                                  onPressed:
-                                                                      () {
-
-                                                                        KhaltiScope.of(context).pay(
-                                                                            config: PaymentConfig(
-                                                                                amount: roomStatus['report']
-                                                                                ['total'].toInt()*100,
-                                                                                productIdentity: 'laptop',
-                                                                                productName: 'Dell laptop'),
-                                                                            preferences: [
-                                                                              PaymentPreference.khalti,
-                                                                              PaymentPreference.connectIPS
-                                                                            ],
-                                                                            onSuccess: (success){
-
-                                                                            },
-                                                                            onFailure: (failure){
-
-                                                                            });
+                                                              Row(
+                                                                mainAxisAlignment:MainAxisAlignment.spaceAround,
+                                                                children: [
+                                                                  GestureDetector(
+                                                                    onTap:
+                                                                        () {
+                                                                      KhaltiScope.of(context).pay(
+                                                                          config: PaymentConfig(
+                                                                              amount: roomStatus['report']
+                                                                              ['total'].toInt()*100,
+                                                                              productIdentity: 'laptop',
+                                                                              productName: 'Dell laptop'),
+                                                                          preferences: [
+                                                                            PaymentPreference.khalti,
+                                                                            PaymentPreference.connectIPS,
+                                                                            PaymentPreference.mobileBanking
+                                                                          ],
+                                                                          onSuccess: (success){
+                                                                            Fluttertoast.showToast(
+                                                                              msg: "Payment Successful",
+                                                                              toastLength: Toast.LENGTH_LONG,
+                                                                              timeInSecForIosWeb: 4,
+                                                                              gravity: ToastGravity.BOTTOM,
+                                                                              backgroundColor: Colors.green,
+                                                                              textColor: Colors.white,
+                                                                              fontSize: 16.0,
+                                                                            );
+                                                                            Navigator.pop(context);
+                                                                            Navigator.pop(context);
                                                                           },
-                                                                  child: Text(
-                                                                    'Pay Now',
-                                                                    style: TextStyle(
-                                                                        color:
-                                                                        kThemeColor),
+                                                                          onFailure: (failure){
+                                                                            Fluttertoast.showToast(
+                                                                              msg: "Payment Failed",
+                                                                              timeInSecForIosWeb: 4,
+                                                                              toastLength: Toast.LENGTH_LONG,
+                                                                              gravity: ToastGravity.BOTTOM,
+                                                                              backgroundColor: Colors.green,
+                                                                              textColor: Colors.white,
+                                                                              fontSize: 16.0,
+                                                                            );
+                                                                            Navigator.pop(context);
+                                                                            Navigator.pop(context);
+                                                                          });
+                                                                    },
+                                                                    child: Image.asset(
+                                                                      'assets/img.png',
+                                                                      height: 80,
+                                                                      width: 80,
+                                                                    ),
                                                                   ),
-                                                                ),
-                                                                TextButton(
-                                                                  onPressed:
-                                                                      () {
-                                                                    Navigator.of(
-                                                                            context)
-                                                                        .pop();
-                                                                  },
-                                                                  child: Text(
-                                                                    'Close',
-                                                                    style: TextStyle(
-                                                                        color:
-                                                                            kThemeColor),
+                                                                  TextButton(
+                                                                    onPressed:
+                                                                        () {
+                                                                      Navigator.of(
+                                                                          context)
+                                                                          .pop();
+                                                                    },
+                                                                    child: Text(
+                                                                      'Close',
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                          kThemeColor),
+                                                                    ),
                                                                   ),
-                                                                ),
+                                                                ],
+                                                              )
                                                               ],
                                                             );
                                                           },

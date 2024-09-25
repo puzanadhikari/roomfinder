@@ -198,7 +198,7 @@ class _DashBoardState extends State<DashBoard> {
                           style: TextStyle(
                               color: kThemeColor,
                               fontWeight: FontWeight.bold,
-                              fontSize: 25)),
+                              fontSize: 20)),
                       IconButton(
                         icon: Badge.count(
                           count: 5,

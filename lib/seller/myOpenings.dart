@@ -86,7 +86,7 @@ class _MyListingsPageState extends State<MyListingsPage> {
         backgroundColor: Colors.grey.shade200,
         title: Text("Listings",
             style: TextStyle(
-                color: kThemeColor, fontWeight: FontWeight.bold, fontSize: 25)),
+                color: kThemeColor, fontWeight: FontWeight.bold, fontSize: 20)),
       ),
       body: Padding(
         padding: const EdgeInsets.all(14.0),
@@ -240,8 +240,10 @@ class _MyListingsPageState extends State<MyListingsPage> {
                                                       size: 16,
                                                       color: kThemeColor),
                                                   Text(
-                                                    '${roomStatus[index].status['statusDisplay'] ?? "To Buy"}',
+                                                    '${roomStatus[index].status['statusDisplay'] ?? "To Buy"}''  (${roomStatus[index].status['ownedBy'] ?? "N/A"})',
                                                     style: const TextStyle(
+                                                      fontSize: 13,
+                                                      fontWeight: FontWeight.bold,
                                                         color:
                                                         Colors.black45),
                                                   ),
@@ -249,189 +251,189 @@ class _MyListingsPageState extends State<MyListingsPage> {
                                               ),
                                               const SizedBox(height: 5),
                                               Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 children: [
                                                   Visibility(
-                                                    visible: roomStatus[index]
-                                                                    .status[
-                                                                'statusDisplay'] ==
-                                                            "Owned"
-                                                        ? true
-                                                        : false,
-                                                    child: Text(
-                                                      'Owned BY: ${roomStatus[index].status['ownedBy'] ?? "N/A"}',
-                                                      style: TextStyle(
-                                                          color: Colors
-                                                              .grey.shade700),
-                                                    ),
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      Visibility(
-                                                        visible: roomStatus[index].status['statusDisplay'] == "Owned",
-                                                        child: GestureDetector(
-                                                          onTap: () {
-                                                            showDialog(
-                                                              context: context,
-                                                              builder: (BuildContext context) {
-                                                                return AlertDialog(
-                                                                  shape: RoundedRectangleBorder(
-                                                                    borderRadius: BorderRadius.circular(20.0),
-                                                                  ),
-                                                                  title: Row(
+                                                    visible: roomStatus[index].status['statusDisplay'] == "Owned",
+                                                    child: Expanded(
+                                                      child: ElevatedButton.icon(
+                                                        onPressed: () {
+                                                          showModalBottomSheet(
+                                                            context: context,
+                                                            enableDrag: true,
+                                                            isScrollControlled: true,
+                                                            shape: const RoundedRectangleBorder(
+                                                              borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+                                                            ),
+                                                            builder: (BuildContext context) {
+                                                              return FractionallySizedBox(
+                                                                heightFactor: 0.3,
+                                                                child: Padding(
+                                                                  padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+                                                                  child: Column(
+                                                                    mainAxisSize: MainAxisSize.min,
                                                                     children: [
-                                                                      Icon(Icons.report, color: kThemeColor),
-                                                                      const SizedBox(width: 8),
+                                                                      Container(
+                                                                        width: 50,
+                                                                        height: 5,
+                                                                        margin: const EdgeInsets.only(bottom: 16.0),
+                                                                        decoration: BoxDecoration(
+                                                                          color: Colors.grey.shade300,
+                                                                          borderRadius: BorderRadius.circular(10.0),
+                                                                        ),
+                                                                      ),
                                                                       Text(
-                                                                        'Room Report',
+                                                                        'Enter Electricity Usage',
                                                                         style: TextStyle(
-                                                                          color: kThemeColor,
+                                                                          fontSize: 18,
                                                                           fontWeight: FontWeight.bold,
+                                                                          color: kThemeColor,
+                                                                        ),
+                                                                      ),
+                                                                      const SizedBox(height: 20),
+                                                                      TextField(
+                                                                        controller: _electricityController,
+                                                                        keyboardType: TextInputType.number,
+                                                                        decoration: InputDecoration(
+                                                                          labelText: 'Electricity (Unit)',
+                                                                          labelStyle: TextStyle(color: kThemeColor),
+                                                                          border: OutlineInputBorder(
+                                                                            borderRadius: BorderRadius.circular(10.0),
+                                                                            borderSide: BorderSide(color: kThemeColor),
+                                                                          ),
+                                                                          focusedBorder: OutlineInputBorder(
+                                                                            borderRadius: BorderRadius.circular(10.0),
+                                                                            borderSide: BorderSide(color: kThemeColor, width: 2.0),
+                                                                          ),
+                                                                          prefixIcon: Icon(Icons.electric_bolt_rounded, color: kThemeColor),
+                                                                        ),
+                                                                      ),
+                                                                      const SizedBox(height: 30),
+                                                                      ElevatedButton.icon(
+                                                                        onPressed: () {
+                                                                          double electricity = double.parse(_electricityController.text);
+                                                                          log('Electricity: $electricity');
+                                                                          _generateReport(room.uid, room, electricity);
+                                                                          Navigator.of(context).pop();
+                                                                        },
+                                                                        icon: const Icon(Icons.send_rounded, color: Colors.white),
+                                                                        label: const Text('Submit'),
+                                                                        style: ElevatedButton.styleFrom(
+                                                                          backgroundColor: kThemeColor,
+                                                                          shape: RoundedRectangleBorder(
+                                                                            borderRadius: BorderRadius.circular(12.0),
+                                                                          ),
+                                                                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                                                                         ),
                                                                       ),
                                                                     ],
                                                                   ),
-                                                                  content: SingleChildScrollView(
-                                                                    child: Column(
-                                                                      children: [
-                                                                        Table(
-                                                                          border: TableBorder(
-                                                                            horizontalInside: BorderSide(
-                                                                              color: Colors.grey.shade300,
-                                                                              width: 1,
-                                                                            ),
-                                                                            bottom: BorderSide(
-                                                                              color: Colors.grey.shade300,
-                                                                              width: 1,
-                                                                            ),
-                                                                          ),
-                                                                          columnWidths: const {
-                                                                            0: FlexColumnWidth(2),
-                                                                            1: FlexColumnWidth(3),
-                                                                          },
-                                                                          children: [
-                                                                            _buildTableRow('Electricity', roomStatus[index].report['electricity']),
-                                                                            _buildTableRow('Fohor', roomStatus[index].report['fohor']),
-                                                                            _buildTableRow('Generated Date', roomStatus[index].report['generatedDate']),
-                                                                            _buildTableRow('Room Cost', roomStatus[index].report['roomCost']),
-                                                                            _buildTableRow('Water', roomStatus[index].report['water']),
-                                                                            _buildTableRow('Total', roomStatus[index].report['total']),
-                                                                          ],
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  ),
-                                                                  actions: [
-                                                                    ElevatedButton.icon(
-                                                                      onPressed: () {
-                                                                        Navigator.of(context).pop();
-                                                                      },
-                                                                      icon: const Icon(Icons.close, color: Colors.white),
-                                                                      label: const Text('Close'),
-                                                                      style: ElevatedButton.styleFrom(
-                                                                        backgroundColor: kThemeColor,
-                                                                        shape: RoundedRectangleBorder(
-                                                                          borderRadius: BorderRadius.circular(10.0),
-                                                                        ),
+                                                                ),
+                                                              );
+                                                            },
+                                                          );
+                                                        },
+                                                        icon: const Icon(Icons.electric_bolt_rounded),
+                                                        label: const Text("Electricity Usage"),
+                                                        style: ElevatedButton.styleFrom(
+                                                          backgroundColor: kThemeColor,
+                                                          shape: RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.circular(12),
+                                                          ),
+                                                          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 10),
+                                                  Visibility(
+                                                    visible: roomStatus[index].status['statusDisplay'] == "Owned",
+                                                    child: Expanded(
+                                                      child: OutlinedButton.icon(
+                                                        onPressed: () {
+                                                          showDialog(
+                                                            context: context,
+                                                            builder: (BuildContext context) {
+                                                              return AlertDialog(
+                                                                shape: RoundedRectangleBorder(
+                                                                  borderRadius: BorderRadius.circular(20.0),
+                                                                ),
+                                                                title: Row(
+                                                                  children: [
+                                                                    Icon(Icons.report, color: kThemeColor),
+                                                                    const SizedBox(width: 8),
+                                                                    Text(
+                                                                      'Room Report',
+                                                                      style: TextStyle(
+                                                                        color: kThemeColor,
+                                                                        fontWeight: FontWeight.bold,
                                                                       ),
                                                                     ),
                                                                   ],
-                                                                );
-                                                              },
-                                                            );
-                                                          },
-                                                          child: Icon(Icons.view_agenda, color: kThemeColor),
-                                                        ),
-                                                      ),
-                                                      const SizedBox(width: 10),
-                                                      Visibility(
-                                                        visible: roomStatus[index].status['statusDisplay'] == "Owned",
-                                                        child: GestureDetector(
-                                                          onTap: () {
-                                                            showModalBottomSheet(
-                                                              context: context,
-                                                              enableDrag: true,
-                                                              isScrollControlled: true,
-                                                              shape: const RoundedRectangleBorder(
-                                                                borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
-                                                              ),
-                                                              builder: (BuildContext context) {
-                                                                return FractionallySizedBox(
-                                                                  heightFactor: 0.5,
-                                                                  child: Padding(
-                                                                    padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-                                                                    child: Column(
-                                                                      mainAxisSize: MainAxisSize.min,
-                                                                      children: [
-                                                                        Container(
-                                                                          width: 50,
-                                                                          height: 5,
-                                                                          margin: const EdgeInsets.only(bottom: 16.0),
-                                                                          decoration: BoxDecoration(
+                                                                ),
+                                                                content: SingleChildScrollView(
+                                                                  child: Column(
+                                                                    children: [
+                                                                      Table(
+                                                                        border: TableBorder(
+                                                                          horizontalInside: BorderSide(
                                                                             color: Colors.grey.shade300,
-                                                                            borderRadius: BorderRadius.circular(10.0),
+                                                                            width: 1,
+                                                                          ),
+                                                                          bottom: BorderSide(
+                                                                            color: Colors.grey.shade300,
+                                                                            width: 1,
                                                                           ),
                                                                         ),
-                                                                        Text(
-                                                                          'Enter Electricity Usage',
-                                                                          style: TextStyle(
-                                                                            fontSize: 18,
-                                                                            fontWeight: FontWeight.bold,
-                                                                            color: kThemeColor,
-                                                                          ),
-                                                                        ),
-                                                                        const SizedBox(height: 20),
-                                                                        TextField(
-                                                                          controller: _electricityController,
-                                                                          keyboardType: TextInputType.number,
-                                                                          decoration: InputDecoration(
-                                                                            labelText: 'Electricity (Unit)',
-                                                                            labelStyle: TextStyle(color: kThemeColor),
-                                                                            border: OutlineInputBorder(
-                                                                              borderRadius: BorderRadius.circular(10.0),
-                                                                              borderSide: BorderSide(color: kThemeColor),
-                                                                            ),
-                                                                            focusedBorder: OutlineInputBorder(
-                                                                              borderRadius: BorderRadius.circular(10.0),
-                                                                              borderSide: BorderSide(color: kThemeColor, width: 2.0),
-                                                                            ),
-                                                                            prefixIcon: Icon(Icons.electric_bolt_rounded, color: kThemeColor),
-                                                                          ),
-                                                                        ),
-                                                                        const SizedBox(height: 30),
-                                                                        ElevatedButton.icon(
-                                                                          onPressed: () {
-                                                                            double electricity = double.parse(_electricityController.text);
-                                                                            log('Electricity: $electricity');
-                                                                            _generateReport(room.uid, room, electricity);
-                                                                            Navigator.of(context).pop();
-                                                                          },
-                                                                          icon: const Icon(Icons.send_rounded, color: Colors.white),
-                                                                          label: const Text('Submit'),
-                                                                          style: ElevatedButton.styleFrom(
-                                                                            backgroundColor: kThemeColor,
-                                                                            shape: RoundedRectangleBorder(
-                                                                              borderRadius: BorderRadius.circular(12.0),
-                                                                            ),
-                                                                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                                                                          ),
-                                                                        ),
-                                                                      ],
+                                                                        columnWidths: const {
+                                                                          0: FlexColumnWidth(2),
+                                                                          1: FlexColumnWidth(3),
+                                                                        },
+                                                                        children: [
+                                                                          _buildTableRow('Electricity', roomStatus[index].report['electricity']),
+                                                                          _buildTableRow('Fohor', roomStatus[index].report['fohor']),
+                                                                          _buildTableRow('Generated Date', roomStatus[index].report['generatedDate']),
+                                                                          _buildTableRow('Room Cost', roomStatus[index].report['roomCost']),
+                                                                          _buildTableRow('Water', roomStatus[index].report['water']),
+                                                                          _buildTableRow('Total', roomStatus[index].report['total']),
+                                                                        ],
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                                actions: [
+                                                                  ElevatedButton.icon(
+                                                                    onPressed: () {
+                                                                      Navigator.of(context).pop();
+                                                                    },
+                                                                    icon: const Icon(Icons.close, color: Colors.white),
+                                                                    label: const Text('Close'),
+                                                                    style: ElevatedButton.styleFrom(
+                                                                      backgroundColor: kThemeColor,
+                                                                      shape: RoundedRectangleBorder(
+                                                                        borderRadius: BorderRadius.circular(10.0),
+                                                                      ),
                                                                     ),
                                                                   ),
-                                                                );
-                                                              },
-                                                            );
-                                                          },
-                                                          child: Icon(Icons.electric_bolt_rounded, color: kThemeColor),
+                                                                ],
+                                                              );
+                                                            },
+                                                          );
+                                                        },
+                                                        icon: Icon(Icons.folder_copy, color: kThemeColor),
+                                                        label: const Text("Room Report"),
+                                                        style: OutlinedButton.styleFrom(
+                                                          shape: RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.circular(12),
+                                                          ),
+                                                          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
+                                                          side: BorderSide(color: kThemeColor),
                                                         ),
-                                                      )
-                                                    ],
+                                                      ),
+                                                    ),
                                                   ),
                                                 ],
-                                              ),
+                                              )
                                             ],
                                           ),
                                         ),

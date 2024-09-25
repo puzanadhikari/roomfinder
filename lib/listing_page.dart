@@ -137,7 +137,7 @@ class _ListingState extends State<Listing> {
               style: TextStyle(
                   color: kThemeColor,
                   fontWeight: FontWeight.bold,
-                  fontSize: 25)),
+                  fontSize: 20)),
         ),
         body: pageProvider.choice == "From Main"
             ? NotificationListener<OverscrollIndicatorNotification>(
