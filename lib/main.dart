@@ -15,7 +15,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => WishlistProvider()),
         // Add other providers here if needed
       ],
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 }
@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: SplashScreen(),
     );

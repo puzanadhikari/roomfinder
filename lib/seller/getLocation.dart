@@ -9,14 +9,16 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MapSearchScreen extends StatefulWidget {
+  const MapSearchScreen({super.key});
+
   @override
   _MapSearchScreenState createState() => _MapSearchScreenState();
 }
 
 class _MapSearchScreenState extends State<MapSearchScreen> {
   GoogleMapController? _mapController;
-  LatLng _center = LatLng(27.7172, 85.3240); // Kathmandu, Nepal
-  TextEditingController _searchController = TextEditingController();
+  LatLng _center = const LatLng(27.7172, 85.3240); // Kathmandu, Nepal
+  final TextEditingController _searchController = TextEditingController();
   String? _selectedCityName;
   LatLng? _selectedLatLng;
 
@@ -63,7 +65,7 @@ class _MapSearchScreenState extends State<MapSearchScreen> {
         });
       }
     } catch (e) {
-      print("Error occurred while selecting city: $e");
+      log("Error occurred while selecting city: $e");
     }
   }
 
@@ -71,15 +73,15 @@ class _MapSearchScreenState extends State<MapSearchScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Search Location'),
-        backgroundColor: Color(0xFF072A2E),
+        title: const Text('Search Location'),
+        backgroundColor: const Color(0xFF072A2E),
       ),
       body: Column(
         children: [
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(12.0),
@@ -88,14 +90,14 @@ class _MapSearchScreenState extends State<MapSearchScreen> {
                     color: Colors.grey.withOpacity(0.3),
                     spreadRadius: 2,
                     blurRadius: 6,
-                    offset: Offset(0, 2),
+                    offset: const Offset(0, 2),
                   ),
                 ],
               ),
               child: TypeAheadField<String>(
                 textFieldConfiguration: TextFieldConfiguration(
                   controller: _searchController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     border: InputBorder.none,
                     labelText: 'Enter city',
                     suffixIcon: Icon(Icons.search, color: Color(0xFF072A2E)),
@@ -126,7 +128,7 @@ class _MapSearchScreenState extends State<MapSearchScreen> {
                     color: Colors.grey.withOpacity(0.3),
                     spreadRadius: 2,
                     blurRadius: 6,
-                    offset: Offset(0, 2),
+                    offset: const Offset(0, 2),
                   ),
                 ],
               ),

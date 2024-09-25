@@ -3,12 +3,10 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 
 import 'Constants/styleConsts.dart';
 import 'aggreement.dart';
-import 'model/onSaleModel.dart';
-
-
 
 Future<Map<String, dynamic>?> fetchUserData() async {
   User? user = FirebaseAuth.instance.currentUser;
@@ -110,7 +108,56 @@ class _OrderPageState extends State<OrderPage> {
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
-                child: CircularProgressIndicator(color: kThemeColor),
+                child: Shimmer.fromColors(
+                  baseColor: Colors.grey.shade300,
+                  highlightColor: Colors.grey.shade100,
+                  child: ListView.builder(
+                    itemCount: 4,
+                    itemBuilder: (context, index) {
+                      return Card(
+                        elevation: 4,
+                        margin: const EdgeInsets.all(8.0),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Row(
+                            children: [
+                              Container(
+                                height: 100,
+                                width: 100,
+                                color: Colors.grey.shade300,
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      height: 20,
+                                      width: double.infinity,
+                                      color: Colors.grey.shade300,
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Container(
+                                      height: 16,
+                                      width: 150,
+                                      color: Colors.grey.shade300,
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Container(
+                                      height: 16,
+                                      width: 100,
+                                      color: Colors.grey.shade300,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
               );
             } else if (snapshot.hasError) {
               return Center(
@@ -141,14 +188,49 @@ class _OrderPageState extends State<OrderPage> {
                     builder: (context, roomSnapshot) {
                       if (roomSnapshot.connectionState ==
                           ConnectionState.waiting) {
-                        return Card(
-                          elevation: 4,
-                          margin: const EdgeInsets.all(8.0),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Center(
-                              child:
-                                  CircularProgressIndicator(color: kThemeColor),
+                        return Shimmer.fromColors(
+                          baseColor: Colors.grey.shade300,
+                          highlightColor: Colors.grey.shade100,
+                          child: Card(
+                            elevation: 4,
+                            margin: const EdgeInsets.all(8.0),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    height: 100,
+                                    width: 100,
+                                    color: Colors.grey.shade300,
+                                  ),
+                                  const SizedBox(width: 16),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          height: 20,
+                                          width: double.infinity,
+                                          color: Colors.grey.shade300,
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Container(
+                                          height: 16,
+                                          width: 150,
+                                          color: Colors.grey.shade300,
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Container(
+                                          height: 16,
+                                          width: 100,
+                                          color: Colors.grey.shade300,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         );
@@ -169,239 +251,293 @@ class _OrderPageState extends State<OrderPage> {
 
                       final roomStatus = roomSnapshot.data!;
 
-                      return Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16.0),
-                          gradient: LinearGradient(
-                            colors: [Colors.white, Colors.grey.shade200],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
+                      return GestureDetector(
+                        onTap: () {
+                          log(roomId);
+                          if (roomStatus['status']['statusDisplay'] == "Sold") {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => AgreementPage(
+                                        roomStatus['status']['SoldBy'],
+                                        roomStatus['status']['SellerEmail'],
+                                        roomId)));
+                          } else {}
+                        },
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16.0),
                           ),
-                        ),
-                        child: GestureDetector(
-                          onTap: (){
-                            log(roomId);
-                           if(roomStatus['status']['statusDisplay']=="Sold") {
-                             Navigator.push(context, MaterialPageRoute(builder: (context)=>AgreementPage(
-                                 roomStatus['status']['SoldBy'],
-                                 roomStatus['status']['SellerEmail'],
-                                 roomId
-                             )));
-
-                           }else{}
-
-                          },
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16.0),
-                            ),
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Row(
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: const BorderRadius.horizontal(
-                                      left: Radius.circular(16.0),
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius:
+                                          const BorderRadius.horizontal(
+                                        left: Radius.circular(16.0),
+                                        right: Radius.circular(16.0),
+                                      ),
+                                      child: Image.network(
+                                        room['photo'][0] ?? '',
+                                        height: 100,
+                                        width: 100,
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
-                                    child: Image.network(
-                                      room['photo'][0] ?? '',
-                                      height: 100,
-                                      width: 100,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(16.0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Visibility(
-                                            visible:roomStatus['status']['statusDisplay']=="Owned",
-                                            child: GestureDetector(
-                                                onTap: (){
-                                                  showDialog(
-                                                    context: context,
-                                                    builder: (BuildContext context) {
-                                                      return AlertDialog(
-                                                        title: Text('Room Report'),
-                                                        content: SingleChildScrollView(
-                                                          child: Table(
-                                                            border: TableBorder.all(),
-                                                            columnWidths: {
-                                                              0: FlexColumnWidth(1),
-                                                              1: FlexColumnWidth(2),
-                                                            },
-                                                            children: [
-                                                              TableRow(
-                                                                children: [
-                                                                  Padding(
-                                                                    padding: const EdgeInsets.all(8.0),
-                                                                    child: Text('Electricity'),
-                                                                  ),
-                                                                  Padding(
-                                                                    padding: const EdgeInsets.all(8.0),
-                                                                    child: Text(roomStatus['report']['electricity'].toString()),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                              TableRow(
-                                                                children: [
-                                                                  Padding(
-                                                                    padding: const EdgeInsets.all(8.0),
-                                                                    child: Text('Fohor'),
-                                                                  ),
-                                                                  Padding(
-                                                                    padding: const EdgeInsets.all(8.0),
-                                                                    child: Text(roomStatus['report']['fohor'].toString()),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                              TableRow(
-                                                                children: [
-                                                                  Padding(
-                                                                    padding: const EdgeInsets.all(8.0),
-                                                                    child: Text('Generated Date'),
-                                                                  ),
-                                                                  Padding(
-                                                                    padding: const EdgeInsets.all(8.0),
-                                                                    child: Text(roomStatus['report']['generatedDate'].toString()),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                              TableRow(
-                                                                children: [
-                                                                  Padding(
-                                                                    padding: const EdgeInsets.all(8.0),
-                                                                    child: Text('Room Cost'),
-                                                                  ),
-                                                                  Padding(
-                                                                    padding: const EdgeInsets.all(8.0),
-                                                                    child: Text(roomStatus['report']['roomCost'].toString()),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                              TableRow(
-                                                                children: [
-                                                                  Padding(
-                                                                    padding: const EdgeInsets.all(8.0),
-                                                                    child: Text('Water'),
-                                                                  ),
-                                                                  Padding(
-                                                                    padding: const EdgeInsets.all(8.0),
-                                                                    child: Text(roomStatus['report']['water'].toString()),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                              TableRow(
-                                                                children: [
-                                                                  Padding(
-                                                                    padding: const EdgeInsets.all(8.0),
-                                                                    child: Text('Total'),
-                                                                  ),
-                                                                  Padding(
-                                                                    padding: const EdgeInsets.all(8.0),
-                                                                    child: Text(roomStatus['report']['total'].toString()),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                        actions: [
-                                                          TextButton(
-                                                            onPressed: () {
-                                                              Navigator.of(context).pop();
-                                                            },
-                                                            child: Text('Close'),
-                                                          ),
-                                                        ],
-                                                      );
-                                                    },
-                                                  );
-                                                },
-                                                child: Icon(Icons.picture_as_pdf)),
-                                          ),
-                                          Text(
-                                            (room['name'] ?? '').toUpperCase(),
-                                            style: TextStyle(
-                                              color: kThemeColor,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 18,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 8),
-                                          Row(
-                                            children: [
-                                              const Icon(
-                                                Icons.location_on,
-                                                color: Colors.grey,
-                                                size: 16,
+                                    Expanded(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              (room['name'] ?? '')
+                                                  .toUpperCase(),
+                                              style: TextStyle(
+                                                color: kThemeColor,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 18,
                                               ),
-                                              const SizedBox(width: 4),
-                                              Expanded(
-                                                child: Text(
-                                                  room['locationName'] ?? '',
-                                                  style: TextStyle(
-                                                    color: Colors.grey.shade700,
+                                            ),
+                                            const SizedBox(height: 8),
+                                            Text(
+                                              room['locationName'] ?? '',
+                                              style: TextStyle(
+                                                color: Colors.grey.shade700,
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 8),
+                                            Text(
+                                              "${room['price']}/ per month",
+                                              style: TextStyle(
+                                                color: kThemeColor,
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 8),
+                                            Row(
+                                              children: [
+                                                const Icon(
+                                                  Icons.email,
+                                                  color: Colors.grey,
+                                                  size: 16,
+                                                ),
+                                                const SizedBox(width: 4),
+                                                Text(
+                                                  '$userEmail',
+                                                  style: const TextStyle(
                                                     fontSize: 14,
+                                                    color: Colors.grey,
                                                   ),
                                                 ),
-                                              ),
-                                            ],
-                                          ),
-                                          const SizedBox(height: 8),
-                                          Row(
-                                            children: [
-                                              const Icon(
-                                                Icons.email,
-                                                color: Colors.grey,
-                                                size: 16,
-                                              ),
-                                              const SizedBox(width: 4),
-                                              Text(
-                                                '$userEmail',
-                                                style: const TextStyle(
-                                                  fontSize: 14,
-                                                  color: Colors.grey,
+                                              ],
+                                            ),
+                                            const SizedBox(height: 8),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Icon(
+                                                      roomStatus['status'][
+                                                                  'statusDisplay'] ==
+                                                              'Owned'
+                                                          ? Icons.check_circle
+                                                          : Icons.flag_circle,
+                                                      color: roomStatus[
+                                                                      'status'][
+                                                                  'statusDisplay'] ==
+                                                              'Owned'
+                                                          ? Colors.green
+                                                          : roomStatus['status']
+                                                                      [
+                                                                      'statusDisplay'] ==
+                                                                  'Sold'
+                                                              ? Colors.red
+                                                              : Colors.orange,
+                                                      size: 14,
+                                                    ),
+                                                    const SizedBox(width: 4),
+                                                    Text(
+                                                      'Status: ${roomStatus['status']['statusDisplay']}',
+                                                      style: const TextStyle(
+                                                        fontSize: 14,
+                                                        color: Colors.grey,
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
-                                              ),
-                                            ],
-                                          ),
-                                          const SizedBox(height: 8),
-                                          Row(
-                                            children: [
-                                              Icon(
-                                                Icons.circle,
-                                                color: roomStatus['status']
-                                                            ['statusDisplay'] ==
-                                                        'Available'
-                                                    ? Colors.green
-                                                    : roomStatus['status'][
-                                                                'statusDisplay'] ==
-                                                            'Booked'
-                                                        ? Colors.red
-                                                        : Colors.orange,
-                                                size: 14,
-                                              ),
-                                              const SizedBox(width: 4),
-                                              Text(
-                                                'Status: ${roomStatus['status']['statusDisplay']}',
-                                                style:
-                                                    const TextStyle(fontSize: 14),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
+                                                Visibility(
+                                                  visible: roomStatus['status']
+                                                          ['statusDisplay'] ==
+                                                      "Owned",
+                                                  child: GestureDetector(
+                                                    onTap: () {
+                                                      if (roomStatus['report']
+                                                              ['electricity'] ==
+                                                          null) {
+                                                        ScaffoldMessenger.of(
+                                                                context)
+                                                            .showSnackBar(
+                                                          const SnackBar(
+                                                            content: Text(
+                                                                "No Report Generated Yet."),
+                                                          ),
+                                                        );
+                                                      } else {
+                                                        showDialog(
+                                                          context: context,
+                                                          builder: (BuildContext
+                                                              context) {
+                                                            return AlertDialog(
+                                                              shape:
+                                                                  RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            20.0),
+                                                              ),
+                                                              title: Row(
+                                                                children: [
+                                                                  Icon(
+                                                                      Icons
+                                                                          .picture_as_pdf,
+                                                                      color:
+                                                                          kThemeColor),
+                                                                  const SizedBox(
+                                                                      width:
+                                                                          10),
+                                                                  Text(
+                                                                    'Room Report',
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          20,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      color:
+                                                                          kThemeColor,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              content:
+                                                                  SingleChildScrollView(
+                                                                child: Table(
+                                                                  border:
+                                                                      TableBorder(
+                                                                    horizontalInside:
+                                                                        BorderSide(
+                                                                      width: 1,
+                                                                      color: Colors
+                                                                          .grey
+                                                                          .shade300,
+                                                                    ),
+                                                                  ),
+                                                                  columnWidths: const {
+                                                                    0: FlexColumnWidth(
+                                                                        1),
+                                                                    1: FlexColumnWidth(
+                                                                        2),
+                                                                  },
+                                                                  children: [
+                                                                    _buildTableRow(
+                                                                        'Electricity',
+                                                                        roomStatus['report']
+                                                                            [
+                                                                            'electricity']),
+                                                                    _buildTableRow(
+                                                                        'Fohor',
+                                                                        roomStatus['report']
+                                                                            [
+                                                                            'fohor']),
+                                                                    _buildTableRow(
+                                                                        'Generated Date',
+                                                                        roomStatus['report']
+                                                                            [
+                                                                            'generatedDate']),
+                                                                    _buildTableRow(
+                                                                        'Room Cost',
+                                                                        roomStatus['report']
+                                                                            [
+                                                                            'roomCost']),
+                                                                    _buildTableRow(
+                                                                        'Water',
+                                                                        roomStatus['report']
+                                                                            [
+                                                                            'water']),
+                                                                    _buildTableRow(
+                                                                        'Total',
+                                                                        roomStatus['report']
+                                                                            [
+                                                                            'total']),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                              actions: [
+                                                                TextButton(
+                                                                  onPressed:
+                                                                      () {
+                                                                    Navigator.of(
+                                                                            context)
+                                                                        .pop();
+                                                                  },
+                                                                  child: Text(
+                                                                    'Close',
+                                                                    style: TextStyle(
+                                                                        color:
+                                                                            kThemeColor),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            );
+                                                          },
+                                                        );
+                                                      }
+                                                    },
+                                                    child: Icon(
+                                                        Icons.picture_as_pdf,
+                                                        color: kThemeColor),
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(width: 4),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Visibility(
+                                    visible: roomStatus['status']
+                                            ['statusDisplay'] ==
+                                        "Sold",
+                                    child: Text(
+                                      'Please Approve our agreement paper to own this property.',
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                        color: kThemeColor,
                                       ),
                                     ),
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
@@ -417,7 +553,29 @@ class _OrderPageState extends State<OrderPage> {
     );
   }
 
+  TableRow _buildTableRow(String label, dynamic value) {
+    return TableRow(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Text(
+            label,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Text(
+            value.toString(),
+            style: const TextStyle(
+              color: Colors.black54,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 }
-
-
-

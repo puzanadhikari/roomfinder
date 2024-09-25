@@ -15,14 +15,14 @@ import '../model/onSaleModel.dart';
 class SellerRoomDetails extends StatefulWidget {
   final Room room;
 
-  const SellerRoomDetails({super.key, required this.room});
+  const SellerRoomDetails({super.key, required this.room, List<Room>? status});
 
   @override
   State<SellerRoomDetails> createState() => _SellerRoomDetailsState();
 }
 
 class _SellerRoomDetailsState extends State<SellerRoomDetails> {
-  bool _isBooking = false;
+  final bool _isBooking = false;
   final String _mapApiKey = 'AIzaSyAGFdLuw0m2pCFxNxmFA5EzJia6IzUM3iU';
 
   @override
@@ -117,8 +117,7 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
                             const SizedBox(height: 8),
                             Row(
                               children: [
-                                Text(
-                                  "Rs. 8000 /",
+                                Text("${widget.room.price}/",
                                   style: TextStyle(
                                       color: kThemeColor,
                                       fontSize: 16,
@@ -152,11 +151,11 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
                                             color: Color(0xFF4D4D4D),
                                             fontSize: 16),
                                       ),
-                                      const SizedBox(height: 8),
+                                      const SizedBox(height: 14),
                                       Text(
-                                        "${widget.room.length} * ${widget.room.breadth}",
-                                        style: const TextStyle(
-                                            color: Color(0xFF4D4D4D),
+                                        "Dimension: ${widget.room.length} * ${widget.room.breadth}",
+                                        style: TextStyle(
+                                            color: Colors.grey.shade600,
                                             fontSize: 16),
                                       ),
                                     ],
@@ -185,13 +184,58 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
                                 color: Colors.black54, height: 2, thickness: 1),
                             const SizedBox(height: 12),
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  '${widget.room.capacity} BHK',
-                                  style: const TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black54),
+                                Column(
+                                  children: [
+                                    Text(
+                                      "Electricity",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: kThemeColor,
+                                          fontSize: 16),
+                                    ),
+                                    Text(
+                                      "NPR.${widget.room.electricity}",
+                                      style: TextStyle(
+                                          color: Colors.grey.shade800,
+                                          fontSize: 14),
+                                    ),
+                                  ],
+                                ),
+                                Column(
+                                  children: [
+                                    Text(
+                                      "Water",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: kThemeColor,
+                                          fontSize: 16),
+                                    ),
+                                    Text(
+                                      "NPR.${widget.room.water}",
+                                      style: TextStyle(
+                                          color: Colors.grey.shade800,
+                                          fontSize: 14),
+                                    ),
+                                  ],
+                                ),
+                                Column(
+                                  children: [
+                                    Text(
+                                      "Wastes",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: kThemeColor,
+                                          fontSize: 16),
+                                    ),
+                                    Text(
+                                      "NPR.${widget.room.fohor}",
+                                      style: TextStyle(
+                                          color: Colors.grey.shade800,
+                                          fontSize: 14),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
@@ -211,18 +255,24 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
                                 Row(
                                   children: [
                                     Icon(
-                                      Icons.do_not_disturb_on_total_silence,
-                                      size: 16,
-                                      color: kThemeColor,
+                                       widget.room
+                                            .status[
+                                        'statusDisplay'] ==
+                                            "Owned"
+                                            ? Icons
+                                            .check_circle
+                                            : Icons
+                                            .flag_circle,
+                                        size: 16,
+                                        color: kThemeColor),
+                                    Text(
+                                      '${ widget.room.status['statusDisplay'] ?? "To Buy"}',
+                                      style: const TextStyle(
+                                          color:
+                                          Colors.black45),
                                     ),
-                                    const Text(
-                                      "Available",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black45),
-                                    )
                                   ],
-                                )
+                                ),
                               ],
                             ),
                             const SizedBox(height: 18),
@@ -230,51 +280,38 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
                             const SizedBox(height: 30),
                             const Text(
                               "Facilities",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 16),
+                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                             ),
                             const SizedBox(height: 20),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Row(
-                                  children: [
-                                    Icon(Icons.check, color: kThemeColor),
-                                    const Text("Attach Bathroom")
-                                  ],
+                            if (widget.room.facilities.isNotEmpty) ...[
+                              Center(
+                                child: Wrap(
+                                  spacing: 8.0,
+                                  runSpacing: 8.0,
+                                  children: widget.room.facilities.map((facility) {
+                                    return Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(Icons.check, color: kThemeColor),
+                                        const SizedBox(width: 4),
+                                        Text(facility),
+                                      ],
+                                    );
+                                  }).toList(),
                                 ),
-                                Row(
-                                  children: [
-                                    Icon(Icons.check, color: kThemeColor),
-                                    const Text("1 Big Hall")
-                                  ],
-                                )
-                              ],
-                            ),
-                            const SizedBox(height: 12),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Row(
-                                  children: [
-                                    Icon(Icons.check, color: kThemeColor),
-                                    const Text("Bikes and Car Parking")
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    Icon(Icons.check, color: kThemeColor),
-                                    const Text("24/7 water Facilities")
-                                  ],
-                                )
-                              ],
-                            ),
+                              ),
+                            ] else ...[
+                              const Text("No facilities available"),
+                            ],
                             const SizedBox(height: 20),
                             SizedBox(
                               width: double.infinity,
                               height: 45,
                               child: ElevatedButton(
-                                onPressed: (){},
+                                onPressed: (){
+                                  _approveRoomStatus(widget.room.uid, widget.room);
+                                  Navigator.of(context).pop(); // Close the dialog
+                                },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: const Color(0xFF072A2E),
                                   shape: RoundedRectangleBorder(
@@ -282,7 +319,7 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
                                   ),
                                 ),
                                 child: const Text(
-                                  "Edit",
+                                  "Approve",
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 18),
                                 ),
@@ -300,16 +337,14 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
                   top: carouselHeight - 50,
                   child: GestureDetector(
                     onTap: () {
-                      wishlistProvider.isInWishlist(widget.room) == true
-                          ? wishlistProvider.removeFromWishlist(widget.room)
-                          : wishlistProvider.addToWishlist(widget.room);
+                      // wishlistProvider.isInWishlist(widget.room) == true
+                      //     ? wishlistProvider.removeFromWishlist(widget.room)
+                      //     : wishlistProvider.addToWishlist(widget.room);
                     },
                     child: CircleAvatar(
                       backgroundColor: Colors.white,
                       child: Icon(Icons.bookmark,
-                          color: wishlistProvider.isInWishlist(widget.room)
-                              ? Colors.red
-                              : kThemeColor),
+                          color: kThemeColor),
                     ),
                   ))
             ],
@@ -317,5 +352,46 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
         ),
       ),
     );
+  }
+  void _approveRoomStatus(String roomUid, Room room) async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+
+      Map<String, dynamic> newStatus = {
+        'SoldBy': user?.displayName,
+        'sellerId': user?.uid,
+        'SellerEmail': user?.email,
+        'statusDisplay': 'Sold',
+      };
+
+      await FirebaseFirestore.instance
+          .collection('onSale')
+          .doc(roomUid)
+          .update({'status': newStatus});
+
+      Fluttertoast.showToast(
+        msg: "Room status updated to Sold!",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+
+      setState(() {
+        room.status = newStatus;
+      });
+    } catch (e) {
+      Fluttertoast.showToast(
+        msg: "Failed to update status: $e",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 2,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+    }
   }
 }

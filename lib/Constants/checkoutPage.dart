@@ -19,7 +19,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Checkout"),
+        title: const Text("Checkout"),
         centerTitle: true,
         backgroundColor: kThemeColor,
       ),
@@ -28,7 +28,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
         child: Column(
           children: [
             Row(
-              children: [
+              children: const [
                 Icon(Icons.payment),
                 Text(
                   "Payment Option",
@@ -41,7 +41,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
               shadowColor: Colors.white60,
               child: RadioListTile(
                 activeColor: kThemeColor,
-                title: Text('Cash on Delivery'),
+                title: const Text('Cash on Delivery'),
                 value: 'COD',
                 groupValue: _paymentMethod,
                 onChanged: (value) {
@@ -56,7 +56,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
               shadowColor: Colors.white60,
               child: RadioListTile(
                 activeColor: kThemeColor,
-                title: Text('Esewa'),
+                title: const Text('Esewa'),
                 value: 'eSewa',
                 groupValue: _paymentMethod,
                 onChanged: (value) {
@@ -71,7 +71,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
               shadowColor: Colors.white60,
               child: RadioListTile(
                 activeColor: kThemeColor,
-                title: Text('Khalti'),
+                title: const Text('Khalti'),
                 value: 'Khalti',
                 groupValue: _paymentMethod,
                 onChanged: (value) {
@@ -81,8 +81,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 },
               ),
             ),
-            SizedBox(height: 20),
-            Container(
+            const SizedBox(height: 20),
+            SizedBox(
               height: 50,
               width: MediaQuery.of(context).size.width / 2,
               child: ElevatedButton(
@@ -90,13 +90,12 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   log('Payment Method: $_paymentMethod');
                 },
                 style: ElevatedButton.styleFrom(
-                  elevation: 0,
-                  primary: appBarColor,
+                  elevation: 0, backgroundColor: appBarColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                 ),
-                child: Text(
+                child: const Text(
                   "Place your Order",
                   style: TextStyle(
                     fontSize: 18,

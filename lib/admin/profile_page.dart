@@ -2,25 +2,20 @@ import 'dart:developer';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:meroapp/Constants/styleConsts.dart';
-import 'package:meroapp/splashScreen.dart';
-import 'package:meroapp/wishlist.dart';
 
-import 'informationDetail.dart';
-import 'orders.dart';
-
-class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+import '../Constants/styleConsts.dart';
+import '../splashScreen.dart';
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({super.key});
 
   @override
-  State<ProfilePage> createState() => _ProfilePageState();
+  State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     User? user = FirebaseAuth.instance.currentUser;
-
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -119,12 +114,12 @@ class _ProfilePageState extends State<ProfilePage> {
                 iconColor: kThemeColor,
                 textColor: kThemeColor,
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const InformationDetails(),
-                    ),
-                  );
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => const InformationDetails(),
+                  //   ),
+                  // );
                 },
               ),
               // Orders Card
@@ -134,12 +129,12 @@ class _ProfilePageState extends State<ProfilePage> {
                 iconColor: kThemeColor,
                 textColor: kThemeColor,
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const OrderPage(),
-                    ),
-                  );
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => const OrderPage(),
+                  //   ),
+                  // );
                 },
               ),
               // Wishlist Card
@@ -149,12 +144,12 @@ class _ProfilePageState extends State<ProfilePage> {
                 iconColor: kThemeColor,
                 textColor: kThemeColor,
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const WishlistPage(),
-                    ),
-                  );
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => const WishlistPage(),
+                  //   ),
+                  // );
                 },
               ),
               // Logout Card
@@ -171,7 +166,6 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
   }
-
   Widget _buildProfileCard({
     required IconData icon,
     required String title,

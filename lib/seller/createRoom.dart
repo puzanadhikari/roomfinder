@@ -37,14 +37,21 @@ class _CreateRoomState extends State<CreateRoom> {
       _fohor;
   bool _hasElectricity = false, _hasWater = false;
   String? _panoramaImagePath;
-
+  List<String> names = [
+    "24/7 Water",
+    "Free Internet",
+    "Parking",
+    "Attach Bathroom",
+    "1 Big Hall"
+  ];
+  final List<String> _selectedNames = [];
   String? _selectedLocationName;
   LatLng? _selectedLocationLatLng;
 
   void _navigateAndDisplaySelection(BuildContext context) async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => MapSearchScreen()),
+      MaterialPageRoute(builder: (context) => const MapSearchScreen()),
     );
 
     if (result != null) {
@@ -103,12 +110,12 @@ class _CreateRoomState extends State<CreateRoom> {
       currentLocation = await location.getLocation();
       setState(() {
         _latitude = currentLocation!.latitude;
-        _longitude = currentLocation!.longitude;
+        _longitude = currentLocation.longitude;
         _locationName =
             "Current Location"; // You can also use reverse geocoding to get the location name
       });
     } catch (e) {
-      print("Error getting location: $e");
+      log("Error getting location: $e");
     }
   }
 
@@ -144,7 +151,11 @@ class _CreateRoomState extends State<CreateRoom> {
               },
               child: SingleChildScrollView(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    kHeightSmall,
+                    Text("Fill the following details of your property.For any inconvenience contact: 01123456",style: TextStyle(fontSize: 16,color: Colors.grey.shade800)),
+                    kHeightMedium,
                     Container(
                       decoration: BoxDecoration(
                         boxShadow: [
@@ -152,14 +163,14 @@ class _CreateRoomState extends State<CreateRoom> {
                             color: Colors.white.withOpacity(0.15),
                             spreadRadius: 1,
                             blurRadius: 25,
-                            offset: Offset(0, 5),
+                            offset: const Offset(0, 5),
                           ),
                         ],
                         border: Border.all(
                           color: Colors.blue.shade100,
                           width: 1.0,
                         ),
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                        borderRadius: const BorderRadius.all(Radius.circular(20)),
                       ),
                       child:
                           NotificationListener<OverscrollIndicatorNotification>(
@@ -286,7 +297,7 @@ class _CreateRoomState extends State<CreateRoom> {
                                 TextFormField(
                                   decoration: kFormFieldDecoration.copyWith(
                                     labelText: " Property Description",
-                                    contentPadding: EdgeInsets.symmetric(
+                                    contentPadding: const EdgeInsets.symmetric(
                                         vertical: 10.0, horizontal: 10.0),
                                   ),
                                   minLines: 5,
@@ -299,61 +310,151 @@ class _CreateRoomState extends State<CreateRoom> {
                                     return null;
                                   },
                                 ),
-                                kHeightSmall,
-                                TextFormField(
-                                  decoration: kFormFieldDecoration.copyWith(
-                                    labelText: " Seller Name",
-                                    contentPadding: EdgeInsets.symmetric(
-                                        vertical: 10.0, horizontal: 10.0),
-                                  ),
-                                  minLines: 5,
-                                  maxLines: null,
-                                  onSaved: (value) => _sellerName = value,
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please enter a Seller name';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                kHeightSmall,
-                                TextFormField(
-                                  decoration: kFormFieldDecoration.copyWith(
-                                    labelText: " Seller Email",
-                                    contentPadding: EdgeInsets.symmetric(
-                                        vertical: 10.0, horizontal: 10.0),
-                                  ),
-                                  minLines: 5,
-                                  maxLines: null,
-                                  onSaved: (value) => _sellerEmail = value,
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please enter a Seller Email';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                kHeightSmall,
-                                TextFormField(
-                                  decoration: kFormFieldDecoration.copyWith(
-                                    labelText: " Seller Phone",
-                                    contentPadding: EdgeInsets.symmetric(
-                                        vertical: 10.0, horizontal: 10.0),
-                                  ),
-                                  minLines: 5,
-                                  maxLines: null,
-                                  onSaved: (value) => _sellerPhone = value,
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please enter a Seller Phone';
-                                    }
-                                    return null;
-                                  },
-                                ),
                               ],
                             ),
                           ),
                         ),
+                      ),
+                    ),
+                    kHeightSmall,
+                    Container(
+                      padding: const EdgeInsets.all(16.0),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [Colors.white, Colors.grey.shade100],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(15.0),
+                        border: Border.all(
+                          color: Colors.blue.shade100,
+                          width: 1.0,
+                        ),
+                      ),
+                      child: ExpandablePanel(
+                        header: Text(
+                          'Contact Details: *',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.grey.shade800,
+                          ),
+                        ),
+                        collapsed: Container(),
+                        expanded: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              TextFormField(
+                                decoration: kFormFieldDecoration.copyWith(
+                                  labelText: "Name",
+                                ),
+                                onSaved: (value) => _sellerName = value,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter a Seller name';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              kHeightSmall,
+                              TextFormField(
+                                decoration: kFormFieldDecoration.copyWith(
+                                  labelText: "Email",
+                                ),
+                                onSaved: (value) => _sellerEmail = value,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter a Seller Email';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              kHeightSmall,
+                              TextFormField(
+                                decoration: kFormFieldDecoration.copyWith(
+                                  labelText: "Phone",
+                                ),
+                                keyboardType: TextInputType.number,
+                                onSaved: (value) => _sellerPhone = value,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter a Seller Phone';
+                                  }
+                                  return null;
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                        theme: const ExpandableThemeData(
+                          hasIcon: true,
+                          iconColor: Color(0xFF0A3D40),
+                          expandIcon: Icons.expand_more,
+                          collapseIcon: Icons.expand_less,
+                          tapBodyToExpand: true,
+                          tapBodyToCollapse: true,
+                          headerAlignment: ExpandablePanelHeaderAlignment.center,
+                        ),
+                      ),
+                    ),
+                    kHeightSmall,
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      padding: const EdgeInsets.all(16.0),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(15.0),
+                        border: Border.all(
+                          color: Colors.blue.shade100,
+                          width: 1.0,
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Select Facilities:",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.grey.shade800,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Wrap(
+                            spacing: 8.0,
+                            runSpacing: 4.0,
+                            children: names.map((name) {
+                              return ChoiceChip(
+                                label: Text(name),
+                                selected: _selectedNames.contains(name),
+                                onSelected: (isSelected) {
+                                  setState(() {
+                                    if (isSelected) {
+                                      _selectedNames.add(name);
+                                    } else {
+                                      _selectedNames.remove(name);
+                                    }
+                                  });
+                                },
+                                selectedColor: kThemeColor,
+                                backgroundColor: Colors.grey[200],
+                                labelStyle: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: _selectedNames.contains(name)
+                                      ? Colors.white
+                                      : Colors.grey.shade700,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30.0),
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ],
                       ),
                     ),
                     kHeightSmall,
@@ -413,7 +514,7 @@ class _CreateRoomState extends State<CreateRoom> {
                               child: ElevatedButton(
                                 onPressed: _pickImages,
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFF072A2E),
+                                  backgroundColor: kThemeColor,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(8.0),
                                   ),
@@ -448,7 +549,7 @@ class _CreateRoomState extends State<CreateRoom> {
                         ),
                       ),
                       child: ExpandablePanel(
-                        header: Text(
+                        header: const Text(
                           'Property Panorama Image',
                           style: TextStyle(
                             fontSize: 18,
@@ -463,17 +564,17 @@ class _CreateRoomState extends State<CreateRoom> {
                             height: 50,
                             child: ElevatedButton.icon(
                               onPressed: _pickPanoramaImage,
-                              icon: Icon(Icons.photo_camera_back,
+                              icon: const Icon(Icons.photo_camera_back,
                                   color: Colors.white),
                               label: const Text('Pick Panorama'),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF072A2E),
+                                backgroundColor: kThemeColor,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8.0),
                                 ),
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 14.0, horizontal: 20.0),
-                                textStyle: TextStyle(
+                                textStyle: const TextStyle(
                                     fontSize: 16, fontWeight: FontWeight.w500),
                               ),
                             ),
@@ -510,17 +611,17 @@ class _CreateRoomState extends State<CreateRoom> {
                                 height: 50,
                                 child: ElevatedButton.icon(
                                   onPressed: _pickPanoramaImage,
-                                  icon: Icon(Icons.photo_camera_back,
+                                  icon: const Icon(Icons.photo_camera_back,
                                       color: Colors.white),
                                   label: const Text('Pick Panorama'),
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: Color(0xFF0A3D40),
+                                    backgroundColor: kThemeColor,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(8.0),
                                     ),
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 14.0, horizontal: 20.0),
-                                    textStyle: TextStyle(
+                                    textStyle: const TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w500),
                                   ),
@@ -566,7 +667,7 @@ class _CreateRoomState extends State<CreateRoom> {
                           if (_selectedLocationName != null)
                             Center(
                               child: Container(
-                                padding: EdgeInsets.all(16.0),
+                                padding: const EdgeInsets.all(16.0),
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(12.0),
@@ -575,13 +676,13 @@ class _CreateRoomState extends State<CreateRoom> {
                                       color: Colors.grey.withOpacity(0.3),
                                       spreadRadius: 2,
                                       blurRadius: 6,
-                                      offset: Offset(0, 2),
+                                      offset: const Offset(0, 2),
                                     ),
                                   ],
                                 ),
                                 child: Column(
                                   children: [
-                                    Text(
+                                    const Text(
                                       'Selected Location:',
                                       style: TextStyle(
                                         fontSize: 18,
@@ -589,7 +690,7 @@ class _CreateRoomState extends State<CreateRoom> {
                                         color: Colors.black87,
                                       ),
                                     ),
-                                    SizedBox(height: 8),
+                                    const SizedBox(height: 8),
                                     Text(
                                       _selectedLocationName!,
                                       textAlign: TextAlign.center,
@@ -599,7 +700,7 @@ class _CreateRoomState extends State<CreateRoom> {
                                         color: Colors.grey.shade700,
                                       ),
                                     ),
-                                    SizedBox(height: 8),
+                                    const SizedBox(height: 8),
                                     Text(
                                       'Latitude: ${_selectedLocationLatLng!.latitude}, '
                                           'Longitude: ${_selectedLocationLatLng!.longitude}',
@@ -613,7 +714,7 @@ class _CreateRoomState extends State<CreateRoom> {
                                 ),
                               ),
                             ),
-                          SizedBox(height: 20),
+                          const SizedBox(height: 20),
                           Center(
                             child: SizedBox(
                               width: MediaQuery.of(context).size.width / 1.5,
@@ -623,16 +724,16 @@ class _CreateRoomState extends State<CreateRoom> {
                                   _navigateAndDisplaySelection(context);
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  primary: Color(0xFF072A2E),
+                                  backgroundColor: kThemeColor,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(8.0),
                                   ),
-                                  padding: EdgeInsets.symmetric(
+                                  padding: const EdgeInsets.symmetric(
                                       vertical: 14.0, horizontal: 20.0),
-                                  textStyle: TextStyle(
+                                  textStyle: const TextStyle(
                                       fontSize: 16, fontWeight: FontWeight.w500),
                                 ),
-                                child: Text('Get Desired Location'),
+                                child: const Text('Get Desired Location'),
                               ),
                             ),
                           ),
@@ -660,6 +761,7 @@ class _CreateRoomState extends State<CreateRoom> {
                                   await _uploadImages(_photos);
                               String uploadedPhotoUrlsPanorama =
                                   await _uploadImagesPanorama(panorama!);
+                              List<String> selectedFacilities = _selectedNames;
                               await _auth.addSellerRoomDetail(
                                 _name!,
                                   _price!,
@@ -677,7 +779,8 @@ class _CreateRoomState extends State<CreateRoom> {
                                 _sellerName!,
                                 _sellerEmail!,
                                 _sellerPhone!,
-                                _water!
+                                _water!,
+                                selectedFacilities,
                               );
                             }
                             setState(() {
@@ -685,13 +788,13 @@ class _CreateRoomState extends State<CreateRoom> {
                             });
                           },
                           style: ElevatedButton.styleFrom(
-                            primary: Color(0xFF072A2E),
+                            backgroundColor: kThemeColor,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8.0),
                             ),
-                            padding: EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                                 vertical: 14.0, horizontal: 20.0),
-                            textStyle: TextStyle(
+                            textStyle: const TextStyle(
                                 fontSize: 16, fontWeight: FontWeight.w500),
                           ),
                           child: const Text('Submit'),
@@ -741,7 +844,7 @@ class _CreateRoomState extends State<CreateRoom> {
         throw Exception("Upload failed with state: ${snapshot.state}");
       }
     } catch (e) {
-      print("Error uploading image: $e");
+      log("Error uploading image: $e");
       rethrow; // Rethrow the exception to handle it upstream
     }
   }
@@ -761,7 +864,7 @@ class _CreateRoomState extends State<CreateRoom> {
         throw Exception("Upload failed with state: ${snapshot.state}");
       }
     } catch (e) {
-      print("Error uploading image: $e");
+      log("Error uploading image: $e");
       rethrow; // Rethrow the exception to handle it upstream
     }
   }

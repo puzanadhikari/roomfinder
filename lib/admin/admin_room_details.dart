@@ -1,27 +1,25 @@
 import 'dart:developer';
 
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:meroapp/Constants/styleConsts.dart';
 import 'package:meroapp/provider/wishlistProvider.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
-import 'model/onSaleModel.dart';
 
-class RoomDetailPage extends StatefulWidget {
+import '../model/onSaleModel.dart';
+
+class AdminRoomDetails extends StatefulWidget {
   final Room room;
 
-  const RoomDetailPage({super.key, required this.room});
+  const AdminRoomDetails({super.key, required this.room, List<Room>? status});
 
   @override
-  State<RoomDetailPage> createState() => _RoomDetailPageState();
+  State<AdminRoomDetails> createState() => _AdminRoomDetailsState();
 }
 
-class _RoomDetailPageState extends State<RoomDetailPage> {
-  bool _isBooking = false;
+class _AdminRoomDetailsState extends State<AdminRoomDetails> {
+  final bool _isBooking = false;
   final String _mapApiKey = 'AIzaSyAGFdLuw0m2pCFxNxmFA5EzJia6IzUM3iU';
 
   @override
@@ -97,7 +95,7 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                   child: Padding(
                     padding: const EdgeInsets.all(20.0),
                     child:
-                        NotificationListener<OverscrollIndicatorNotification>(
+                    NotificationListener<OverscrollIndicatorNotification>(
                       onNotification: (overscroll) {
                         overscroll.disallowIndicator();
                         return true;
@@ -106,40 +104,17 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Container(
-                            //   height: 300, // Adjust height as necessary
-                            //   decoration: BoxDecoration(
-                            //     borderRadius: BorderRadius.circular(16.0), // Rounded corners
-                            //     boxShadow: [
-                            //       BoxShadow(
-                            //         color: Colors.black.withOpacity(0.2), // Shadow color
-                            //         spreadRadius: 2, // Spread radius
-                            //         blurRadius: 10, // Blur radius
-                            //         offset: Offset(0, 3), // Offset for the shadow
-                            //       ),
-                            //     ],
-                            //     color: Colors.white, // Background color
-                            //   ),
-                            //   clipBehavior: Clip.hardEdge, // Clip child widgets to the rounded corners
-                            //   child: Panorama(
-                            //     child: Image.network(
-                            //       widget.room.panoramaImg, // Use network image for panorama
-                            //       fit: BoxFit.cover,
-                            //     ),
-                            //   ),
-                            // ),
                             Text(
                               widget.room.name.toUpperCase(),
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 25,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.grey.shade700),
+                                  color: Colors.black54),
                             ),
                             const SizedBox(height: 8),
                             Row(
                               children: [
-                                Text(
-                                  "${widget.room.price}/",
+                                Text("${widget.room.price}/",
                                   style: TextStyle(
                                       color: kThemeColor,
                                       fontSize: 16,
@@ -158,27 +133,48 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                                 Expanded(
                                   child: Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    CrossAxisAlignment.start,
                                     children: [
-                                      const Text(
-                                        "1.5 km from Gwarko",
+                                      Row(
+                                        children: [
+                                          Icon(Icons.location_on_rounded,color: kThemeColor),
+                                          Flexible(
+                                            child: Text(
+                                              widget.room.locationName,
+                                              style: const TextStyle(
+                                                  color: Color(0xFF4D4D4D),
+                                                  fontSize: 16),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 14),
+                                      Text(
+                                        "Dimension: ${widget.room.length} * ${widget.room.breadth}",
                                         style: TextStyle(
-                                            color: Color(0xFF4D4D4D),
+                                            color: Colors.grey.shade800,
                                             fontSize: 16),
                                       ),
-                                      const SizedBox(height: 8),
+                                      const SizedBox(height: 5),
                                       Text(
-                                        widget.room.locationName,
-                                        style: const TextStyle(
-                                            color: Color(0xFF4D4D4D),
-                                            fontSize: 16),
+                                        "Electricity: ${widget.room.electricity}",
+                                        style: TextStyle(
+                                            color: Colors.grey.shade800,
+                                            fontSize: 15),
                                       ),
-                                      const SizedBox(height: 8),
+                                      const SizedBox(height: 5),
                                       Text(
-                                        "${widget.room.length} * ${widget.room.breadth}",
-                                        style: const TextStyle(
-                                            color: Color(0xFF4D4D4D),
-                                            fontSize: 16),
+                                        "Water: ${widget.room.water}",
+                                        style: TextStyle(
+                                            color: Colors.grey.shade800,
+                                            fontSize: 15),
+                                      ),
+                                      const SizedBox(height: 5),
+                                      Text(
+                                        "Wastes: ${widget.room.fohor}",
+                                        style: TextStyle(
+                                            color: Colors.grey.shade800,
+                                            fontSize: 15),
                                       ),
                                     ],
                                   ),
@@ -187,17 +183,17 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                                 ConstrainedBox(
                                   constraints: BoxConstraints(
                                     maxWidth:
-                                        MediaQuery.of(context).size.width *
-                                            0.4, // Adjust as needed
+                                    MediaQuery.of(context).size.width *
+                                        0.4, // Adjust as needed
                                   ),
                                   child: mapImageUrl.isNotEmpty
                                       ? Image.network(
-                                          mapImageUrl,
-                                          height: 120,
-                                          fit: BoxFit.cover,
-                                        )
+                                    mapImageUrl,
+                                    height: 120,
+                                    fit: BoxFit.cover,
+                                  )
                                       : Image.network(
-                                          "https://media.licdn.com/dms/image/D5603AQFD6ld3NWc2HQ/profile-displayphoto-shrink_200_200/0/1684164054868?e=2147483647&v=beta&t=cwQoyfhgAl_91URX5FTEXLwLDEHWe1H337EMebpgntQ"),
+                                      "https://media.licdn.com/dms/image/D5603AQFD6ld3NWc2HQ/profile-displayphoto-shrink_200_200/0/1684164054868?e=2147483647&v=beta&t=cwQoyfhgAl_91URX5FTEXLwLDEHWe1H337EMebpgntQ"),
                                 ),
                               ],
                             ),
@@ -213,7 +209,7 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                                     Text(
                                       "Electricity",
                                       style: TextStyle(
-                                          fontWeight: FontWeight.bold,
+                                        fontWeight: FontWeight.bold,
                                           color: kThemeColor,
                                           fontSize: 16),
                                     ),
@@ -276,17 +272,19 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                                 ),
                                 Row(
                                   children: [
-                                    Icon(widget.room.status[
-                                    'statusDisplay'] ==
-                                        "Owned"
-                                        ? Icons
-                                        .check_circle
-                                        : Icons
-                                        .flag_circle,
+                                    Icon(
+                                        widget.room
+                                            .status[
+                                        'statusDisplay'] ==
+                                            "Owned"
+                                            ? Icons
+                                            .check_circle
+                                            : Icons
+                                            .flag_circle,
                                         size: 16,
                                         color: kThemeColor),
                                     Text(
-                                      '${widget.room.status['statusDisplay'] ?? "To Buy"}',
+                                      '${ widget.room.status['statusDisplay'] ?? "To Buy"}',
                                       style: const TextStyle(
                                           color:
                                           Colors.black45),
@@ -323,25 +321,6 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                             ] else ...[
                               const Text("No facilities available"),
                             ],
-                            const SizedBox(height: 20),
-                            SizedBox(
-                              width: double.infinity,
-                              height: 45,
-                              child: ElevatedButton(
-                                onPressed: _bookRoom,
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFF072A2E),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5.0),
-                                  ),
-                                ),
-                                child: const Text(
-                                  "Book Now",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 18),
-                                ),
-                              ),
-                            ),
                           ],
                         ),
                       ),
@@ -352,150 +331,15 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
               Positioned(
                   right: 40,
                   top: carouselHeight - 50,
-                  child: GestureDetector(
-                    onTap: () {
-                      addToWishlist( widget.room);
-                      // wishlistProvider.isInWishlist(widget.room) == true
-                      //     ? wishlistProvider.removeFromWishlist(widget.room)
-                      //     : wishlistProvider.addToWishlist(widget.room);
-                    },
-                    child: CircleAvatar(
-                      backgroundColor: Colors.white,
-                      child: Icon(Icons.bookmark,
-                          color: wishlistProvider.isInWishlist(widget.room)
-                              ? Colors.red
-                              : kThemeColor),
-                    ),
+                  child: CircleAvatar(
+                    backgroundColor: Colors.white,
+                    child: Icon(Icons.bookmark,
+                        color: kThemeColor),
                   ))
             ],
           ),
         ),
       ),
     );
-  }
-  Future<void> addToWishlist(Room room) async {
-    try {
-      String uid = FirebaseAuth.instance.currentUser!.uid;
-      CollectionReference wishlistRef = FirebaseFirestore.instance
-          .collection('users')
-          .doc(uid)
-          .collection('wishlist');
-
-      await wishlistRef.doc(room.uid).set({
-        'name': room.name,
-        'capacity': room.capacity,
-        'description': room.description,
-        "price":room.price,
-        'length': room.length,
-        'breadth': room.breadth,
-        'photo': room.photo,
-        'panoramaImg': room.panoramaImg,
-        'electricity': room.electricity,
-        'fohor': room.fohor,
-        'lat': room.lat,
-        'lng': room.lng,
-        'active': room.active,
-        'featured': room.featured,
-        'locationName': room.locationName,
-        'details': room.details,
-        'status': room.status,
-        'water':room.water,
-        'isFavorite': room.isFavorite,
-        "detail":room.details,
-        "statusByAdmin":room.statusByAdmin,
-        "facilities": room.facilities,
-        "report":{
-
-        },
-      });
-      Fluttertoast.showToast(
-        msg: "Room added to wishlist successfully.",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 2,
-        backgroundColor: Colors.green,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
-    } catch (e) {
-      Fluttertoast.showToast(
-        msg: "Error adding room to wishlist: $e",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 3,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
-    }
-  }
-
-  void _bookRoom() async {
-    setState(() {
-      _isBooking = true;
-    });
-
-    try {
-      User? user = FirebaseAuth.instance.currentUser;
-      Map<String, dynamic> newStatus = {
-        'By': user?.displayName,
-        'uId': user?.uid,
-        'userEmail': user?.email,
-        'statusDisplay': 'To Buy',
-      };
-
-      Map<String, dynamic> roomDetail = {
-        "roomId": widget.room.uid,
-        "name": widget.room.name,
-        "capacity": widget.room.capacity,
-        "description": widget.room.description,
-        'length': widget.room.length,
-        "breadth": widget.room.breadth,
-        "photo": List<String>.from(widget.room.photo),
-        "panoramaImg": widget.room.panoramaImg,
-        "electricity": widget.room.electricity,
-        "fohor": widget.room.fohor,
-        "lat": widget.room.lat,
-        "lng": widget.room.lng,
-        "locationName": widget.room.locationName,
-        "status": 'To Buy'
-      };
-
-      await FirebaseFirestore.instance
-          .collection('onSale')
-          .doc(widget.room.uid)
-          .update({'status': newStatus});
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user?.uid)
-          .update({
-        'rooms': FieldValue.arrayUnion([roomDetail]),
-      });
-
-      Fluttertoast.showToast(
-        msg: 'Room Requested successfully!',
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        backgroundColor: Colors.green,
-        textColor: Colors.white,
-      );
-
-      setState(() {
-        _isBooking = false;
-        widget.room.status = newStatus;
-      });
-    } catch (e) {
-      Fluttertoast.showToast(
-        msg: 'Booking failed: $e',
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-      );
-
-      setState(() {
-        _isBooking = false;
-      });
-    }
   }
 }

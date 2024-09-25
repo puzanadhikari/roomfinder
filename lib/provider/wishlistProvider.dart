@@ -1,8 +1,7 @@
+import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../model/onSaleModel.dart';
-import 'model/itemModelForWishlist.dart';
-
 
 class WishlistProvider extends ChangeNotifier {
   List<Room> _wishlist = [];
@@ -15,9 +14,8 @@ class WishlistProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void removeFromWishlist(Room room) {
-    room.toggleFavorite();
-    _wishlist.remove(room);
+  void removeFromWishlistLocally(String roomId) {
+    wishlist.removeWhere((room) => room.uid == roomId);
     notifyListeners();
   }
 
@@ -55,11 +53,12 @@ class WishlistProvider extends ChangeNotifier {
           statusByAdmin: doc["statusByAdmin"],
           status: doc['status'] != null ? Map<String, dynamic>.from(doc['status']) : {},
           report: doc['report'] != null ? Map<String, dynamic>.from(doc['report']) : {},
+          facilities: doc['facilities'] != null ? List<String>.from(doc['facilities']) : [],
         );
       }).toList();
       notifyListeners();
     } catch (e) {
-      print('Failed to fetch wishlist: $e');
+      log('Failed to fetch wishlist: $e');
     }
   }
 }
