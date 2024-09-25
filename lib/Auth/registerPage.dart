@@ -19,6 +19,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController contactNumberController = TextEditingController();
   final TextEditingController confirmPasswordController =
       TextEditingController();
   bool _obscureText = true;
@@ -106,6 +107,18 @@ class _RegisterPageState extends State<RegisterPage> {
                                       RegExp(r'^[^@]+@[^@]+\.[^@]+$');
                                   if (!emailRegex.hasMatch(value)) {
                                     return 'Please enter a valid email address';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 20),
+                              _buildTextField(
+                                controller: contactNumberController,
+                                label: "Contact Number",
+                                prefixIcon: Icons.phone,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter your contact number';
                                   }
                                   return null;
                                 },
@@ -317,6 +330,7 @@ class _RegisterPageState extends State<RegisterPage> {
               nameController.text,
               emailController.text,
               passwordController.text,
+              contactNumberController.text,
               selectedUserType,
             );
             setState(() {

@@ -8,9 +8,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:meroapp/Constants/styleConsts.dart';
 import 'package:meroapp/provider/wishlistProvider.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-// import 'package:panorama/panorama.dart';
 import 'package:provider/provider.dart';
 // import 'package:sensors_plus/sensors_plus.dart';
+import 'package:provider/provider.dart';
 import 'model/onSaleModel.dart';
 
 class RoomDetailPage extends StatefulWidget {
@@ -289,7 +289,7 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                                         color: kThemeColor),
                                     Text(
                                       '${widget.room.status['statusDisplay'] ?? "To Buy"}',
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           color:
                                           Colors.black45),
                                     ),
@@ -405,18 +405,29 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
         'isFavorite': room.isFavorite,
         "detail":room.details,
         "statusByAdmin":room.statusByAdmin,
+        "facilities": room.facilities,
         "report":{
 
         },
       });
-
-      // Optionally, show a confirmation message
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Room added to wishlist successfully.')),
+      Fluttertoast.showToast(
+        msg: "Room added to wishlist successfully.",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 2,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 16.0,
       );
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error adding room to wishlist: $e')),
+      Fluttertoast.showToast(
+        msg: "Error adding room to wishlist: $e",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 3,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
       );
     }
   }

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:meroapp/Constants/styleConsts.dart';
@@ -53,8 +55,12 @@ class _DashBoardState extends State<DashBoard> {
         status: data['status'] != null
             ? Map<String, dynamic>.from(data['status'])
             : {},
-        report: data['report'] != null ? Map<String, dynamic>.from(data['report']) : {},
-        facilities: data['facilities'] != null ? List<String>.from(data['facilities']) : [],
+        report: data['report'] != null
+            ? Map<String, dynamic>.from(data['report'])
+            : {},
+        facilities: data['facilities'] != null
+            ? List<String>.from(data['facilities'])
+            : [],
       );
     }).toList();
   }
@@ -121,8 +127,12 @@ class _DashBoardState extends State<DashBoard> {
           status: productData['status'] != null
               ? Map<String, dynamic>.from(productData['status'])
               : {},
-          report: productData['report'] != null ? Map<String, dynamic>.from(productData['report']) : {},
-          facilities: productData['facilities'] != null ? List<String>.from(productData['facilities']) : [],
+          report: productData['report'] != null
+              ? Map<String, dynamic>.from(productData['report'])
+              : {},
+          facilities: productData['facilities'] != null
+              ? List<String>.from(productData['facilities'])
+              : [],
         ));
       }
     }
@@ -220,12 +230,26 @@ class _DashBoardState extends State<DashBoard> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text("Find a property anywhere.",
-                            style: TextStyle(
-                                color: Color(0xAA616161),
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16)),
-                        const SizedBox(height: 30),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("Find a property anywhere.",
+                                style: TextStyle(
+                                    color: Color(0xAA616161),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16)),
+                            IconButton(
+                              icon: Icon(Icons.filter_list, color: Color(0xAA616161)),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => PriceRangeScreen()),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 5),
                         TextFormField(
                           controller: searchController,
                           decoration: InputDecoration(
@@ -262,8 +286,6 @@ class _DashBoardState extends State<DashBoard> {
                             ),
                             child: const Text(
                               "Search Now",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 18),
                             ),
                           ),
                         )
@@ -276,16 +298,18 @@ class _DashBoardState extends State<DashBoard> {
                       child: FutureBuilder<List<Room>>(
                         future: fetchRooms(),
                         builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
                             return Shimmer.fromColors(
                               baseColor: Colors.grey.shade300,
                               highlightColor: Colors.grey.shade100,
                               child: ListView.builder(
                                 shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
+                                physics: const NeverScrollableScrollPhysics(),
                                 itemCount: 3,
                                 itemBuilder: (context, index) => Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 8.0),
                                   child: Container(
                                     height: 120,
                                     decoration: BoxDecoration(
@@ -297,22 +321,25 @@ class _DashBoardState extends State<DashBoard> {
                               ),
                             );
                           } else if (snapshot.hasError) {
-                            return Center(child: Text('Error: ${snapshot.error}'));
-                          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                            return const Center(child: Text('No rooms available.'));
+                            return Center(
+                                child: Text('Error: ${snapshot.error}'));
+                          } else if (!snapshot.hasData ||
+                              snapshot.data!.isEmpty) {
+                            return const Center(
+                                child: Text('No rooms available.'));
                           }
 
                           List<Room> filteredRooms = snapshot.data!
                               .where((room) => room.name
-                              .toLowerCase()
-                              .contains(searchQuery.toLowerCase()))
+                                  .toLowerCase()
+                                  .contains(searchQuery.toLowerCase()))
                               .toList();
                           List<Room> sortedRooms = sortedRoomsByDistance(
                               filteredRooms, widget.lat, widget.lng);
 
                           return ListView.builder(
                             shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
+                            physics: const NeverScrollableScrollPhysics(),
                             itemCount: sortedRooms.length,
                             itemBuilder: (context, index) {
                               final room = sortedRooms[index];
@@ -336,11 +363,13 @@ class _DashBoardState extends State<DashBoard> {
                                       borderRadius: BorderRadius.circular(16.0),
                                     ),
                                     child: Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8.0),
                                       child: Row(
                                         children: [
                                           ClipRRect(
-                                            borderRadius: const BorderRadius.horizontal(
+                                            borderRadius:
+                                                const BorderRadius.horizontal(
                                               left: Radius.circular(16.0),
                                               right: Radius.circular(16.0),
                                             ),
@@ -355,16 +384,20 @@ class _DashBoardState extends State<DashBoard> {
                                           ),
                                           Expanded(
                                             child: Padding(
-                                              padding: const EdgeInsets.all(16.0),
+                                              padding:
+                                                  const EdgeInsets.all(16.0),
                                               child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
                                                 children: [
                                                   Text(
                                                     room.name.toUpperCase(),
                                                     style: TextStyle(
                                                       color: kThemeColor,
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                       fontSize: 18,
                                                     ),
                                                   ),
@@ -372,7 +405,8 @@ class _DashBoardState extends State<DashBoard> {
                                                   Text(
                                                     room.locationName,
                                                     style: TextStyle(
-                                                      color: Colors.grey.shade700,
+                                                      color:
+                                                          Colors.grey.shade700,
                                                       fontSize: 14,
                                                     ),
                                                   ),
@@ -382,36 +416,49 @@ class _DashBoardState extends State<DashBoard> {
                                                     style: TextStyle(
                                                       color: kThemeColor,
                                                       fontSize: 14,
-                                                      fontWeight: FontWeight.w600,
+                                                      fontWeight:
+                                                          FontWeight.w600,
                                                     ),
                                                   ),
                                                   const SizedBox(height: 20),
                                                   Row(
-                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
                                                     children: [
                                                       Row(
                                                         children: [
                                                           Icon(
-                                                              Icons.location_on_rounded,
+                                                              Icons
+                                                                  .location_on_rounded,
                                                               size: 16,
-                                                              color: kThemeColor),
+                                                              color:
+                                                                  kThemeColor),
                                                           Text(
                                                             "${(sortedRooms[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
-                                                            style: const TextStyle(color: Colors.black45),
+                                                            style: const TextStyle(
+                                                                color: Colors
+                                                                    .black45),
                                                           ),
                                                         ],
                                                       ),
                                                       Row(
                                                         children: [
                                                           Icon(
-                                                              room.status['statusDisplay'] == "Owned"
-                                                                  ? Icons.check_circle
-                                                                  : Icons.flag_circle,
+                                                              room.status['statusDisplay'] ==
+                                                                      "Owned"
+                                                                  ? Icons
+                                                                      .check_circle
+                                                                  : Icons
+                                                                      .flag_circle,
                                                               size: 16,
-                                                              color: kThemeColor),
+                                                              color:
+                                                                  kThemeColor),
                                                           Text(
                                                             '${room.status['statusDisplay'] ?? "To Buy"}',
-                                                            style: TextStyle(color: Colors.black45),
+                                                            style: const TextStyle(
+                                                                color: Colors
+                                                                    .black45),
                                                           ),
                                                         ],
                                                       ),
@@ -636,20 +683,23 @@ class _DashBoardState extends State<DashBoard> {
                                                       ),
                                                       Row(
                                                         children: [
-                                                          Icon(displayedProducts[index].status[
-                                                          'statusDisplay'] ==
-                                                              "Owned"
-                                                              ? Icons
-                                                              .check_circle
-                                                              : Icons
-                                                              .flag_circle,
+                                                          Icon(
+                                                              displayedProducts[index]
+                                                                              .status[
+                                                                          'statusDisplay'] ==
+                                                                      "Owned"
+                                                                  ? Icons
+                                                                      .check_circle
+                                                                  : Icons
+                                                                      .flag_circle,
                                                               size: 16,
-                                                              color: kThemeColor),
+                                                              color:
+                                                                  kThemeColor),
                                                           Text(
                                                             '${displayedProducts[index].status['statusDisplay'] ?? "To Buy"}',
-                                                            style: TextStyle(
-                                                                color:
-                                                                Colors.black45),
+                                                            style: const TextStyle(
+                                                                color: Colors
+                                                                    .black45),
                                                           ),
                                                         ],
                                                       ),
@@ -772,20 +822,23 @@ class _DashBoardState extends State<DashBoard> {
                       } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                         return const Center(child: Text('No rooms available.'));
                       }
-                      // Filter and sort rooms based on search query
-                      List<Room> filteredRooms = snapshot.data!
-                          .where((room) => room.name
-                              .toLowerCase()
-                              .contains(searchQuery.toLowerCase()))
-                          .toList();
+
+                      // Filter the rooms based on statusDisplay
+                      final filteredRooms1 = snapshot.data!.where((room) {
+                        return room.status['statusDisplay'] == "Sold" ||
+                            room.status['statusDisplay'] == "To Buy";
+                      }).toList();
 
                       // Sort the filtered rooms by distance
                       List<Room> sortedRooms = sortedRoomsByDistance(
-                          filteredRooms, widget.lat, widget.lng);
+                          filteredRooms1, widget.lat, widget.lng);
 
+                      // Show all or limit to first 3 based on a condition
                       sortedRooms = showAllNearYou
-                          ? snapshot.data!
-                          : snapshot.data!.take(3).toList();
+                          ? sortedRooms
+                          : sortedRooms.take(3).toList();
+
+                      log(sortedRooms.length.toString());
 
                       return Column(
                         children: [
@@ -875,7 +928,7 @@ class _DashBoardState extends State<DashBoard> {
                                                       color: kThemeColor,
                                                       fontSize: 14,
                                                       fontWeight:
-                                                      FontWeight.w600,
+                                                          FontWeight.w600,
                                                     ),
                                                   ),
                                                   const SizedBox(height: 20),
@@ -893,7 +946,7 @@ class _DashBoardState extends State<DashBoard> {
                                                               color:
                                                                   kThemeColor),
                                                           Text(
-                                                            "${(sortedRooms[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
+                                                            "${(room.lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
                                                             style: const TextStyle(
                                                                 color: Colors
                                                                     .black45),
@@ -902,20 +955,21 @@ class _DashBoardState extends State<DashBoard> {
                                                       ),
                                                       Row(
                                                         children: [
-                                                          Icon(room.status[
-                                                          'statusDisplay'] ==
-                                                              "Owned"
-                                                              ? Icons
-                                                              .check_circle
-                                                              : Icons
-                                                              .flag_circle,
-                                                              size: 16,
-                                                              color: kThemeColor),
+                                                          Icon(
+                                                            room.status['statusDisplay'] ==
+                                                                    "Owned"
+                                                                ? Icons
+                                                                    .check_circle
+                                                                : Icons
+                                                                    .flag_circle,
+                                                            size: 16,
+                                                            color: kThemeColor,
+                                                          ),
                                                           Text(
                                                             '${room.status['statusDisplay'] ?? "To Buy"}',
-                                                            style: TextStyle(
-                                                                color:
-                                                                Colors.black45),
+                                                            style: const TextStyle(
+                                                                color: Colors
+                                                                    .black45),
                                                           ),
                                                         ],
                                                       ),
@@ -981,7 +1035,8 @@ class _DashBoardState extends State<DashBoard> {
                               itemCount: 3, // Number of shimmer items to show
                               itemBuilder: (context, index) => Container(
                                 width: 200,
-                                margin: const EdgeInsets.symmetric(horizontal: 8),
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 8),
                                 decoration: BoxDecoration(
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(12),
@@ -1001,7 +1056,10 @@ class _DashBoardState extends State<DashBoard> {
                       }
 
                       // Filter out rooms that have the 'status' key
-                      final filteredRooms = snapshot.data!.where((room) => !room.status.containsKey('statusDisplay')).toList();
+                      final filteredRooms = snapshot.data!
+                          .where((room) =>
+                              !room.status.containsKey('statusDisplay'))
+                          .toList();
 
                       if (filteredRooms.isEmpty) {
                         return const Center(child: Text('No rooms available'));
@@ -1021,19 +1079,23 @@ class _DashBoardState extends State<DashBoard> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => RoomDetailPage(room: room),
+                                    builder: (context) =>
+                                        RoomDetailPage(room: room),
                                   ),
                                 );
                               },
                               child: Container(
                                 width: 200,
-                                margin: const EdgeInsets.symmetric(horizontal: 8),
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 8),
                                 child: Stack(
                                   children: [
                                     ClipRRect(
                                       borderRadius: BorderRadius.circular(12),
                                       child: Image.network(
-                                        room.photo.isNotEmpty ? room.photo[0] : '',
+                                        room.photo.isNotEmpty
+                                            ? room.photo[0]
+                                            : '',
                                         width: 200,
                                         height: 350,
                                         fit: BoxFit.cover,
@@ -1054,7 +1116,8 @@ class _DashBoardState extends State<DashBoard> {
                                       child: Container(
                                         padding: const EdgeInsets.all(12),
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Text(
                                               room.name.toUpperCase(),
@@ -1094,11 +1157,72 @@ class _DashBoardState extends State<DashBoard> {
                       );
                     },
                   )
-
                 ],
               ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+class PriceRangeScreen extends StatefulWidget {
+  @override
+  _PriceRangeScreenState createState() => _PriceRangeScreenState();
+}
+
+class _PriceRangeScreenState extends State<PriceRangeScreen> {
+  RangeValues _currentRangeValues = RangeValues(0, 1000);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Select Price Range'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Text(
+              'Select Price Range',
+              style: TextStyle(
+                  color: Color(0xAA616161),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16),
+            ),
+            RangeSlider(
+              values: _currentRangeValues,
+              min: 0,
+              max: 1000,
+              divisions: 100, // Divides the slider into intervals
+              labels: RangeLabels(
+                _currentRangeValues.start.round().toString(),
+                _currentRangeValues.end.round().toString(),
+              ),
+              onChanged: (RangeValues values) {
+                setState(() {
+                  _currentRangeValues = values;
+                });
+              },
+            ),
+            Text(
+              'Price: \Rs.${_currentRangeValues.start.round()} - \Rs.${_currentRangeValues.end.round()}',
+              style: TextStyle(
+                  color: Color(0xAA616161),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16),
+            ),
+            const SizedBox(height: 30),
+            ElevatedButton(
+              child: Text('Confirm'),
+              onPressed: () {
+                // Handle the confirmation of the selected price range
+                print('Selected Price Range: ${_currentRangeValues.start} - ${_currentRangeValues.end}');
+                Navigator.pop(context); // Go back to the previous screen
+              },
+            ),
+          ],
         ),
       ),
     );

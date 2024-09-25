@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:meroapp/Constants/styleConsts.dart';
 import 'package:meroapp/splashScreen.dart';
 import 'package:meroapp/wishlist.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'informationDetail.dart';
 import 'orders.dart';
@@ -202,6 +203,8 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void _signOut() async {
+    SharedPreferences prefs =await SharedPreferences.getInstance();
+    prefs.clear();
     try {
       await FirebaseAuth.instance.signOut();
       Navigator.pushReplacement(
