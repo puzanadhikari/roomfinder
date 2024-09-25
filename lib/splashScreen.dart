@@ -1,9 +1,13 @@
 import 'dart:async';
 import 'dart:developer';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:meroapp/seller/homepage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'Constants/styleConsts.dart';
 import 'Auth/loginPage.dart';
+import 'admin/homePage.dart';
 import 'homePage.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -21,15 +25,32 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void _checkLoginStatus() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
     User? user = FirebaseAuth.instance.currentUser;
     await Future.delayed(const Duration(seconds: 2));
 
     if (user != null && user.emailVerified) {
       log("User is verified");
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const HomePage()),
-      );
+      String userRole = preferences.getString("user_role")??"";
+
+      if (userRole=="Seller"){
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const SellerHomePage()),
+        );
+      }else if(userRole=="admin"){
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const AdminHomePage()),
+        );
+
+      }else{
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomePage()),
+        );
+      }
+
     } else {
       log("User is not verified");
       Navigator.pushReplacement(

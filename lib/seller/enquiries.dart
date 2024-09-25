@@ -7,58 +7,53 @@ import 'package:meroapp/seller/seller_room_details.dart';
 import '../Constants/styleConsts.dart';
 import '../model/onSaleModel.dart';
 
-Future<List<Room>> fetchEnquiries() async {
+Stream<List<Room>> fetchEnquiries() async* {
   User? user = FirebaseAuth.instance.currentUser;
 
   if (user == null) {
     throw Exception("User not logged in");
   }
 
-  // Create a reference to the collection
-  CollectionReference roomsCollection =
-      FirebaseFirestore.instance.collection('onSale');
+  CollectionReference roomsCollection = FirebaseFirestore.instance.collection('onSale');
 
-  // Build a query to fetch all rooms for the current user
-  final QuerySnapshot snapshot = await roomsCollection
-      .where('userId', isEqualTo: user.uid) // Filter by current user
-      .get();
+  // Listen for updates on the collection
+  await for (var snapshot in roomsCollection.where('userId', isEqualTo: user.uid).snapshots()) {
+    // Map the documents to the Room model
+    List<Room> rooms = snapshot.docs.map((doc) {
+      final data = doc.data() as Map<String, dynamic>;
+      return Room(
+        uid: doc.id,
+        name: data['name'],
+        price: data["price"],
+        capacity: data['capacity'],
+        description: data['description'],
+        length: data['length'],
+        breadth: data['breadth'],
+        photo: List<String>.from(data['photo']),
+        panoramaImg: data['panoramaImg'],
+        water: data['water'],
+        electricity: data['electricity'],
+        fohor: data['fohor'],
+        lat: data['lat'],
+        lng: data['lng'],
+        active: data['active'],
+        featured: data['featured'],
+        locationName: data['locationName'],
+        statusByAdmin: data["statusByAdmin"],
+        details: Map<String, String>.from(data["detail"]),
+        status: data['status'] != null ? Map<String, dynamic>.from(data['status']) : {},
+        report: data['report'] != null ? Map<String, dynamic>.from(data['report']) : {},
+        facilities: data['facilities'] != null ? List<String>.from(data['facilities']) : [],
+      );
+    }).toList();
 
-  // Filter the results in memory based on the status
-  List<Room> rooms = snapshot.docs.map((doc) {
-    final data = doc.data() as Map<String, dynamic>;
-    return Room(
-      uid: doc.id,
-      name: data['name'],
-      price: data["price"],
-      capacity: data['capacity'],
-      description: data['description'],
-      length: data['length'],
-      breadth: data['breadth'],
-      photo: List<String>.from(data['photo']),
-      panoramaImg: data['panoramaImg'],
-      water: doc['water'],
-      electricity: data['electricity'],
-      fohor: data['fohor'],
-      lat: data['lat'],
-      lng: data['lng'],
-      active: data['active'],
-      featured: data['featured'],
-      locationName: data['locationName'],
-      statusByAdmin: data["statusByAdmin"],
-      details: Map<String, String>.from(data["detail"]),
-      status: data['status'] != null
-          ? Map<String, dynamic>.from(data['status'])
-          : {},
-      report: data['report'] != null ? Map<String, dynamic>.from(data['report']) : {},
-      facilities: data['facilities'] != null ? List<String>.from(data['facilities']) : [],
-    );
-  }).toList();
+    // Filter based on status
+    rooms = rooms.where((room) => room.status.isNotEmpty && room.status['statusDisplay'] == "To Buy").toList();
 
-  rooms = rooms.where((room) => room.status.isNotEmpty).toList();
-  rooms =
-      rooms.where((room) => room.status['statusDisplay'] == "To Buy").toList();
-  return rooms;
+    yield rooms; // Emit the filtered list
+  }
 }
+
 
 class EnquiriesPage extends StatefulWidget {
   final double lat, lng;
@@ -70,7 +65,7 @@ class EnquiriesPage extends StatefulWidget {
 }
 
 class _EnquiriesPageState extends State<EnquiriesPage> {
-  late Future<List<Room>> enquiries;
+  late Stream<List<Room>> enquiries;
 
   @override
   void initState() {
@@ -90,8 +85,8 @@ class _EnquiriesPageState extends State<EnquiriesPage> {
             style: TextStyle(
                 color: kThemeColor, fontWeight: FontWeight.bold, fontSize: 25)),
       ),
-      body: FutureBuilder<List<Room>>(
-        future: enquiries,
+      body:  StreamBuilder<List<Room>>(
+        stream: enquiries,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());

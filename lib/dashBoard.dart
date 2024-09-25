@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:meroapp/Constants/styleConsts.dart';
@@ -299,6 +301,7 @@ class _DashBoardState extends State<DashBoard> {
                           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                             return const Center(child: Text('No rooms available.'));
                           }
+
 
                           List<Room> filteredRooms = snapshot.data!
                               .where((room) => room.name
@@ -752,8 +755,7 @@ class _DashBoardState extends State<DashBoard> {
                             child: ListView.builder(
                               itemCount: 3,
                               itemBuilder: (context, index) => Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 8.0),
+                                padding: const EdgeInsets.symmetric(vertical: 8.0),
                                 child: Container(
                                   height: 120,
                                   decoration: BoxDecoration(
@@ -770,20 +772,20 @@ class _DashBoardState extends State<DashBoard> {
                       } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                         return const Center(child: Text('No rooms available.'));
                       }
-                      // Filter and sort rooms based on search query
-                      List<Room> filteredRooms = snapshot.data!
-                          .where((room) => room.name
-                              .toLowerCase()
-                              .contains(searchQuery.toLowerCase()))
-                          .toList();
+
+                      // Filter the rooms based on statusDisplay
+                      final filteredRooms1 = snapshot.data!.where((room) {
+                        return room.status['statusDisplay'] == "Sold" || room.status['statusDisplay'] == "To Buy";
+                      }).toList();
+
 
                       // Sort the filtered rooms by distance
-                      List<Room> sortedRooms = sortedRoomsByDistance(
-                          filteredRooms, widget.lat, widget.lng);
+                      List<Room> sortedRooms = sortedRoomsByDistance(filteredRooms1, widget.lat, widget.lng);
 
-                      sortedRooms = showAllNearYou
-                          ? snapshot.data!
-                          : snapshot.data!.take(3).toList();
+                      // Show all or limit to first 3 based on a condition
+                      sortedRooms = showAllNearYou ? sortedRooms : sortedRooms.take(3).toList();
+
+                      log(sortedRooms.length.toString());
 
                       return Column(
                         children: [
@@ -798,8 +800,7 @@ class _DashBoardState extends State<DashBoard> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) =>
-                                          RoomDetailPage(room: room),
+                                      builder: (context) => RoomDetailPage(room: room),
                                     ),
                                   );
                                 },
@@ -819,13 +820,11 @@ class _DashBoardState extends State<DashBoard> {
                                       borderRadius: BorderRadius.circular(16.0),
                                     ),
                                     child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8.0),
+                                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
                                       child: Row(
                                         children: [
                                           ClipRRect(
-                                            borderRadius:
-                                                const BorderRadius.horizontal(
+                                            borderRadius: const BorderRadius.horizontal(
                                               left: Radius.circular(16.0),
                                               right: Radius.circular(16.0),
                                             ),
@@ -840,20 +839,16 @@ class _DashBoardState extends State<DashBoard> {
                                           ),
                                           Expanded(
                                             child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(16.0),
+                                              padding: const EdgeInsets.all(16.0),
                                               child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                mainAxisAlignment: MainAxisAlignment.center,
                                                 children: [
                                                   Text(
                                                     room.name.toUpperCase(),
                                                     style: TextStyle(
                                                       color: kThemeColor,
-                                                      fontWeight:
-                                                          FontWeight.bold,
+                                                      fontWeight: FontWeight.bold,
                                                       fontSize: 18,
                                                     ),
                                                   ),
@@ -861,8 +856,7 @@ class _DashBoardState extends State<DashBoard> {
                                                   Text(
                                                     room.locationName,
                                                     style: TextStyle(
-                                                      color:
-                                                          Colors.grey.shade700,
+                                                      color: Colors.grey.shade700,
                                                       fontSize: 14,
                                                     ),
                                                   ),
@@ -872,48 +866,32 @@ class _DashBoardState extends State<DashBoard> {
                                                     style: TextStyle(
                                                       color: kThemeColor,
                                                       fontSize: 14,
-                                                      fontWeight:
-                                                      FontWeight.w600,
+                                                      fontWeight: FontWeight.w600,
                                                     ),
                                                   ),
                                                   const SizedBox(height: 20),
                                                   Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                     children: [
                                                       Row(
                                                         children: [
-                                                          Icon(
-                                                              Icons
-                                                                  .location_on_rounded,
-                                                              size: 16,
-                                                              color:
-                                                                  kThemeColor),
+                                                          Icon(Icons.location_on_rounded, size: 16, color: kThemeColor),
                                                           Text(
-                                                            "${(sortedRooms[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
-                                                            style: const TextStyle(
-                                                                color: Colors
-                                                                    .black45),
+                                                            "${(room.lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
+                                                            style: const TextStyle(color: Colors.black45),
                                                           ),
                                                         ],
                                                       ),
                                                       Row(
                                                         children: [
-                                                          Icon(room.status[
-                                                          'statusDisplay'] ==
-                                                              "Owned"
-                                                              ? Icons
-                                                              .check_circle
-                                                              : Icons
-                                                              .flag_circle,
-                                                              size: 16,
-                                                              color: kThemeColor),
+                                                          Icon(
+                                                            room.status['statusDisplay'] == "Owned" ? Icons.check_circle : Icons.flag_circle,
+                                                            size: 16,
+                                                            color: kThemeColor,
+                                                          ),
                                                           Text(
                                                             '${room.status['statusDisplay'] ?? "To Buy"}',
-                                                            style: const TextStyle(
-                                                                color:
-                                                                Colors.black45),
+                                                            style: const TextStyle(color: Colors.black45),
                                                           ),
                                                         ],
                                                       ),
@@ -952,6 +930,7 @@ class _DashBoardState extends State<DashBoard> {
                       );
                     },
                   ),
+
                   const SizedBox(height: 30),
                   const Align(
                     alignment: Alignment.topLeft,

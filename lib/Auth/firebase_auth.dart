@@ -101,6 +101,7 @@ class FirebaseAuthService {
             .get();
         if (userDoc.exists) {
           String userType = userDoc['userType'];
+          preferences.setString("user_role", userType);
           if (userType == "Seller") {
             Navigator.pushReplacement(
                 context,

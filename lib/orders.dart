@@ -3,8 +3,10 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:khalti_flutter/khalti_flutter.dart';
 import 'package:shimmer/shimmer.dart';
 
+import 'Constants/paymentPage.dart';
 import 'Constants/styleConsts.dart';
 import 'aggreement.dart';
 
@@ -40,6 +42,7 @@ class OrderPage extends StatefulWidget {
 }
 
 class _OrderPageState extends State<OrderPage> {
+
   Future<Map<String, dynamic>?> fetchUserData() async {
     User? user = FirebaseAuth.instance.currentUser;
 
@@ -487,6 +490,34 @@ class _OrderPageState extends State<OrderPage> {
                                                                 ),
                                                               ),
                                                               actions: [
+                                                                TextButton(
+                                                                  onPressed:
+                                                                      () {
+
+                                                                        KhaltiScope.of(context).pay(
+                                                                            config: PaymentConfig(
+                                                                                amount: roomStatus['report']
+                                                                                ['total'].toInt()*100,
+                                                                                productIdentity: 'laptop',
+                                                                                productName: 'Dell laptop'),
+                                                                            preferences: [
+                                                                              PaymentPreference.khalti,
+                                                                              PaymentPreference.connectIPS
+                                                                            ],
+                                                                            onSuccess: (success){
+
+                                                                            },
+                                                                            onFailure: (failure){
+
+                                                                            });
+                                                                          },
+                                                                  child: Text(
+                                                                    'Pay Now',
+                                                                    style: TextStyle(
+                                                                        color:
+                                                                        kThemeColor),
+                                                                  ),
+                                                                ),
                                                                 TextButton(
                                                                   onPressed:
                                                                       () {

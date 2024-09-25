@@ -21,11 +21,58 @@ class _MapSearchScreenState extends State<MapSearchScreen> {
   final TextEditingController _searchController = TextEditingController();
   String? _selectedCityName;
   LatLng? _selectedLatLng;
-
+  Marker? _marker;
   void _onMapCreated(GoogleMapController controller) {
     _mapController = controller;
-  }
+    _marker = Marker(
+      markerId: MarkerId('selected-location'),
+      position: _center,
+      onDrag: (value){
+      },
+      onTap: () {
+        log("here");
+        _showLocationDetails();
+      },
+    );
+      setState(() {
 
+      });
+  }
+  void _updateMarker(LatLng position) {
+    setState(() {
+      _marker = Marker(
+        markerId: MarkerId('selected-location'),
+        position: position,
+        onTap: () {
+          _showLocationDetails(); // Show details when marker is tapped
+        },
+      );
+    });
+  }
+  void _showLocationDetails() {
+    log("details".toString());
+    if (_selectedLatLng != null) {
+      String details = 'Location: ${_selectedCityName ?? 'Unknown'}\n'
+          'Coordinates: ${_selectedLatLng!.latitude}, ${_selectedLatLng!.longitude}';
+      log(details.toString());
+
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Location Details'),
+          content: Text(details),
+          actions: [
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        ),
+      );
+    }
+  }
   Future<List<String>> _getCitySuggestions(String query) async {
     final response = await http.get(
       Uri.parse('https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$query&key=AIzaSyCzZwn-q2Dd8s9RX5nIr32ZJSGEVbFbyPI'),
@@ -48,7 +95,7 @@ class _MapSearchScreenState extends State<MapSearchScreen> {
       if (locations.isNotEmpty) {
         LatLng selectedLocation = LatLng(locations.first.latitude, locations.first.longitude);
         _mapController?.animateCamera(CameraUpdate.newLatLng(selectedLocation));
-
+        _updateMarker(selectedLocation);
         setState(() {
           _center = selectedLocation;
           _selectedCityName = city;
@@ -67,6 +114,25 @@ class _MapSearchScreenState extends State<MapSearchScreen> {
     } catch (e) {
       log("Error occurred while selecting city: $e");
     }
+  }
+
+  void getLocationFromLatLng(LatLng position) async{
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+      position!.latitude,
+      position!.longitude,
+    );
+    LatLng selectedLocation = LatLng(position.latitude, position.longitude);
+    _center = position;
+    _selectedCityName ="${ placemarks.first.street} ${placemarks.first.subAdministrativeArea!}";
+    _selectedLatLng = selectedLocation;
+    log(_selectedCityName.toString());
+    log(selectedLocation.toString());
+    Navigator.pop(context, {
+      'city': _selectedCityName,
+      'latLng': _selectedLatLng,
+    });
+
+
   }
 
   @override
@@ -113,6 +179,7 @@ class _MapSearchScreenState extends State<MapSearchScreen> {
                   );
                 },
                 onSuggestionSelected: (suggestion) {
+                  log(suggestion.toString());
                   _onCitySelected(suggestion);
                 },
               ),
@@ -135,11 +202,17 @@ class _MapSearchScreenState extends State<MapSearchScreen> {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12.0),
                 child: GoogleMap(
+                  markers: _marker != null ? {_marker!} : {},
                   onMapCreated: _onMapCreated,
                   initialCameraPosition: CameraPosition(
                     target: _center,
                     zoom: 14.0,
                   ),
+                  onTap: (position){
+                    log(position.toString());
+                    getLocationFromLatLng(position);
+                    _updateMarker(position);
+                  },
                 ),
               ),
             ),

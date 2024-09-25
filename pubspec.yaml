@@ -51,7 +51,7 @@ dependencies:
   pin_code_fields:
   modal_progress_hud_nsn:
   persistent_bottom_nav_bar_v2: ^4.0.2
-  khalti_flutter:
+  khalti_flutter: ^1.0.0
   firebase_storage:
   multi_select_flutter: ^4.1.3
   provider:
