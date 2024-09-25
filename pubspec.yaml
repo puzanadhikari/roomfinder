@@ -40,7 +40,7 @@ dependencies:
   loading_animation_widget:
   location:
   flutter_typeahead:
-  panorama:
+#  panorama:
   google_maps_flutter:
   geocoding:
   image_picker:

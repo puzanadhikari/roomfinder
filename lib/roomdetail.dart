@@ -8,7 +8,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:meroapp/Constants/styleConsts.dart';
 import 'package:meroapp/provider/wishlistProvider.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-import 'package:panorama/panorama.dart';
+// import 'package:panorama/panorama.dart';
 import 'package:provider/provider.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'model/onSaleModel.dart';

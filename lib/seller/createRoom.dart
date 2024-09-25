@@ -8,7 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:location/location.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
-import 'package:panorama/panorama.dart';
+// import 'package:panorama/panorama.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Auth/firebase_auth.dart';
@@ -89,18 +89,18 @@ class _CreateRoomState extends State<CreateRoom> {
     }
   }
 
-  Future<void> _capturePanorama() async {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const PanoramaCaptureScreen()),
-    ).then((value) {
-      if (value != null && value is String) {
-        setState(() {
-          _panoramaImagePath = value;
-        });
-      }
-    });
-  }
+  // Future<void> _capturePanorama() async {
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(builder: (context) => const PanoramaCaptureScreen()),
+  //   ).then((value) {
+  //     if (value != null && value is String) {
+  //       setState(() {
+  //         _panoramaImagePath = value;
+  //       });
+  //     }
+  //   });
+  // }
 
   // Function to get location
   Future<void> _getLocation() async {
@@ -584,27 +584,27 @@ class _CreateRoomState extends State<CreateRoom> {
                         expanded: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            if (_panoramaImagePath != null)
-                              Container(
-                                height: 500,
-                                margin: const EdgeInsets.only(top: 10),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12.0),
-                                  border: Border.all(
-                                    color: Colors.grey.shade300,
-                                    width: 1.5,
-                                  ),
-                                ),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(12.0),
-                                  child: Panorama(
-                                    child: Image.file(
-                                      File(_panoramaImagePath!),
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                              ),
+                            // if (_panoramaImagePath != null)
+                            //   Container(
+                            //     height: 500,
+                            //     margin: const EdgeInsets.only(top: 10),
+                            //     decoration: BoxDecoration(
+                            //       borderRadius: BorderRadius.circular(12.0),
+                            //       border: Border.all(
+                            //         color: Colors.grey.shade300,
+                            //         width: 1.5,
+                            //       ),
+                            //     ),
+                            //     child: ClipRRect(
+                            //       borderRadius: BorderRadius.circular(12.0),
+                            //       child: Panorama(
+                            //         child: Image.file(
+                            //           File(_panoramaImagePath!),
+                            //           fit: BoxFit.cover,
+                            //         ),
+                            //       ),
+                            //     ),
+                            //   ),
                             const SizedBox(height: 20.0),
                             Center(
                               child: SizedBox(
@@ -871,18 +871,18 @@ class _CreateRoomState extends State<CreateRoom> {
   }
 }
 
-class PanoramaCaptureScreen extends StatelessWidget {
-  const PanoramaCaptureScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Panorama Capture')),
-      body: Center(
-        child: Panorama(
-          child: Image.network('https://example.com/panorama.jpg'),
-        ),
-      ),
-    );
-  }
-}
+// class PanoramaCaptureScreen extends StatelessWidget {
+//   const PanoramaCaptureScreen({super.key});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(title: const Text('Panorama Capture')),
+//       body: Center(
+//         child: Panorama(
+//           child: Image.network('https://example.com/panorama.jpg'),
+//         ),
+//       ),
+//     );
+//   }
+// }
