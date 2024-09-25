@@ -212,7 +212,7 @@ class _CreateRoomState extends State<CreateRoom> {
                                 kHeightSmall,
                                 TextFormField(
                                   decoration: kFormFieldDecoration.copyWith(
-                                      labelText: "Capacity"),
+                                      labelText: "Capacity",hintText: "2BHK,3BHK....."),
                                   keyboardType: TextInputType.number,
                                   onSaved: (value) =>
                                       _capacity = double.tryParse(value!),
@@ -226,7 +226,7 @@ class _CreateRoomState extends State<CreateRoom> {
                                 kHeightSmall,
                                 TextFormField(
                                   decoration: kFormFieldDecoration.copyWith(
-                                      labelText: "Length"),
+                                      labelText: "Length",hintText: "feet"),
                                   keyboardType: TextInputType.number,
                                   onSaved: (value) =>
                                       _length = double.tryParse(value!),
@@ -240,7 +240,7 @@ class _CreateRoomState extends State<CreateRoom> {
                                 kHeightSmall,
                                 TextFormField(
                                   decoration: kFormFieldDecoration.copyWith(
-                                      labelText: "Breadth"),
+                                      labelText: "Breadth",hintText: "feet"),
                                   keyboardType: TextInputType.number,
                                   onSaved: (value) =>
                                       _breadth = double.tryParse(value!),
@@ -254,7 +254,7 @@ class _CreateRoomState extends State<CreateRoom> {
                                 kHeightSmall,
                                 TextFormField(
                                   decoration: kFormFieldDecoration.copyWith(
-                                      labelText: "Electricity"),
+                                      labelText: "Electricity",hintText: "Price per Unit"),
                                   keyboardType: TextInputType.number,
                                   onSaved: (value) =>
                                       _electricity = double.tryParse(value!),
@@ -268,7 +268,7 @@ class _CreateRoomState extends State<CreateRoom> {
                                 kHeightSmall,
                                 TextFormField(
                                   decoration: kFormFieldDecoration.copyWith(
-                                      labelText: "water price"),
+                                      labelText: "water price",hintText: "per month"),
                                   keyboardType: TextInputType.number,
                                   onSaved: (value) =>
                                       _water = double.tryParse(value!),
@@ -282,7 +282,7 @@ class _CreateRoomState extends State<CreateRoom> {
                                 kHeightSmall,
                                 TextFormField(
                                   decoration: kFormFieldDecoration.copyWith(
-                                      labelText: "Fohor"),
+                                      labelText: "Fohor",hintText: "per month"),
                                   keyboardType: TextInputType.number,
                                   onSaved: (value) =>
                                       _fohor = double.tryParse(value!),

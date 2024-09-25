@@ -67,8 +67,8 @@ class _SplashScreenState extends State<SplashScreen> {
         color: kThemeColor,
         child: Center(
           child: Container(
-            width: MediaQuery.of(context).size.width / 1.7,
-            height: MediaQuery.of(context).size.height / 5,
+            width: MediaQuery.of(context).size.width / 1.3,
+            height: MediaQuery.of(context).size.height / 4,
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.1),
               shape: BoxShape.circle,

@@ -110,7 +110,7 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
                             Text(
                               widget.room.name.toUpperCase(),
                               style: const TextStyle(
-                                  fontSize: 25,
+                                  fontSize: 20,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black54),
                             ),
@@ -304,24 +304,27 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
                               const Text("No facilities available"),
                             ],
                             const SizedBox(height: 20),
-                            SizedBox(
-                              width: double.infinity,
-                              height: 45,
-                              child: ElevatedButton(
-                                onPressed: (){
-                                  _approveRoomStatus(widget.room.uid, widget.room);
-                                  Navigator.of(context).pop(); // Close the dialog
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFF072A2E),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5.0),
+                            Visibility(
+                              visible: widget.room.status["statusDisplay"] == "To Buy",
+                              child: SizedBox(
+                                width: double.infinity,
+                                height: 45,
+                                child: ElevatedButton(
+                                  onPressed: (){
+                                    _approveRoomStatus(widget.room.uid, widget.room);
+                                    Navigator.of(context).pop(); // Close the dialog
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xFF072A2E),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(5.0),
+                                    ),
                                   ),
-                                ),
-                                child: const Text(
-                                  "Approve",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 18),
+                                  child: const Text(
+                                    "Approve",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 18),
+                                  ),
                                 ),
                               ),
                             ),

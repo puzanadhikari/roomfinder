@@ -359,7 +359,7 @@ class _ListingState extends State<Listing> {
                                                             color: kThemeColor,
                                                             fontWeight:
                                                                 FontWeight.bold,
-                                                            fontSize: 18,
+                                                            fontSize: 16,
                                                           ),
                                                         ),
                                                         const SizedBox(
@@ -384,44 +384,38 @@ class _ListingState extends State<Listing> {
                                                           ),
                                                         ),
                                                         const SizedBox(
-                                                            height: 20),
+                                                            height: 10),
                                                         Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
                                                           children: [
-                                                            Row(
-                                                              children: [
-                                                                Icon(
-                                                                  Icons
-                                                                      .location_on_rounded,
-                                                                  size: 16,
-                                                                  color:
-                                                                      kThemeColor,
-                                                                ),
-                                                              ],
-                                                            ),
-                                                            Row(
-                                                              children: [
-                                                                Icon(displayedProducts[index].status[
-                                                                'statusDisplay'] ==
-                                                                    "Owned"
-                                                                    ? Icons
-                                                                    .check_circle
-                                                                    : Icons
-                                                                    .flag_circle,
-                                                                    size: 16,
-                                                                    color: kThemeColor),
-                                                                Text(
-                                                                  '${displayedProducts[index].status['statusDisplay']}',
-                                                                  style: const TextStyle(
-                                                                      color:
-                                                                      Colors.black45),
-                                                                ),
-                                                              ],
+                                                            Icon(
+                                                              Icons
+                                                                  .location_on_rounded,
+                                                              size: 16,
+                                                              color:
+                                                                  kThemeColor,
                                                             ),
                                                           ],
-                                                        )
+                                                        ),
+                                                        const SizedBox(height: 10),
+                                                        Row(
+                                                          children: [
+                                                            Icon(displayedProducts[index].status[
+                                                            'statusDisplay'] ==
+                                                                "Owned"
+                                                                ? Icons
+                                                                .check_circle
+                                                                : Icons
+                                                                .flag_circle,
+                                                                size: 16,
+                                                                color: kThemeColor),
+                                                            Text(
+                                                              '${displayedProducts[index].status['statusDisplay']}',
+                                                              style: const TextStyle(
+                                                                  color:
+                                                                  Colors.black45),
+                                                            ),
+                                                          ],
+                                                        ),
                                                       ],
                                                     ),
                                                   ),
@@ -662,7 +656,7 @@ class _ListingState extends State<Listing> {
                                                             color: kThemeColor,
                                                             fontWeight:
                                                                 FontWeight.bold,
-                                                            fontSize: 18,
+                                                            fontSize: 16,
                                                           ),
                                                         ),
                                                         const SizedBox(
@@ -687,46 +681,40 @@ class _ListingState extends State<Listing> {
                                                           ),
                                                         ),
                                                         const SizedBox(
-                                                            height: 20),
+                                                            height: 10),
                                                         Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
                                                           children: [
-                                                            Row(
-                                                              children: [
-                                                                Icon(
-                                                                    Icons
-                                                                        .location_on_rounded,
-                                                                    size: 16,
-                                                                    color:
-                                                                        kThemeColor),
-                                                                // Text(
-                                                                //   "${(sortedRooms[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
-                                                                //   style: TextStyle(
-                                                                //       color: Colors
-                                                                //           .black45),
-                                                                // ),
-                                                              ],
-                                                            ),
-                                                            Row(
-                                                              children: [
-                                                                Icon(room.status[
-                                                                'statusDisplay'] ==
-                                                                    "Owned"
-                                                                    ? Icons
-                                                                    .check_circle
-                                                                    : Icons
-                                                                    .flag_circle,
-                                                                    size: 16,
-                                                                    color: kThemeColor),
-                                                                Text(
-                                                                  '${room.status['statusDisplay'] ?? "To Buy"}',
-                                                                  style: const TextStyle(
-                                                                      color:
-                                                                      Colors.black45),
-                                                                ),
-                                                              ],
+                                                            Icon(
+                                                                Icons
+                                                                    .location_on_rounded,
+                                                                size: 16,
+                                                                color:
+                                                                    kThemeColor),
+                                                            // Text(
+                                                            //   "${(sortedRooms[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
+                                                            //   style: TextStyle(
+                                                            //       color: Colors
+                                                            //           .black45),
+                                                            // ),
+                                                          ],
+                                                        ),
+                                                        const SizedBox(height: 10),
+                                                        Row(
+                                                          children: [
+                                                            Icon(room.status[
+                                                            'statusDisplay'] ==
+                                                                "Owned"
+                                                                ? Icons
+                                                                .check_circle
+                                                                : Icons
+                                                                .flag_circle,
+                                                                size: 16,
+                                                                color: kThemeColor),
+                                                            Text(
+                                                              '${room.status['statusDisplay'] ?? "To Buy"}',
+                                                              style: const TextStyle(
+                                                                  color:
+                                                                  Colors.black45),
                                                             ),
                                                           ],
                                                         ),

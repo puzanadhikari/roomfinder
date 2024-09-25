@@ -156,7 +156,7 @@ class _EnquiriesPageState extends State<EnquiriesPage> {
                                           style: TextStyle(
                                             color: kThemeColor,
                                             fontWeight: FontWeight.bold,
-                                            fontSize: 18,
+                                            fontSize: 16,
                                           ),
                                         ),
                                         const SizedBox(height: 8),
@@ -168,17 +168,32 @@ class _EnquiriesPageState extends State<EnquiriesPage> {
                                           ),
                                         ),
                                         const SizedBox(height: 8),
+                                        Text(
+                                          "NPR: ${room.price}/month",
+                                          style: TextStyle(
+                                            color: kThemeColor,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 10),
                                         Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
+                                            Icon(Icons.location_on_rounded,
+                                                size: 16,
+                                                color: kThemeColor),
                                             Text(
-                                              "NPR: ${room.price}/month",
-                                              style: TextStyle(
-                                                color: kThemeColor,
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w600,
-                                              ),
+                                              "${(rooms[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
+                                              style: const TextStyle(
+                                                  color: Colors.black45),
                                             ),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 10),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
                                             Row(
                                               children: [
                                                 Icon(room.status[
@@ -198,121 +213,92 @@ class _EnquiriesPageState extends State<EnquiriesPage> {
                                                 ),
                                               ],
                                             ),
-                                          ],
-                                        ),
-                                        const SizedBox(height: 20),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Icon(Icons.location_on_rounded,
-                                                    size: 16,
-                                                    color: kThemeColor),
-                                                Text(
-                                                  "${(rooms[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
-                                                  style: const TextStyle(
-                                                      color: Colors.black45),
+                                              SizedBox(
+                                                height: 30,
+                                                child: ElevatedButton(
+                                                  onPressed: () {
+                                                    showDialog(
+                                                      context: context,
+                                                      builder: (BuildContext context) {
+                                                        return AlertDialog(
+                                                          shape: RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.circular(20.0),
+                                                          ),
+                                                          contentPadding: const EdgeInsets.all(20.0),
+                                                          title: Row(
+                                                            children: [
+                                                              Icon(Icons.info, color: kThemeColor),
+                                                              const SizedBox(width: 8),
+                                                              Text(
+                                                                "Approve Room Status",
+                                                                style: TextStyle(
+                                                                  color: kThemeColor,
+                                                                  fontWeight: FontWeight.bold,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          content: Column(
+                                                            mainAxisSize: MainAxisSize.min,
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                              const SizedBox(height: 10),
+                                                              Row(
+                                                                children: [
+                                                                  Icon(Icons.person, color: kThemeColor),
+                                                                  const SizedBox(width: 8),
+                                                                  Flexible(child: Text(room.status["By"] ?? "")),
+                                                                ],
+                                                              ),
+                                                              const SizedBox(height: 10),
+                                                              Row(
+                                                                children: [
+                                                                  Icon(Icons.email, color: kThemeColor),
+                                                                  const SizedBox(width: 8),
+                                                                  Flexible(child: Text(room.status["userEmail"] ?? "")),
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          actionsPadding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                                                          actions: [
+                                                            ElevatedButton(
+                                                              onPressed: () {
+                                                                _approveRoomStatus(room.uid, room);
+                                                                Navigator.of(context).pop(); // Close the dialog
+                                                              },
+                                                              style: ElevatedButton.styleFrom(
+                                                                backgroundColor: kThemeColor,
+                                                                shape: RoundedRectangleBorder(
+                                                                  borderRadius: BorderRadius.circular(10.0),
+                                                                ),
+                                                              ),
+                                                              child: const Text("Approve"),
+                                                            ),
+                                                            OutlinedButton(
+                                                              onPressed: () {
+                                                                Navigator.of(context).pop();
+                                                              },
+                                                              style: OutlinedButton.styleFrom(
+                                                                side: BorderSide(color: kThemeColor),
+                                                                shape: RoundedRectangleBorder(
+                                                                  borderRadius: BorderRadius.circular(10.0),
+                                                                ),
+                                                              ),
+                                                              child: Text(
+                                                                "Cancel",
+                                                                style: TextStyle(color: kThemeColor),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        );
+                                                      },
+                                                    );
+                                                  },
+                                                  style: ElevatedButton.styleFrom(backgroundColor: kThemeColor),
+                                                  child: const Text("Approve"),
                                                 ),
-                                              ],
-                                            ),
-                                            SizedBox(
-                                              height: 30,
-                                              child: ElevatedButton(
-                                                onPressed: () {
-                                                  showDialog(
-                                                    context: context,
-                                                    builder: (BuildContext context) {
-                                                      return AlertDialog(
-                                                        shape: RoundedRectangleBorder(
-                                                          borderRadius: BorderRadius.circular(20.0),
-                                                        ),
-                                                        contentPadding: const EdgeInsets.all(20.0),
-                                                        title: Row(
-                                                          children: [
-                                                            Icon(Icons.info, color: kThemeColor),
-                                                            const SizedBox(width: 8),
-                                                            Text(
-                                                              "Approve Room Status",
-                                                              style: TextStyle(
-                                                                color: kThemeColor,
-                                                                fontWeight: FontWeight.bold,
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        content: Column(
-                                                          mainAxisSize: MainAxisSize.min,
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                                          children: [
-                                                            const SizedBox(height: 10),
-                                                            Row(
-                                                              children: [
-                                                                Icon(Icons.person, color: kThemeColor),
-                                                                const SizedBox(width: 8),
-                                                                const Text(
-                                                                  "Buyer Name:",
-                                                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                                                ),
-                                                                const SizedBox(width: 8),
-                                                                Text(room.status["By"] ?? ""),
-                                                              ],
-                                                            ),
-                                                            const SizedBox(height: 10),
-                                                            Row(
-                                                              children: [
-                                                                Icon(Icons.email, color: kThemeColor),
-                                                                const SizedBox(width: 8),
-                                                                const Text(
-                                                                  "Buyer Email:",
-                                                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                                                ),
-                                                                const SizedBox(width: 8),
-                                                                Text(room.status["userEmail"] ?? ""),
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        actionsPadding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-                                                        actions: [
-                                                          ElevatedButton(
-                                                            onPressed: () {
-                                                              _approveRoomStatus(room.uid, room);
-                                                              Navigator.of(context).pop(); // Close the dialog
-                                                            },
-                                                            style: ElevatedButton.styleFrom(
-                                                              backgroundColor: kThemeColor,
-                                                              shape: RoundedRectangleBorder(
-                                                                borderRadius: BorderRadius.circular(10.0),
-                                                              ),
-                                                            ),
-                                                            child: const Text("Approve"),
-                                                          ),
-                                                          OutlinedButton(
-                                                            onPressed: () {
-                                                              Navigator.of(context).pop();
-                                                            },
-                                                            style: OutlinedButton.styleFrom(
-                                                              side: BorderSide(color: kThemeColor),
-                                                              shape: RoundedRectangleBorder(
-                                                                borderRadius: BorderRadius.circular(10.0),
-                                                              ),
-                                                            ),
-                                                            child: Text(
-                                                              "Cancel",
-                                                              style: TextStyle(color: kThemeColor),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      );
-                                                    },
-                                                  );
-                                                },
-                                                style: ElevatedButton.styleFrom(backgroundColor: kThemeColor),
-                                                child: const Text("Approve"),
-                                              ),
-                                            )
+                                              )
                                           ],
                                         ),
                                       ],

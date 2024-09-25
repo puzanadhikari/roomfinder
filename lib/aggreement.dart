@@ -62,7 +62,7 @@ class _AgreementPageState extends State<AgreementPage> {
         title: Text(
           "Room Booking Agreement",
           style: TextStyle(
-              color: kThemeColor, fontWeight: FontWeight.bold, fontSize: 25),
+              color: kThemeColor, fontWeight: FontWeight.bold, fontSize: 20),
         ),
       ),
       body: Padding(

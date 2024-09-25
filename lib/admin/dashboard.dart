@@ -158,13 +158,7 @@ class _DashBoardState extends State<DashBoard> {
                   _buildHeader(),
                   const SizedBox(height: 20),
                   const Divider(color: Color(0xFFD9D6D6), height: 2, thickness: 1),
-                  const SizedBox(height: 10),
-
-                  // Pending Rooms
                   _buildRoomList(stream: fetchPendingRooms(), showApproveRejectButtons: true),
-                  const SizedBox(height: 20),
-
-                  // Approved Rooms
                   _buildRoomList(stream: fetchApprovedRooms(), showApproveRejectButtons: false),
                 ],
               ),
@@ -189,7 +183,7 @@ class _DashBoardState extends State<DashBoard> {
             style: TextStyle(
                 color: kThemeColor,
                 fontWeight: FontWeight.bold,
-                fontSize: 25)),
+                fontSize: 20)),
         IconButton(
           icon: Icon(
             Icons.notifications_none_outlined,
@@ -282,7 +276,7 @@ class _DashBoardState extends State<DashBoard> {
               ),
               const SizedBox(height: 6),
               Text(
-                "${room.price}/ per month",
+                "Rs.${room.price}/ per month",
                 style: TextStyle(
                   color: kThemeColor,
                   fontSize: 16,

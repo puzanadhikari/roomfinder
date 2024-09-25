@@ -25,7 +25,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         title: Text(
           "Profile",
           style: TextStyle(
-              color: kThemeColor, fontWeight: FontWeight.bold, fontSize: 25),
+              color: kThemeColor, fontWeight: FontWeight.bold, fontSize: 20),
         ),
       ),
       body: NotificationListener<OverscrollIndicatorNotification>(
@@ -87,7 +87,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Text(
                       user?.displayName?.toUpperCase() ?? "Guest",
                       style: const TextStyle(
-                        fontSize: 22,
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: Colors.black87,
                       ),
@@ -96,7 +96,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Text(
                       user?.email ?? "No email",
                       style: const TextStyle(
-                        fontSize: 16,
+                        fontSize: 12,
                         color: Colors.grey,
                       ),
                     ),
@@ -184,7 +184,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         title: Text(
           title,
           style: TextStyle(
-            fontSize: 18,
+            fontSize: 14,
             fontWeight: FontWeight.w500,
             color: textColor,
           ),

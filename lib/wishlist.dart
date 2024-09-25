@@ -42,7 +42,7 @@ class _WishlistPageState extends State<WishlistPage> {
           style: TextStyle(
             color: kThemeColor,
             fontWeight: FontWeight.bold,
-            fontSize: 25,
+            fontSize: 20,
           ),
         ),
         actions: [
@@ -74,7 +74,7 @@ class _WishlistPageState extends State<WishlistPage> {
                       'Your wishlist is empty.',
                       style: TextStyle(
                         color: Colors.grey,
-                        fontSize: 18,
+                        fontSize: 16,
                       ),
                     ),
                   )
@@ -132,7 +132,7 @@ class _WishlistPageState extends State<WishlistPage> {
                                             style: TextStyle(
                                               color: kThemeColor,
                                               fontWeight: FontWeight.bold,
-                                              fontSize: 18,
+                                              fontSize: 16,
                                             ),
                                           ),
                                           const SizedBox(height: 8),
@@ -152,17 +152,18 @@ class _WishlistPageState extends State<WishlistPage> {
                                               fontWeight: FontWeight.w600,
                                             ),
                                           ),
-                                          const SizedBox(height: 20),
+                                          const SizedBox(height: 10),
+                                          Row(
+                                            children: [
+                                              Icon(Icons.location_on_rounded,
+                                                  size: 16,
+                                                  color: kThemeColor),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 10),
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
-                                              Row(
-                                                children: [
-                                                  Icon(Icons.location_on_rounded,
-                                                      size: 16,
-                                                      color: kThemeColor),
-                                                ],
-                                              ),
                                               Row(
                                                 children: [
                                                   Icon(Icons.check_circle,
@@ -175,13 +176,28 @@ class _WishlistPageState extends State<WishlistPage> {
                                                   )
                                                 ],
                                               ),
+                                              GestureDetector(
+                                                onTap: () {
+                                                  removeFromWishlist(room.uid);
+                                                },
+                                                child: Container(
+                                                  padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(8),  // Smooth, rounded corners
+                                                    border: Border.all(color: Colors.grey),  // Simple border for a sleek look
+                                                  ),
+                                                  child: Text(
+                                                    "Remove",
+                                                    style: TextStyle(
+                                                      color: Colors.grey[800],  // Neutral color for elegance
+                                                      fontWeight: FontWeight.bold,  // Make the text bold for emphasis
+                                                      fontSize: 12,  // Slightly larger text size for clarity
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
                                             ],
-                                          ),
-                                          GestureDetector(
-                                              onTap: (){
-                                                removeFromWishlist(room.uid);
-                                              },
-                                              child: const Text("Remove"))
+                                          )
                                         ],
                                       ),
                                     ),

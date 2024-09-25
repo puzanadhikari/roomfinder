@@ -100,7 +100,7 @@ class _OrderPageState extends State<OrderPage> {
           style: TextStyle(
             color: kThemeColor,
             fontWeight: FontWeight.bold,
-            fontSize: 25,
+            fontSize: 20,
           ),
         ),
       ),
@@ -306,7 +306,7 @@ class _OrderPageState extends State<OrderPage> {
                                               style: TextStyle(
                                                 color: kThemeColor,
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 18,
+                                                fontSize: 16,
                                               ),
                                             ),
                                             const SizedBox(height: 8),
@@ -335,11 +335,13 @@ class _OrderPageState extends State<OrderPage> {
                                                   size: 16,
                                                 ),
                                                 const SizedBox(width: 4),
-                                                Text(
-                                                  '$userEmail',
-                                                  style: const TextStyle(
-                                                    fontSize: 14,
-                                                    color: Colors.grey,
+                                                Flexible(
+                                                  child: Text(
+                                                    '$userEmail',
+                                                    style: const TextStyle(
+                                                      fontSize: 14,
+                                                      color: Colors.grey,
+                                                    ),
                                                   ),
                                                 ),
                                               ],

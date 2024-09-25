@@ -189,7 +189,7 @@ class _MyListingsPageState extends State<MyListingsPage> {
                                                 style: TextStyle(
                                                   color: kThemeColor,
                                                   fontWeight: FontWeight.bold,
-                                                  fontSize: 18,
+                                                  fontSize: 16,
                                                 ),
                                               ),
                                               const SizedBox(height: 8),
@@ -209,47 +209,41 @@ class _MyListingsPageState extends State<MyListingsPage> {
                                                   fontWeight: FontWeight.w600,
                                                 ),
                                               ),
-                                              const SizedBox(height: 20),
+                                              const SizedBox(height: 10),
                                               Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
                                                 children: [
-                                                  Row(
-                                                    children: [
-                                                      Icon(
-                                                          Icons
-                                                              .location_on_rounded,
-                                                          size: 16,
-                                                          color: kThemeColor),
-                                                      Text(
-                                                        "${(rooms[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
-                                                        style: const TextStyle(
-                                                            color:
-                                                                Colors.black45),
-                                                      ),
-                                                    ],
+                                                  Icon(
+                                                      Icons
+                                                          .location_on_rounded,
+                                                      size: 16,
+                                                      color: kThemeColor),
+                                                  Text(
+                                                    "${(rooms[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
+                                                    style: const TextStyle(
+                                                        color:
+                                                            Colors.black45),
                                                   ),
-                                                  Row(
-                                                    children: [
-                                                      Icon(
-                                                          roomStatus[index]
-                                                                          .status[
-                                                                      'statusDisplay'] ==
-                                                                  "Owned"
-                                                              ? Icons
-                                                                  .check_circle
-                                                              : Icons
-                                                                  .flag_circle,
-                                                          size: 16,
-                                                          color: kThemeColor),
-                                                      Text(
-                                                        '${roomStatus[index].status['statusDisplay'] ?? "To Buy"}',
-                                                        style: const TextStyle(
-                                                            color:
-                                                                Colors.black45),
-                                                      ),
-                                                    ],
+                                                ],
+                                              ),
+                                              const SizedBox(height: 10),
+                                              Row(
+                                                children: [
+                                                  Icon(
+                                                      roomStatus[index]
+                                                          .status[
+                                                      'statusDisplay'] ==
+                                                          "Owned"
+                                                          ? Icons
+                                                          .check_circle
+                                                          : Icons
+                                                          .flag_circle,
+                                                      size: 16,
+                                                      color: kThemeColor),
+                                                  Text(
+                                                    '${roomStatus[index].status['statusDisplay'] ?? "To Buy"}',
+                                                    style: const TextStyle(
+                                                        color:
+                                                        Colors.black45),
                                                   ),
                                                 ],
                                               ),
