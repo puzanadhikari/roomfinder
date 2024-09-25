@@ -257,8 +257,6 @@ class _DashBoardState extends State<DashBoard> {
                             ),
                             child: const Text(
                               "Search Now",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 18),
                             ),
                           ),
                         )
