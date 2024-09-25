@@ -20,11 +20,13 @@ class FirebaseAuthService {
       if (user != null) {
         await user.sendEmailVerification();
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Verification email sent!'),
-          ),
-        );
+        Fluttertoast.showToast(
+            msg: 'Verification email sent!!',
+            backgroundColor: appBarColor,
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.TOP_RIGHT,
+            textColor: Colors.white,
+            fontSize: 16.0);
       } else {
         log('User not signed in.');
       }
@@ -34,7 +36,7 @@ class FirebaseAuthService {
   }
 
   Future<User?> register(BuildContext context, String name, String email,
-      String password, String userType) async {
+      String password,String contactNumber, String userType) async {
     try {
       UserCredential userCredential =
           await _auth.createUserWithEmailAndPassword(
@@ -42,7 +44,7 @@ class FirebaseAuthService {
         password: password,
       );
       await userCredential.user?.updateDisplayName(name);
-      await addUserData(email, name, password, userType);
+      await addUserData(email, name, password,contactNumber, userType);
       Fluttertoast.showToast(
           msg: 'Register successfully',
           backgroundColor: appBarColor,
@@ -60,7 +62,7 @@ class FirebaseAuthService {
   }
 
   Future addUserData(
-      String email, String name, String password, String userType) async {
+      String email, String name, String password, String contactNumber, String userType) async {
     try {
       User? user = FirebaseAuth.instance.currentUser;
 
@@ -71,6 +73,7 @@ class FirebaseAuthService {
           "email": email,
           "username": name,
           "password": password,
+          "contactNumber": contactNumber,
           "userType": userType,
         };
 
@@ -98,6 +101,7 @@ class FirebaseAuthService {
             .get();
         if (userDoc.exists) {
           String userType = userDoc['userType'];
+          preferences.setString("user_role", userType);
           if (userType == "Seller") {
             Navigator.pushReplacement(
                 context,

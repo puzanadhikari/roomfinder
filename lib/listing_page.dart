@@ -414,7 +414,7 @@ class _ListingState extends State<Listing> {
                                                                     color: kThemeColor),
                                                                 Text(
                                                                   '${displayedProducts[index].status['statusDisplay']}',
-                                                                  style: TextStyle(
+                                                                  style: const TextStyle(
                                                                       color:
                                                                       Colors.black45),
                                                                 ),
@@ -722,7 +722,7 @@ class _ListingState extends State<Listing> {
                                                                     color: kThemeColor),
                                                                 Text(
                                                                   '${room.status['statusDisplay'] ?? "To Buy"}',
-                                                                  style: TextStyle(
+                                                                  style: const TextStyle(
                                                                       color:
                                                                       Colors.black45),
                                                                 ),

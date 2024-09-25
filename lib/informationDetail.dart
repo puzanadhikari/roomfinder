@@ -39,7 +39,7 @@ class _InformationDetailsState extends State<InformationDetails> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Center(
+              const Center(
                 child: Text(
                   "Personal Information",
                   style: TextStyle(
@@ -49,7 +49,7 @@ class _InformationDetailsState extends State<InformationDetails> {
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12.0),
@@ -72,7 +72,7 @@ class _InformationDetailsState extends State<InformationDetails> {
                           );
                         },
                         child: ListTile(
-                          title: Text(
+                          title: const Text(
                             'Name:',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
@@ -92,7 +92,7 @@ class _InformationDetailsState extends State<InformationDetails> {
                       ),
                       Divider(height: 1, color: Colors.grey.shade300),
                       ListTile(
-                        title: Text(
+                        title: const Text(
                           'Email:',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
@@ -111,7 +111,7 @@ class _InformationDetailsState extends State<InformationDetails> {
                       ),
                       Divider(height: 1, color: Colors.grey.shade300),
                       ListTile(
-                        title: Text(
+                        title: const Text(
                           'Phone:',
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
@@ -147,9 +147,9 @@ class ChangeNameDialog extends StatefulWidget {
 }
 
 class _ChangeNameDialogState extends State<ChangeNameDialog> {
-  TextEditingController _firstNameController = TextEditingController();
-  TextEditingController _middleNameController = TextEditingController();
-  TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _middleNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
 
   @override
   void dispose() {
@@ -166,7 +166,7 @@ class _ChangeNameDialogState extends State<ChangeNameDialog> {
         borderRadius: BorderRadius.circular(12.0),
       ),
       child: Container(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12.0),
           color: Colors.white,
@@ -183,13 +183,13 @@ class _ChangeNameDialogState extends State<ChangeNameDialog> {
                 color: kThemeColor,
               ),
             ),
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
             _buildTextField(_firstNameController, 'First Name'),
-            SizedBox(height: 12.0),
+            const SizedBox(height: 12.0),
             _buildTextField(_middleNameController, 'Middle Name'),
-            SizedBox(height: 12.0),
+            const SizedBox(height: 12.0),
             _buildTextField(_lastNameController, 'Last Name'),
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -202,19 +202,19 @@ class _ChangeNameDialogState extends State<ChangeNameDialog> {
                     style: TextStyle(color: Colors.grey.shade600),
                   ),
                 ),
-                SizedBox(width: 12.0),
+                const SizedBox(width: 12.0),
                 ElevatedButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                     // Add logic to save the new name
                   },
-                  child: Text('Save'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: kThemeColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.0),
                     ),
                   ),
+                  child: const Text('Save'),
                 ),
               ],
             ),

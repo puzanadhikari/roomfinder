@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:meroapp/provider/wishlistProvider.dart';
 import 'package:provider/provider.dart';
 
@@ -68,7 +69,7 @@ class _WishlistPageState extends State<WishlistPage> {
             child: Column(
               children: [
                 if (wishlistProvider.wishlist.isEmpty)
-                  Center(
+                  const Center(
                     child: Text(
                       'Your wishlist is empty.',
                       style: TextStyle(
@@ -180,7 +181,7 @@ class _WishlistPageState extends State<WishlistPage> {
                                               onTap: (){
                                                 removeFromWishlist(room.uid);
                                               },
-                                              child: Text("Remove"))
+                                              child: const Text("Remove"))
                                         ],
                                       ),
                                     ),
@@ -208,16 +209,30 @@ class _WishlistPageState extends State<WishlistPage> {
           .doc(uid)
           .collection('wishlist')
           .doc(roomId);
-
       await roomRef.delete();
+      final wishlistProvider = Provider.of<WishlistProvider>(context, listen: false);
+      wishlistProvider.removeFromWishlistLocally(roomId);
 
-      // Optionally, show a confirmation message
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Room removed from wishlist successfully.')),
+      // Show success toast
+      Fluttertoast.showToast(
+        msg: "Room removed from wishlist successfully.",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 2,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 16.0,
       );
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error removing room from wishlist: $e')),
+      // Show error toast
+      Fluttertoast.showToast(
+        msg: "Error removing room from wishlist: $e",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 3,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
       );
     }
   }

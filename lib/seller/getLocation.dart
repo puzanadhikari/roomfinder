@@ -9,21 +9,70 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MapSearchScreen extends StatefulWidget {
+  const MapSearchScreen({super.key});
+
   @override
   _MapSearchScreenState createState() => _MapSearchScreenState();
 }
 
 class _MapSearchScreenState extends State<MapSearchScreen> {
   GoogleMapController? _mapController;
-  LatLng _center = LatLng(27.7172, 85.3240); // Kathmandu, Nepal
-  TextEditingController _searchController = TextEditingController();
+  LatLng _center = const LatLng(27.7172, 85.3240); // Kathmandu, Nepal
+  final TextEditingController _searchController = TextEditingController();
   String? _selectedCityName;
   LatLng? _selectedLatLng;
-
+  Marker? _marker;
   void _onMapCreated(GoogleMapController controller) {
     _mapController = controller;
-  }
+    _marker = Marker(
+      markerId: MarkerId('selected-location'),
+      position: _center,
+      onDrag: (value){
+      },
+      onTap: () {
+        log("here");
+        _showLocationDetails();
+      },
+    );
+      setState(() {
 
+      });
+  }
+  void _updateMarker(LatLng position) {
+    setState(() {
+      _marker = Marker(
+        markerId: MarkerId('selected-location'),
+        position: position,
+        onTap: () {
+          _showLocationDetails(); // Show details when marker is tapped
+        },
+      );
+    });
+  }
+  void _showLocationDetails() {
+    log("details".toString());
+    if (_selectedLatLng != null) {
+      String details = 'Location: ${_selectedCityName ?? 'Unknown'}\n'
+          'Coordinates: ${_selectedLatLng!.latitude}, ${_selectedLatLng!.longitude}';
+      log(details.toString());
+
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Location Details'),
+          content: Text(details),
+          actions: [
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        ),
+      );
+    }
+  }
   Future<List<String>> _getCitySuggestions(String query) async {
     final response = await http.get(
       Uri.parse('https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$query&key=AIzaSyCzZwn-q2Dd8s9RX5nIr32ZJSGEVbFbyPI'),
@@ -46,7 +95,7 @@ class _MapSearchScreenState extends State<MapSearchScreen> {
       if (locations.isNotEmpty) {
         LatLng selectedLocation = LatLng(locations.first.latitude, locations.first.longitude);
         _mapController?.animateCamera(CameraUpdate.newLatLng(selectedLocation));
-
+        _updateMarker(selectedLocation);
         setState(() {
           _center = selectedLocation;
           _selectedCityName = city;
@@ -63,23 +112,42 @@ class _MapSearchScreenState extends State<MapSearchScreen> {
         });
       }
     } catch (e) {
-      print("Error occurred while selecting city: $e");
+      log("Error occurred while selecting city: $e");
     }
+  }
+
+  void getLocationFromLatLng(LatLng position) async{
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+      position!.latitude,
+      position!.longitude,
+    );
+    LatLng selectedLocation = LatLng(position.latitude, position.longitude);
+    _center = position;
+    _selectedCityName ="${ placemarks.first.street} ${placemarks.first.subAdministrativeArea!}";
+    _selectedLatLng = selectedLocation;
+    log(_selectedCityName.toString());
+    log(selectedLocation.toString());
+    Navigator.pop(context, {
+      'city': _selectedCityName,
+      'latLng': _selectedLatLng,
+    });
+
+
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Search Location'),
-        backgroundColor: Color(0xFF072A2E),
+        title: const Text('Search Location'),
+        backgroundColor: const Color(0xFF072A2E),
       ),
       body: Column(
         children: [
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(12.0),
@@ -88,14 +156,14 @@ class _MapSearchScreenState extends State<MapSearchScreen> {
                     color: Colors.grey.withOpacity(0.3),
                     spreadRadius: 2,
                     blurRadius: 6,
-                    offset: Offset(0, 2),
+                    offset: const Offset(0, 2),
                   ),
                 ],
               ),
               child: TypeAheadField<String>(
                 textFieldConfiguration: TextFieldConfiguration(
                   controller: _searchController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     border: InputBorder.none,
                     labelText: 'Enter city',
                     suffixIcon: Icon(Icons.search, color: Color(0xFF072A2E)),
@@ -111,6 +179,7 @@ class _MapSearchScreenState extends State<MapSearchScreen> {
                   );
                 },
                 onSuggestionSelected: (suggestion) {
+                  log(suggestion.toString());
                   _onCitySelected(suggestion);
                 },
               ),
@@ -126,18 +195,24 @@ class _MapSearchScreenState extends State<MapSearchScreen> {
                     color: Colors.grey.withOpacity(0.3),
                     spreadRadius: 2,
                     blurRadius: 6,
-                    offset: Offset(0, 2),
+                    offset: const Offset(0, 2),
                   ),
                 ],
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12.0),
                 child: GoogleMap(
+                  markers: _marker != null ? {_marker!} : {},
                   onMapCreated: _onMapCreated,
                   initialCameraPosition: CameraPosition(
                     target: _center,
                     zoom: 14.0,
                   ),
+                  onTap: (position){
+                    log(position.toString());
+                    getLocationFromLatLng(position);
+                    _updateMarker(position);
+                  },
                 ),
               ),
             ),

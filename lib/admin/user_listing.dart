@@ -101,7 +101,7 @@ class _UserListingState extends State<UserListing> {
         ...users.map((user) {
           final email = user['email'] ?? 'No email';
           final username = user['username'] ?? 'No username';
-          final photoUrl =  "https://media.licdn.com/dms/image/D5603AQFD6ld3NWc2HQ/profile-displayphoto-shrink_200_200/0/1684164054868?e=2147483647&v=beta&t=cwQoyfhgAl_91URX5FTEXLwLDEHWe1H337EMebpgntQ";
+          const photoUrl =  "https://media.licdn.com/dms/image/D5603AQFD6ld3NWc2HQ/profile-displayphoto-shrink_200_200/0/1684164054868?e=2147483647&v=beta&t=cwQoyfhgAl_91URX5FTEXLwLDEHWe1H337EMebpgntQ";
 
           return Card(
             margin: const EdgeInsets.symmetric(vertical: 8.0),
@@ -157,7 +157,7 @@ class _UserListingState extends State<UserListing> {
                         color: kThemeColor,
                         shape: BoxShape.circle,
                       ),
-                      child: Icon(
+                      child: const Icon(
                         Icons.wifi_calling_3,
                         color: Colors.white,
                         size: 20,

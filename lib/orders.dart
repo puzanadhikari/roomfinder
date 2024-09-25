@@ -3,11 +3,12 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:khalti_flutter/khalti_flutter.dart';
 import 'package:shimmer/shimmer.dart';
 
+import 'Constants/paymentPage.dart';
 import 'Constants/styleConsts.dart';
 import 'aggreement.dart';
-import 'model/onSaleModel.dart';
 
 Future<Map<String, dynamic>?> fetchUserData() async {
   User? user = FirebaseAuth.instance.currentUser;
@@ -41,6 +42,7 @@ class OrderPage extends StatefulWidget {
 }
 
 class _OrderPageState extends State<OrderPage> {
+
   Future<Map<String, dynamic>?> fetchUserData() async {
     User? user = FirebaseAuth.instance.currentUser;
 
@@ -416,7 +418,7 @@ class _OrderPageState extends State<OrderPage> {
                                                                           .picture_as_pdf,
                                                                       color:
                                                                           kThemeColor),
-                                                                  SizedBox(
+                                                                  const SizedBox(
                                                                       width:
                                                                           10),
                                                                   Text(
@@ -491,6 +493,34 @@ class _OrderPageState extends State<OrderPage> {
                                                                 TextButton(
                                                                   onPressed:
                                                                       () {
+
+                                                                        KhaltiScope.of(context).pay(
+                                                                            config: PaymentConfig(
+                                                                                amount: roomStatus['report']
+                                                                                ['total'].toInt()*100,
+                                                                                productIdentity: 'laptop',
+                                                                                productName: 'Dell laptop'),
+                                                                            preferences: [
+                                                                              PaymentPreference.khalti,
+                                                                              PaymentPreference.connectIPS
+                                                                            ],
+                                                                            onSuccess: (success){
+
+                                                                            },
+                                                                            onFailure: (failure){
+
+                                                                            });
+                                                                          },
+                                                                  child: Text(
+                                                                    'Pay Now',
+                                                                    style: TextStyle(
+                                                                        color:
+                                                                        kThemeColor),
+                                                                  ),
+                                                                ),
+                                                                TextButton(
+                                                                  onPressed:
+                                                                      () {
                                                                     Navigator.of(
                                                                             context)
                                                                         .pop();
@@ -561,7 +591,7 @@ class _OrderPageState extends State<OrderPage> {
           padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: Text(
             label,
-            style: TextStyle(
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
               color: Colors.black87,
             ),
@@ -571,7 +601,7 @@ class _OrderPageState extends State<OrderPage> {
           padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: Text(
             value.toString(),
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.black54,
             ),
           ),

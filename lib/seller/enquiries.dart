@@ -1,63 +1,59 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:meroapp/seller/seller_room_details.dart';
 
 import '../Constants/styleConsts.dart';
 import '../model/onSaleModel.dart';
 
-Future<List<Room>> fetchEnquiries() async {
+Stream<List<Room>> fetchEnquiries() async* {
   User? user = FirebaseAuth.instance.currentUser;
 
   if (user == null) {
     throw Exception("User not logged in");
   }
 
-  // Create a reference to the collection
-  CollectionReference roomsCollection =
-      FirebaseFirestore.instance.collection('onSale');
+  CollectionReference roomsCollection = FirebaseFirestore.instance.collection('onSale');
 
-  // Build a query to fetch all rooms for the current user
-  final QuerySnapshot snapshot = await roomsCollection
-      .where('userId', isEqualTo: user.uid) // Filter by current user
-      .get();
+  // Listen for updates on the collection
+  await for (var snapshot in roomsCollection.where('userId', isEqualTo: user.uid).snapshots()) {
+    // Map the documents to the Room model
+    List<Room> rooms = snapshot.docs.map((doc) {
+      final data = doc.data() as Map<String, dynamic>;
+      return Room(
+        uid: doc.id,
+        name: data['name'],
+        price: data["price"],
+        capacity: data['capacity'],
+        description: data['description'],
+        length: data['length'],
+        breadth: data['breadth'],
+        photo: List<String>.from(data['photo']),
+        panoramaImg: data['panoramaImg'],
+        water: data['water'],
+        electricity: data['electricity'],
+        fohor: data['fohor'],
+        lat: data['lat'],
+        lng: data['lng'],
+        active: data['active'],
+        featured: data['featured'],
+        locationName: data['locationName'],
+        statusByAdmin: data["statusByAdmin"],
+        details: Map<String, String>.from(data["detail"]),
+        status: data['status'] != null ? Map<String, dynamic>.from(data['status']) : {},
+        report: data['report'] != null ? Map<String, dynamic>.from(data['report']) : {},
+        facilities: data['facilities'] != null ? List<String>.from(data['facilities']) : [],
+      );
+    }).toList();
 
-  // Filter the results in memory based on the status
-  List<Room> rooms = snapshot.docs.map((doc) {
-    final data = doc.data() as Map<String, dynamic>;
-    return Room(
-      uid: doc.id,
-      name: data['name'],
-      price: data["price"],
-      capacity: data['capacity'],
-      description: data['description'],
-      length: data['length'],
-      breadth: data['breadth'],
-      photo: List<String>.from(data['photo']),
-      panoramaImg: data['panoramaImg'],
-      water: doc['water'],
-      electricity: data['electricity'],
-      fohor: data['fohor'],
-      lat: data['lat'],
-      lng: data['lng'],
-      active: data['active'],
-      featured: data['featured'],
-      locationName: data['locationName'],
-      statusByAdmin: data["statusByAdmin"],
-      details: Map<String, String>.from(data["detail"]),
-      status: data['status'] != null
-          ? Map<String, dynamic>.from(data['status'])
-          : {},
-      report: data['report'] != null ? Map<String, dynamic>.from(data['report']) : {},
-      facilities: data['facilities'] != null ? List<String>.from(data['facilities']) : [],
-    );
-  }).toList();
+    // Filter based on status
+    rooms = rooms.where((room) => room.status.isNotEmpty && room.status['statusDisplay'] == "To Buy").toList();
 
-  rooms = rooms.where((room) => room.status.isNotEmpty).toList();
-  rooms =
-      rooms.where((room) => room.status['statusDisplay'] == "To Buy").toList();
-  return rooms;
+    yield rooms; // Emit the filtered list
+  }
 }
+
 
 class EnquiriesPage extends StatefulWidget {
   final double lat, lng;
@@ -69,7 +65,7 @@ class EnquiriesPage extends StatefulWidget {
 }
 
 class _EnquiriesPageState extends State<EnquiriesPage> {
-  late Future<List<Room>> enquiries;
+  late Stream<List<Room>> enquiries;
 
   @override
   void initState() {
@@ -89,15 +85,15 @@ class _EnquiriesPageState extends State<EnquiriesPage> {
             style: TextStyle(
                 color: kThemeColor, fontWeight: FontWeight.bold, fontSize: 25)),
       ),
-      body: FutureBuilder<List<Room>>(
-        future: enquiries,
+      body:  StreamBuilder<List<Room>>(
+        stream: enquiries,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text("Error: ${snapshot.error}"));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text("No enquiries found."));
+            return const Center(child: Text("No enquiries found."));
           } else {
             final rooms = snapshot.data!;
             return Padding(
@@ -196,7 +192,7 @@ class _EnquiriesPageState extends State<EnquiriesPage> {
                                                     color: kThemeColor),
                                                 Text(
                                                   '${room.status['statusDisplay']}',
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                       color:
                                                       Colors.black45),
                                                 ),
@@ -216,7 +212,7 @@ class _EnquiriesPageState extends State<EnquiriesPage> {
                                                     color: kThemeColor),
                                                 Text(
                                                   "${(rooms[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                       color: Colors.black45),
                                                 ),
                                               ],
@@ -236,7 +232,7 @@ class _EnquiriesPageState extends State<EnquiriesPage> {
                                                         title: Row(
                                                           children: [
                                                             Icon(Icons.info, color: kThemeColor),
-                                                            SizedBox(width: 8),
+                                                            const SizedBox(width: 8),
                                                             Text(
                                                               "Approve Room Status",
                                                               style: TextStyle(
@@ -250,29 +246,29 @@ class _EnquiriesPageState extends State<EnquiriesPage> {
                                                           mainAxisSize: MainAxisSize.min,
                                                           crossAxisAlignment: CrossAxisAlignment.start,
                                                           children: [
-                                                            SizedBox(height: 10),
+                                                            const SizedBox(height: 10),
                                                             Row(
                                                               children: [
                                                                 Icon(Icons.person, color: kThemeColor),
-                                                                SizedBox(width: 8),
-                                                                Text(
+                                                                const SizedBox(width: 8),
+                                                                const Text(
                                                                   "Buyer Name:",
                                                                   style: TextStyle(fontWeight: FontWeight.bold),
                                                                 ),
-                                                                SizedBox(width: 8),
+                                                                const SizedBox(width: 8),
                                                                 Text(room.status["By"] ?? ""),
                                                               ],
                                                             ),
-                                                            SizedBox(height: 10),
+                                                            const SizedBox(height: 10),
                                                             Row(
                                                               children: [
                                                                 Icon(Icons.email, color: kThemeColor),
-                                                                SizedBox(width: 8),
-                                                                Text(
+                                                                const SizedBox(width: 8),
+                                                                const Text(
                                                                   "Buyer Email:",
                                                                   style: TextStyle(fontWeight: FontWeight.bold),
                                                                 ),
-                                                                SizedBox(width: 8),
+                                                                const SizedBox(width: 8),
                                                                 Text(room.status["userEmail"] ?? ""),
                                                               ],
                                                             ),
@@ -291,7 +287,7 @@ class _EnquiriesPageState extends State<EnquiriesPage> {
                                                                 borderRadius: BorderRadius.circular(10.0),
                                                               ),
                                                             ),
-                                                            child: Text("Approve"),
+                                                            child: const Text("Approve"),
                                                           ),
                                                           OutlinedButton(
                                                             onPressed: () {
@@ -314,7 +310,7 @@ class _EnquiriesPageState extends State<EnquiriesPage> {
                                                   );
                                                 },
                                                 style: ElevatedButton.styleFrom(backgroundColor: kThemeColor),
-                                                child: Text("Approve"),
+                                                child: const Text("Approve"),
                                               ),
                                             )
                                           ],
@@ -355,16 +351,28 @@ class _EnquiriesPageState extends State<EnquiriesPage> {
           .doc(roomUid)
           .update({'status': newStatus});
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Room status updated to Sold!')),
+      Fluttertoast.showToast(
+        msg: "Room status updated to Sold!",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 16.0,
       );
 
       setState(() {
         room.status = newStatus;
       });
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to update status: $e')),
+      Fluttertoast.showToast(
+        msg: "Failed to update status: $e",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 2,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
       );
     }
   }
