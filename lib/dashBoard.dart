@@ -1262,7 +1262,7 @@ class _PriceRangeScreenState extends State<PriceRangeScreen> {
                 startPrice = _currentRangeValues.start;
                 endPrice = _currentRangeValues.end;
                 fetchRoomsForFilter();
-                print('Selected Price Range: ${_currentRangeValues.start} - ${_currentRangeValues.end}');
+                log('Selected Price Range: ${_currentRangeValues.start} - ${_currentRangeValues.end}');
                 setState(() {
 
                 });
