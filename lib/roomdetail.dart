@@ -436,14 +436,13 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                             const SizedBox(height: 20),
                             Visibility(
                               visible:
-                                  widget.room.status["statusDisplay"] == "To Buy",
+                              !(widget.room.status["statusDisplay"] == "Sold" ||
+                                  widget.room.status["statusDisplay"] == "Owned"),
                               child: SizedBox(
                                 width: double.infinity,
                                 height: 45,
                                 child: ElevatedButton(
-                                  onPressed: (){
-                                    _bookRoom;
-                                  },
+                                  onPressed: _bookRoom,
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xFF072A2E),
                                     shape: RoundedRectangleBorder(
@@ -556,8 +555,6 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
 
     try {
       User? user = FirebaseAuth.instance.currentUser;
-
-      // Prepare status and room details
       Map<String, dynamic> newStatus = {
         'By': user?.displayName,
         'uId': user?.uid,
@@ -583,22 +580,19 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
         "lat": widget.room.lat,
         "lng": widget.room.lng,
         "locationName": widget.room.locationName,
-        "status": 'To Buy' // Consider changing this if the field already exists
+        "status": 'To Buy'
       };
 
-      // Update the status in the 'onSale' collection
       await FirebaseFirestore.instance
           .collection('onSale')
           .doc(widget.room.uid)
-          .set({'status': newStatus}, SetOptions(merge: true));
-
-      // Update the user's 'rooms' field
-      await FirebaseFirestore.instance.collection('users').doc(user?.uid).set({
+          .update({'status': newStatus});
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user?.uid)
+          .update({
         'rooms': FieldValue.arrayUnion([roomDetail]),
-      }, SetOptions(merge: true));
-
-      // Only pop once to avoid navigation issues
-      Navigator.pop(context);
+      });
 
       Fluttertoast.showToast(
         msg: 'Room Requested successfully!',
@@ -607,10 +601,10 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
         backgroundColor: Colors.green,
         textColor: Colors.white,
       );
-
+      Navigator.pop(context);
       setState(() {
         _isBooking = false;
-        widget.room.status = newStatus; // You might need to adjust this based on your logic
+        widget.room.status = newStatus;
       });
     } catch (e) {
       Fluttertoast.showToast(

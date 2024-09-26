@@ -490,6 +490,155 @@ class _DashBoardState extends State<DashBoard> {
                     ),
                   ),
                   const SizedBox(height: 30),
+                  const Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      "Popular",
+                      style: TextStyle(
+                        color: Color(0xFF072A2E),
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  FutureBuilder<List<Room>>(
+                    future: fetchRooms(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Shimmer.fromColors(
+                          baseColor: Colors.grey.shade300,
+                          highlightColor: Colors.grey.shade100,
+                          child: Container(
+                            height: 350,
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: 3, // Number of shimmer items to show
+                              itemBuilder: (context, index) => Container(
+                                width: 200,
+                                margin:
+                                const EdgeInsets.symmetric(horizontal: 8),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      }
+
+                      if (snapshot.hasError) {
+                        return Center(child: Text('Error: ${snapshot.error}'));
+                      }
+
+                      if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return const Center(child: Text('No rooms available'));
+                      }
+
+                      // Filter out rooms that have the 'status' key
+                      final filteredRooms = snapshot.data!
+                          .where((room) =>
+                      !room.status.containsKey('statusDisplay'))
+                          .toList();
+
+                      if (filteredRooms.isEmpty) {
+                        return const Center(child: Text('No rooms available'));
+                      }
+
+                      return Container(
+                        height: 350,
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: filteredRooms.length,
+                          itemBuilder: (context, index) {
+                            final room = filteredRooms[index];
+
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        RoomDetailPage(room: room),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                width: 200,
+                                margin:
+                                const EdgeInsets.symmetric(horizontal: 8),
+                                child: Stack(
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(12),
+                                      child: Image.network(
+                                        room.photo.isNotEmpty
+                                            ? room.photo[0]
+                                            : '',
+                                        width: 200,
+                                        height: 350,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    Positioned(
+                                        right: 10,
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                              backgroundColor: kThemeColor),
+                                          child: const Text("For Rent"),
+                                          onPressed: () {},
+                                        )),
+                                    Positioned(
+                                      bottom: 0,
+                                      left: 0,
+                                      right: 0,
+                                      child: Container(
+                                        padding: const EdgeInsets.all(12),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              room.name.toUpperCase(),
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 20,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Row(
+                                              children: [
+                                                const Icon(
+                                                  Icons.location_on_rounded,
+                                                  color: Colors.white,
+                                                ),
+                                                Expanded(
+                                                  child: Text(
+                                                    room.locationName,
+                                                    style: const TextStyle(
+                                                        fontSize: 12,
+                                                        color: Colors.white),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 30),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -501,47 +650,47 @@ class _DashBoardState extends State<DashBoard> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      FutureBuilder<List<Room>>(
-                        future: fetchMostSearchedProducts(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const Text(
-                              "Loading...",
-                              style: TextStyle(
-                                color: Color(0xFF072A2E),
-                                fontSize: 16,
-                              ),
-                            );
-                          } else if (snapshot.hasError) {
-                            return const Text(
-                              "Error",
-                              style: TextStyle(
-                                color: Color(0xFF072A2E),
-                                fontSize: 16,
-                              ),
-                            );
-                          } else if (!snapshot.hasData ||
-                              snapshot.data!.isEmpty) {
-                            return const Text(
-                              "0 items",
-                              style: TextStyle(
-                                color: Color(0xFF072A2E),
-                                fontSize: 16,
-                              ),
-                            );
-                          }
-                          // Display the count of items
-                          final itemCount = snapshot.data!.length;
-                          return Text(
-                            "$itemCount items",
-                            style: const TextStyle(
-                              color: Color(0xFF072A2E),
-                              fontSize: 14,
-                            ),
-                          );
-                        },
-                      ),
+                      // FutureBuilder<List<Room>>(
+                      //   future: fetchMostSearchedProducts(),
+                      //   builder: (context, snapshot) {
+                      //     if (snapshot.connectionState ==
+                      //         ConnectionState.waiting) {
+                      //       return const Text(
+                      //         "Loading...",
+                      //         style: TextStyle(
+                      //           color: Color(0xFF072A2E),
+                      //           fontSize: 16,
+                      //         ),
+                      //       );
+                      //     } else if (snapshot.hasError) {
+                      //       return const Text(
+                      //         "Error",
+                      //         style: TextStyle(
+                      //           color: Color(0xFF072A2E),
+                      //           fontSize: 16,
+                      //         ),
+                      //       );
+                      //     } else if (!snapshot.hasData ||
+                      //         snapshot.data!.isEmpty) {
+                      //       return const Text(
+                      //         "0 items",
+                      //         style: TextStyle(
+                      //           color: Color(0xFF072A2E),
+                      //           fontSize: 16,
+                      //         ),
+                      //       );
+                      //     }
+                      //     // Display the count of items
+                      //     final itemCount = snapshot.data!.length;
+                      //     return Text(
+                      //       "$itemCount items",
+                      //       style: const TextStyle(
+                      //         color: Color(0xFF072A2E),
+                      //         fontSize: 14,
+                      //       ),
+                      //     );
+                      //   },
+                      // ),
                     ],
                   ),
                   FutureBuilder<List<Room>>(
@@ -753,46 +902,46 @@ class _DashBoardState extends State<DashBoard> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      FutureBuilder<List<Room>>(
-                        future: fetchRooms(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const Text(
-                              "Loading...",
-                              style: TextStyle(
-                                color: Color(0xFF072A2E),
-                                fontSize: 14,
-                              ),
-                            );
-                          } else if (snapshot.hasError) {
-                            return const Text(
-                              "Error",
-                              style: TextStyle(
-                                color: Color(0xFF072A2E),
-                                fontSize: 14,
-                              ),
-                            );
-                          } else if (!snapshot.hasData ||
-                              snapshot.data!.isEmpty) {
-                            return const Text(
-                              "0 items",
-                              style: TextStyle(
-                                color: Color(0xFF072A2E),
-                                fontSize: 14,
-                              ),
-                            );
-                          }
-                          final itemCount = snapshot.data!.length;
-                          return Text(
-                            "$itemCount items",
-                            style: const TextStyle(
-                              color: Color(0xFF072A2E),
-                              fontSize: 14,
-                            ),
-                          );
-                        },
-                      ),
+                      // FutureBuilder<List<Room>>(
+                      //   future: fetchRooms(),
+                      //   builder: (context, snapshot) {
+                      //     if (snapshot.connectionState ==
+                      //         ConnectionState.waiting) {
+                      //       return const Text(
+                      //         "Loading...",
+                      //         style: TextStyle(
+                      //           color: Color(0xFF072A2E),
+                      //           fontSize: 14,
+                      //         ),
+                      //       );
+                      //     } else if (snapshot.hasError) {
+                      //       return const Text(
+                      //         "Error",
+                      //         style: TextStyle(
+                      //           color: Color(0xFF072A2E),
+                      //           fontSize: 14,
+                      //         ),
+                      //       );
+                      //     } else if (!snapshot.hasData ||
+                      //         snapshot.data!.isEmpty) {
+                      //       return const Text(
+                      //         "0 items",
+                      //         style: TextStyle(
+                      //           color: Color(0xFF072A2E),
+                      //           fontSize: 14,
+                      //         ),
+                      //       );
+                      //     }
+                      //     final itemCount = snapshot.data!.length;
+                      //     return Text(
+                      //       "$itemCount items",
+                      //       style: const TextStyle(
+                      //         color: Color(0xFF072A2E),
+                      //         fontSize: 14,
+                      //       ),
+                      //     );
+                      //   },
+                      // ),
                     ],
                   ),
                   FutureBuilder<List<Room>>(
@@ -828,8 +977,7 @@ class _DashBoardState extends State<DashBoard> {
 
                       // Filter the rooms based on statusDisplay
                       final filteredRooms1 = snapshot.data!.where((room) {
-                        return room.status['statusDisplay'] == "Sold" ||
-                            room.status['statusDisplay'] == "To Buy";
+                        return room.status['statusDisplay'] == "To Buy";
                       }).toList();
 
                       // Sort the filtered rooms by distance
@@ -1005,155 +1153,6 @@ class _DashBoardState extends State<DashBoard> {
                       );
                     },
                   ),
-                  const SizedBox(height: 30),
-                  const Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      "Popular",
-                      style: TextStyle(
-                        color: Color(0xFF072A2E),
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  FutureBuilder<List<Room>>(
-                    future: fetchRooms(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Shimmer.fromColors(
-                          baseColor: Colors.grey.shade300,
-                          highlightColor: Colors.grey.shade100,
-                          child: Container(
-                            height: 350,
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: 3, // Number of shimmer items to show
-                              itemBuilder: (context, index) => Container(
-                                width: 200,
-                                margin:
-                                    const EdgeInsets.symmetric(horizontal: 8),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                              ),
-                            ),
-                          ),
-                        );
-                      }
-
-                      if (snapshot.hasError) {
-                        return Center(child: Text('Error: ${snapshot.error}'));
-                      }
-
-                      if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                        return const Center(child: Text('No rooms available'));
-                      }
-
-                      // Filter out rooms that have the 'status' key
-                      final filteredRooms = snapshot.data!
-                          .where((room) =>
-                              !room.status.containsKey('statusDisplay'))
-                          .toList();
-
-                      if (filteredRooms.isEmpty) {
-                        return const Center(child: Text('No rooms available'));
-                      }
-
-                      return Container(
-                        height: 350,
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: filteredRooms.length,
-                          itemBuilder: (context, index) {
-                            final room = filteredRooms[index];
-
-                            return GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        RoomDetailPage(room: room),
-                                  ),
-                                );
-                              },
-                              child: Container(
-                                width: 200,
-                                margin:
-                                    const EdgeInsets.symmetric(horizontal: 8),
-                                child: Stack(
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(12),
-                                      child: Image.network(
-                                        room.photo.isNotEmpty
-                                            ? room.photo[0]
-                                            : '',
-                                        width: 200,
-                                        height: 350,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                    Positioned(
-                                        right: 10,
-                                        child: ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                              backgroundColor: kThemeColor),
-                                          child: const Text("For Rent"),
-                                          onPressed: () {},
-                                        )),
-                                    Positioned(
-                                      bottom: 0,
-                                      left: 0,
-                                      right: 0,
-                                      child: Container(
-                                        padding: const EdgeInsets.all(12),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              room.name.toUpperCase(),
-                                              style: const TextStyle(
-                                                color: Colors.white,
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 20,
-                                              ),
-                                            ),
-                                            const SizedBox(height: 4),
-                                            Row(
-                                              children: [
-                                                const Icon(
-                                                  Icons.location_on_rounded,
-                                                  color: Colors.white,
-                                                ),
-                                                Expanded(
-                                                  child: Text(
-                                                    room.locationName,
-                                                    style: const TextStyle(
-                                                        fontSize: 12,
-                                                        color: Colors.white),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      );
-                    },
-                  )
                 ],
               ),
             ),
@@ -1288,8 +1287,6 @@ class _PriceRangeScreenState extends State<PriceRangeScreen> {
                         .where((room) => room.price >= startPrice! && room.price <= endPrice!)
                         .toList();
 
-
-
                   return ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
@@ -1297,9 +1294,7 @@ class _PriceRangeScreenState extends State<PriceRangeScreen> {
                     itemBuilder: (context, index) {
                       final room = filteredRooms1[index];
                       return GestureDetector(
-                        onTap: () {
-
-                        },
+                        onTap: () {},
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(16.0),

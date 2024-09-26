@@ -452,13 +452,30 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
     try {
       User? user = FirebaseAuth.instance.currentUser;
 
+      // Check if user is null
+      if (user == null) {
+        throw Exception("User is not authenticated.");
+      }
+
+      // Prepare new status
       Map<String, dynamic> newStatus = {
-        'SoldBy': user?.displayName,
-        'sellerId': user?.uid,
-        'SellerEmail': user?.email,
+        'SoldBy': user.displayName,
+        'sellerId': user.uid,
+        'SellerEmail': user.email,
         'statusDisplay': 'Sold',
       };
 
+      // Check if the document exists before updating
+      DocumentSnapshot docSnapshot = await FirebaseFirestore.instance
+          .collection('onSale')
+          .doc(roomUid)
+          .get();
+
+      if (!docSnapshot.exists) {
+        throw Exception("Room with ID $roomUid does not exist.");
+      }
+
+      // Update the document
       await FirebaseFirestore.instance
           .collection('onSale')
           .doc(roomUid)
@@ -474,10 +491,13 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
         fontSize: 16.0,
       );
 
+      // Update local state
       setState(() {
         room.status = newStatus;
       });
     } catch (e) {
+      log("Error updating room status: $e");
+
       Fluttertoast.showToast(
         msg: "Failed to update status: $e",
         toastLength: Toast.LENGTH_LONG,
