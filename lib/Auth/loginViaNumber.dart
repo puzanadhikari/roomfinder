@@ -27,11 +27,9 @@ class _LoginVIaNumberState extends State<LoginVIaNumber> {
         backgroundColor: kThemeColor,
       ),
       body: isLoading == true ? Center(
-          child: LoadingAnimationWidget.discreteCircle(
+          child: LoadingAnimationWidget.threeArchedCircle(
             color:kThemeColor,
             size: 60,
-            secondRingColor: appBarColor,
-            thirdRingColor: const Color(0xFFD9D9D9),
           )) : ListView(
         children: [
           Padding(
