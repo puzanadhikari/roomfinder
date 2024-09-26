@@ -9,7 +9,9 @@ import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'calculation.dart';
 import 'model/onSaleModel.dart';
-
+RangeValues _currentRangeValues = RangeValues(0, 100000);
+double? startPrice;
+double? endPrice;
 class DashBoard extends StatefulWidget {
   double lat, lng;
 
@@ -40,8 +42,12 @@ class _DashBoardState extends State<DashBoard> {
         capacity: data['capacity'],
         water: doc['water'],
         description: data['description'],
-        length: data['length'],
-        breadth: data['breadth'],
+        roomLength: data['roomLength'],
+        roomBreath: data['roomBreadth'],
+        hallBreadth: data['hallBreadth'],
+        hallLength: data['hallLength'],
+        kitchenbreadth: data['kitchenBreadth'],
+        kitchenLength: data['kitchenLength'],
         photo: List<String>.from(data['photo']),
         statusByAdmin: data["statusByAdmin"],
         panoramaImg: data['panoramaImg'],
@@ -112,8 +118,12 @@ class _DashBoardState extends State<DashBoard> {
           details: Map<String, String>.from(productData["detail"]),
           description: productData['description'],
           water: productSnapshot['water'],
-          length: productData['length'],
-          breadth: productData['breadth'],
+          roomLength: data['roomLength'],
+          roomBreath: data['roomBreadth'],
+          hallBreadth: data['hallBreadth'],
+          hallLength: data['hallLength'],
+          kitchenbreadth: data['kitchenBreadth'],
+          kitchenLength: data['kitchenLength'],
           photo: List<String>.from(productData['photo']),
           panoramaImg: productData['panoramaImg'],
           electricity: productData['electricity'],
@@ -334,6 +344,11 @@ class _DashBoardState extends State<DashBoard> {
                                   .toLowerCase()
                                   .contains(searchQuery.toLowerCase()))
                               .toList();
+                          if (startPrice != null && endPrice != null) {
+                            filteredRooms = filteredRooms
+                                .where((room) => room.price >= startPrice! && room.price <= endPrice!)
+                                .toList();
+                          }
                           List<Room> sortedRooms = sortedRoomsByDistance(
                               filteredRooms, widget.lat, widget.lng);
 
@@ -1154,8 +1169,52 @@ class PriceRangeScreen extends StatefulWidget {
 }
 
 class _PriceRangeScreenState extends State<PriceRangeScreen> {
-  RangeValues _currentRangeValues = RangeValues(0, 1000);
 
+
+  Future<List<Room>> fetchRoomsForFilter() async {
+    final QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('onSale')
+        .where('active', isEqualTo: true)
+        .get();
+
+    return snapshot.docs.map((doc) {
+      final data = doc.data() as Map<String, dynamic>;
+      return Room(
+        uid: doc.id,
+        name: data['name'],
+        price: data["price"],
+        details: Map<String, String>.from(data["detail"]),
+        capacity: data['capacity'],
+        water: doc['water'],
+        description: data['description'],
+        roomLength: data['roomLength'],
+        roomBreath: data['roomBreadth'],
+        hallBreadth: data['hallBreadth'],
+        hallLength: data['hallLength'],
+        kitchenbreadth: data['kitchenBreadth'],
+        kitchenLength: data['kitchenLength'],
+        photo: List<String>.from(data['photo']),
+        statusByAdmin: data["statusByAdmin"],
+        panoramaImg: data['panoramaImg'],
+        electricity: data['electricity'],
+        fohor: data['fohor'],
+        lat: data['lat'],
+        lng: data['lng'],
+        active: data['active'],
+        featured: data['featured'],
+        locationName: data["locationName"],
+        status: data['status'] != null
+            ? Map<String, dynamic>.from(data['status'])
+            : {},
+        report: data['report'] != null
+            ? Map<String, dynamic>.from(data['report'])
+            : {},
+        facilities: data['facilities'] != null
+            ? List<String>.from(data['facilities'])
+            : [],
+      );
+    }).toList();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -1176,7 +1235,7 @@ class _PriceRangeScreenState extends State<PriceRangeScreen> {
             RangeSlider(
               values: _currentRangeValues,
               min: 0,
-              max: 1000,
+              max: 100000,
               divisions: 100, // Divides the slider into intervals
               labels: RangeLabels(
                 _currentRangeValues.start.round().toString(),
@@ -1196,13 +1255,177 @@ class _PriceRangeScreenState extends State<PriceRangeScreen> {
                   fontSize: 16),
             ),
             const SizedBox(height: 30),
+
             ElevatedButton(
               child: Text('Confirm'),
               onPressed: () {
-                // Handle the confirmation of the selected price range
+                startPrice = _currentRangeValues.start;
+                endPrice = _currentRangeValues.end;
+                fetchRoomsForFilter();
                 print('Selected Price Range: ${_currentRangeValues.start} - ${_currentRangeValues.end}');
-                Navigator.pop(context); // Go back to the previous screen
+                setState(() {
+
+                });
+                // Navigator.pop(context); // Go back to the previous screen
               },
+            ),
+            SizedBox(
+              child: FutureBuilder<List<Room>>(
+                future: fetchRoomsForFilter(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState ==
+                      ConnectionState.waiting) {
+
+                  } else if (snapshot.hasError) {
+                    return Center(
+                        child: Text('Error: ${snapshot.error}'));
+                  } else if (!snapshot.hasData ||
+                      snapshot.data!.isEmpty) {
+                    return const Center(
+                        child: Text('No rooms available.'));
+                  }
+
+                  List<Room> filteredRooms1  = snapshot.data!
+                        .where((room) => room.price >= startPrice! && room.price <= endPrice!)
+                        .toList();
+
+
+
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: filteredRooms1.length,
+                    itemBuilder: (context, index) {
+                      final room = filteredRooms1[index];
+                      return GestureDetector(
+                        onTap: () {
+
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16.0),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.shade300,
+                                blurRadius: 5,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
+                          ),
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16.0),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8.0),
+                              child: Row(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius:
+                                    const BorderRadius.horizontal(
+                                      left: Radius.circular(16.0),
+                                      right: Radius.circular(16.0),
+                                    ),
+                                    child: Image.network(
+                                      room.photo.isNotEmpty
+                                          ? room.photo[0]
+                                          : 'https://via.placeholder.com/150',
+                                      height: 100,
+                                      width: 100,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                      padding:
+                                      const EdgeInsets.all(16.0),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                        MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            room.name.toUpperCase(),
+                                            style: TextStyle(
+                                              color: kThemeColor,
+                                              fontWeight:
+                                              FontWeight.bold,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 8),
+                                          Text(
+                                            room.locationName,
+                                            style: TextStyle(
+                                              color:
+                                              Colors.grey.shade700,
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 8),
+                                          Text(
+                                            "${room.price}/ per month",
+                                            style: TextStyle(
+                                              color: kThemeColor,
+                                              fontSize: 14,
+                                              fontWeight:
+                                              FontWeight.w600,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 10),
+                                          Row(
+                                            children: [
+                                              Icon(
+                                                  Icons
+                                                      .location_on_rounded,
+                                                  size: 16,
+                                                  color:
+                                                  kThemeColor),
+                                              // Text(
+                                              //   "${(sortedRooms[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
+                                              //   style: const TextStyle(
+                                              //       color: Colors
+                                              //           .black45),
+                                              // ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 10),
+                                          Row(
+                                            children: [
+                                              Icon(
+                                                  room.status['statusDisplay'] ==
+                                                      "Owned"
+                                                      ? Icons
+                                                      .check_circle
+                                                      : Icons
+                                                      .flag_circle,
+                                                  size: 16,
+                                                  color:
+                                                  kThemeColor),
+                                              Text(
+                                                '${room.status['statusDisplay'] ?? "To Buy"}',
+                                                style: const TextStyle(
+                                                    color: Colors
+                                                        .black45),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
             ),
           ],
         ),

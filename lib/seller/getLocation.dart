@@ -44,7 +44,8 @@ class _MapSearchScreenState extends State<MapSearchScreen> {
         markerId: MarkerId('selected-location'),
         position: position,
         onTap: () {
-          _showLocationDetails(); // Show details when marker is tapped
+          _showLocationDetails();
+          // Show details when marker is tapped
         },
       );
     });
@@ -103,6 +104,7 @@ class _MapSearchScreenState extends State<MapSearchScreen> {
           prefs.setDouble("lat", locations.first.latitude);
           prefs.setDouble("lng", locations.first.longitude);
           prefs.setString("locationName", city);
+
         });
 
         // Return the selected location to the previous page
@@ -117,6 +119,7 @@ class _MapSearchScreenState extends State<MapSearchScreen> {
   }
 
   void getLocationFromLatLng(LatLng position) async{
+    SharedPreferences prefs =await SharedPreferences.getInstance();
     List<Placemark> placemarks = await placemarkFromCoordinates(
       position!.latitude,
       position!.longitude,
@@ -125,7 +128,10 @@ class _MapSearchScreenState extends State<MapSearchScreen> {
     _center = position;
     _selectedCityName ="${ placemarks.first.street} ${placemarks.first.subAdministrativeArea!}";
     _selectedLatLng = selectedLocation;
-    log(_selectedCityName.toString());
+    prefs.setDouble("lat", position.latitude);
+    prefs.setDouble("lng", position.longitude);
+    prefs.setString("locationName", _selectedCityName!);
+    log("latitude 1"+position.latitude.toString());
     log(selectedLocation.toString());
     Navigator.pop(context, {
       'city': _selectedCityName,

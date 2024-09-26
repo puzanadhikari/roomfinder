@@ -25,11 +25,20 @@ class _CreateRoomState extends State<CreateRoom> {
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
   final List<XFile> _photos = []; // Array to hold selected photos
-  String? _name, _description, _locationName,_sellerName,_sellerEmail,_sellerPhone;
+  String? _name,
+      _description,
+      _locationName,
+      _sellerName,
+      _sellerEmail,
+      _sellerPhone;
   double? _price,
       _capacity,
-      _length,
-      _breadth,
+      _bedRoomLength,
+      _bedRoomBreadth,
+      _kitchenLength,
+      _kitchenBreadth,
+      _hallLength,
+      _hallBreadth,
       _latitude,
       _longitude,
       _water,
@@ -154,7 +163,10 @@ class _CreateRoomState extends State<CreateRoom> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     kHeightSmall,
-                    Text("Fill the following details of your property.For any inconvenience contact: 01123456",style: TextStyle(fontSize: 16,color: Colors.grey.shade800)),
+                    Text(
+                        "Fill the following details of your property.For any inconvenience contact: 01123456",
+                        style: TextStyle(
+                            fontSize: 16, color: Colors.grey.shade800)),
                     kHeightMedium,
                     Container(
                       decoration: BoxDecoration(
@@ -170,7 +182,8 @@ class _CreateRoomState extends State<CreateRoom> {
                           color: Colors.blue.shade100,
                           width: 1.0,
                         ),
-                        borderRadius: const BorderRadius.all(Radius.circular(20)),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(20)),
                       ),
                       child:
                           NotificationListener<OverscrollIndicatorNotification>(
@@ -212,7 +225,8 @@ class _CreateRoomState extends State<CreateRoom> {
                                 kHeightSmall,
                                 TextFormField(
                                   decoration: kFormFieldDecoration.copyWith(
-                                      labelText: "Capacity",hintText: "2BHK,3BHK....."),
+                                      labelText: "Capacity",
+                                      hintText: "2BHK,3BHK....."),
                                   keyboardType: TextInputType.number,
                                   onSaved: (value) =>
                                       _capacity = double.tryParse(value!),
@@ -224,37 +238,197 @@ class _CreateRoomState extends State<CreateRoom> {
                                   },
                                 ),
                                 kHeightSmall,
-                                TextFormField(
-                                  decoration: kFormFieldDecoration.copyWith(
-                                      labelText: "Length",hintText: "feet"),
-                                  keyboardType: TextInputType.number,
-                                  onSaved: (value) =>
-                                      _length = double.tryParse(value!),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please enter the length';
-                                    }
-                                    return null;
-                                  },
+                                Container(
+                                  padding: const EdgeInsets.all(16.0),
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [Colors.white, Colors.grey.shade100],
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                    ),
+                                    borderRadius: BorderRadius.circular(15.0),
+                                    border: Border.all(
+                                      color: Colors.grey.shade500,
+                                      width: 1.0,
+                                    ),
+                                  ),
+                                  child: ExpandablePanel(
+                                    header: Text(
+                                      'Room Dimension: *',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.grey.shade800,
+                                      ),
+                                    ),
+                                    expanded: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                child: TextFormField(
+                                                  decoration: kFormFieldDecoration
+                                                      .copyWith(
+                                                          labelText:
+                                                              "Bed Room Length",
+                                                          hintText: "feet"),
+                                                  keyboardType:
+                                                      TextInputType.number,
+                                                  onSaved: (value) =>
+                                                      _bedRoomLength =
+                                                          double.tryParse(value!),
+                                                  validator: (value) {
+                                                    if (value == null ||
+                                                        value.isEmpty) {
+                                                      return 'Please enter the length';
+                                                    }
+                                                    return null;
+                                                  },
+                                                ),
+                                              ),
+                                              SizedBox(width: 10),
+                                              Expanded(
+                                                child: TextFormField(
+                                                  decoration: kFormFieldDecoration
+                                                      .copyWith(
+                                                          labelText:
+                                                              "Bed Room Breadth",
+                                                          hintText: "feet"),
+                                                  keyboardType:
+                                                      TextInputType.number,
+                                                  onSaved: (value) =>
+                                                      _bedRoomBreadth =
+                                                          double.tryParse(value!),
+                                                  validator: (value) {
+                                                    if (value == null ||
+                                                        value.isEmpty) {
+                                                      return 'Please enter the breadth';
+                                                    }
+                                                    return null;
+                                                  },
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        kHeightSmall,
+                                        Container(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                child: TextFormField(
+                                                  decoration: kFormFieldDecoration
+                                                      .copyWith(
+                                                          labelText:
+                                                              "Kitchen Length",
+                                                          hintText: "feet"),
+                                                  keyboardType:
+                                                      TextInputType.number,
+                                                  onSaved: (value) =>
+                                                      _kitchenLength =
+                                                          double.tryParse(value!),
+                                                  validator: (value) {
+                                                    if (value == null ||
+                                                        value.isEmpty) {
+                                                      return 'Please enter the length';
+                                                    }
+                                                    return null;
+                                                  },
+                                                ),
+                                              ),
+                                              SizedBox(width: 10),
+                                              Expanded(
+                                                child: TextFormField(
+                                                  decoration: kFormFieldDecoration
+                                                      .copyWith(
+                                                          labelText:
+                                                              "Kitchen Breadth",
+                                                          hintText: "feet"),
+                                                  keyboardType:
+                                                      TextInputType.number,
+                                                  onSaved: (value) =>
+                                                      _kitchenBreadth =
+                                                          double.tryParse(value!),
+                                                  validator: (value) {
+                                                    if (value == null ||
+                                                        value.isEmpty) {
+                                                      return 'Please enter the breadth';
+                                                    }
+                                                    return null;
+                                                  },
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        kHeightSmall,
+
+                                        // Hall Dimensions
+                                        Container(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                child: TextFormField(
+                                                  decoration: kFormFieldDecoration
+                                                      .copyWith(
+                                                          labelText:
+                                                              "Hall Length",
+                                                          hintText: "feet"),
+                                                  keyboardType:
+                                                      TextInputType.number,
+                                                  onSaved: (value) =>
+                                                      _hallLength =
+                                                          double.tryParse(value!),
+                                                  validator: (value) {
+                                                    if (value == null ||
+                                                        value.isEmpty) {
+                                                      return 'Please enter the length';
+                                                    }
+                                                    return null;
+                                                  },
+                                                ),
+                                              ),
+                                              SizedBox(width: 10),
+                                              Expanded(
+                                                child: TextFormField(
+                                                  decoration: kFormFieldDecoration
+                                                      .copyWith(
+                                                          labelText:
+                                                              "Hall Breadth",
+                                                          hintText: "feet"),
+                                                  keyboardType:
+                                                      TextInputType.number,
+                                                  onSaved: (value) =>
+                                                      _hallBreadth =
+                                                          double.tryParse(value!),
+                                                  validator: (value) {
+                                                    if (value == null ||
+                                                        value.isEmpty) {
+                                                      return 'Please enter the breadth';
+                                                    }
+                                                    return null;
+                                                  },
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    collapsed: Container(),
+                                  ),
                                 ),
                                 kHeightSmall,
                                 TextFormField(
                                   decoration: kFormFieldDecoration.copyWith(
-                                      labelText: "Breadth",hintText: "feet"),
-                                  keyboardType: TextInputType.number,
-                                  onSaved: (value) =>
-                                      _breadth = double.tryParse(value!),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Please enter the breadth';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                kHeightSmall,
-                                TextFormField(
-                                  decoration: kFormFieldDecoration.copyWith(
-                                      labelText: "Electricity",hintText: "Price per Unit"),
+                                      labelText: "Electricity",
+                                      hintText: "Price per Unit"),
                                   keyboardType: TextInputType.number,
                                   onSaved: (value) =>
                                       _electricity = double.tryParse(value!),
@@ -268,7 +442,8 @@ class _CreateRoomState extends State<CreateRoom> {
                                 kHeightSmall,
                                 TextFormField(
                                   decoration: kFormFieldDecoration.copyWith(
-                                      labelText: "water price",hintText: "per month"),
+                                      labelText: "water price",
+                                      hintText: "per month"),
                                   keyboardType: TextInputType.number,
                                   onSaved: (value) =>
                                       _water = double.tryParse(value!),
@@ -282,7 +457,8 @@ class _CreateRoomState extends State<CreateRoom> {
                                 kHeightSmall,
                                 TextFormField(
                                   decoration: kFormFieldDecoration.copyWith(
-                                      labelText: "Fohor",hintText: "per month"),
+                                      labelText: "Fohor",
+                                      hintText: "per month"),
                                   keyboardType: TextInputType.number,
                                   onSaved: (value) =>
                                       _fohor = double.tryParse(value!),
@@ -395,7 +571,8 @@ class _CreateRoomState extends State<CreateRoom> {
                           collapseIcon: Icons.expand_less,
                           tapBodyToExpand: true,
                           tapBodyToCollapse: true,
-                          headerAlignment: ExpandablePanelHeaderAlignment.center,
+                          headerAlignment:
+                              ExpandablePanelHeaderAlignment.center,
                         ),
                       ),
                     ),
@@ -637,7 +814,8 @@ class _CreateRoomState extends State<CreateRoom> {
                           collapseIcon: Icons.expand_less,
                           tapBodyToExpand: true,
                           tapBodyToCollapse: true,
-                          headerAlignment: ExpandablePanelHeaderAlignment.center,
+                          headerAlignment:
+                              ExpandablePanelHeaderAlignment.center,
                         ),
                       ),
                     ),
@@ -703,7 +881,7 @@ class _CreateRoomState extends State<CreateRoom> {
                                     const SizedBox(height: 8),
                                     Text(
                                       'Latitude: ${_selectedLocationLatLng!.latitude}, '
-                                          'Longitude: ${_selectedLocationLatLng!.longitude}',
+                                      'Longitude: ${_selectedLocationLatLng!.longitude}',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         fontSize: 14,
@@ -731,7 +909,8 @@ class _CreateRoomState extends State<CreateRoom> {
                                   padding: const EdgeInsets.symmetric(
                                       vertical: 14.0, horizontal: 20.0),
                                   textStyle: const TextStyle(
-                                      fontSize: 16, fontWeight: FontWeight.w500),
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500),
                                 ),
                                 child: const Text('Get Desired Location'),
                               ),
@@ -756,7 +935,8 @@ class _CreateRoomState extends State<CreateRoom> {
                               _formKey.currentState!.save();
                               double? lat = prefs.getDouble("lat");
                               double? lng = prefs.getDouble("lng");
-                              String? location = prefs.getString("locationName");
+                              String? location =
+                                  prefs.getString("locationName");
                               List<String> uploadedPhotoUrls =
                                   await _uploadImages(_photos);
                               String uploadedPhotoUrlsPanorama =
@@ -764,11 +944,15 @@ class _CreateRoomState extends State<CreateRoom> {
                               List<String> selectedFacilities = _selectedNames;
                               await _auth.addSellerRoomDetail(
                                 _name!,
-                                  _price!,
+                                _price!,
                                 _capacity!,
                                 _description!,
-                                _length!,
-                                _breadth!,
+                                _bedRoomLength!,
+                                _bedRoomBreadth!,
+                                _hallLength!,
+                                _hallBreadth!,
+                                _kitchenLength!,
+                                _kitchenBreadth!,
                                 uploadedPhotoUrls,
                                 uploadedPhotoUrlsPanorama,
                                 _electricity!,

@@ -8,7 +8,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:meroapp/Constants/styleConsts.dart';
 import 'package:meroapp/provider/wishlistProvider.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:panorama/panorama.dart';
 import 'package:provider/provider.dart';
+import 'PanoramaFull.dart';
 import 'model/onSaleModel.dart';
 
 class RoomDetailPage extends StatefulWidget {
@@ -106,28 +108,36 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Container(
-                            //   height: 300, // Adjust height as necessary
-                            //   decoration: BoxDecoration(
-                            //     borderRadius: BorderRadius.circular(16.0), // Rounded corners
-                            //     boxShadow: [
-                            //       BoxShadow(
-                            //         color: Colors.black.withOpacity(0.2), // Shadow color
-                            //         spreadRadius: 2, // Spread radius
-                            //         blurRadius: 10, // Blur radius
-                            //         offset: Offset(0, 3), // Offset for the shadow
-                            //       ),
-                            //     ],
-                            //     color: Colors.white, // Background color
-                            //   ),
-                            //   clipBehavior: Clip.hardEdge, // Clip child widgets to the rounded corners
-                            //   child: Panorama(
-                            //     child: Image.network(
-                            //       widget.room.panoramaImg, // Use network image for panorama
-                            //       fit: BoxFit.cover,
-                            //     ),
-                            //   ),
-                            // ),
+                            GestureDetector(
+                              onTap:(){
+                      Navigator.push(context,
+                      MaterialPageRoute(builder: (context) =>  PanoramaFullPage(room: widget.room)));
+                      },
+                              child: Container(
+                                height: 300, // Adjust height as necessary
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(16.0), // Rounded corners
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.2), // Shadow color
+                                      spreadRadius: 2, // Spread radius
+                                      blurRadius: 10, // Blur radius
+                                      offset: Offset(0, 3), // Offset for the shadow
+                                    ),
+                                  ],
+                                  color: Colors.white, // Background color
+                                ),
+                                clipBehavior: Clip.hardEdge, // Clip child widgets to the rounded corners
+                                child: Panorama(
+                                  animSpeed: 1.0,
+                                  sensorControl: SensorControl.Orientation,
+                                  child: Image.network(
+                                    widget.room.panoramaImg, // Use network image for panorama
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                            ),
                             Text(
                               widget.room.name.toUpperCase(),
                               style: TextStyle(
@@ -175,7 +185,7 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                                       ),
                                       const SizedBox(height: 8),
                                       Text(
-                                        "${widget.room.length} * ${widget.room.breadth}",
+                                        "${widget.room.roomLength} * ${widget.room.roomBreath}",
                                         style: const TextStyle(
                                             color: Color(0xFF4D4D4D),
                                             fontSize: 16),
@@ -389,8 +399,12 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
         'capacity': room.capacity,
         'description': room.description,
         "price":room.price,
-        'length': room.length,
-        'breadth': room.breadth,
+        "roomLength": room.roomLength,
+        "roomBreadth":room.roomBreath,
+        "hallLength": room.hallLength,
+        "hallBreadth": room.hallBreadth,
+        "kitchenLength": room.kitchenLength,
+        "kitchenBreadth": room.kitchenbreadth,
         'photo': room.photo,
         'panoramaImg': room.panoramaImg,
         'electricity': room.electricity,
@@ -452,8 +466,12 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
         "name": widget.room.name,
         "capacity": widget.room.capacity,
         "description": widget.room.description,
-        'length': widget.room.length,
-        "breadth": widget.room.breadth,
+        "roomLength": widget.room.roomLength,
+        "roomBreadth": widget.room.roomBreath,
+        "hallLength": widget.room.hallLength,
+        "hallBreadth": widget.room.hallBreadth,
+        "kitchenLength": widget.room.kitchenLength,
+        "kitchenBreadth": widget.room.kitchenbreadth,
         "photo": List<String>.from(widget.room.photo),
         "panoramaImg": widget.room.panoramaImg,
         "electricity": widget.room.electricity,

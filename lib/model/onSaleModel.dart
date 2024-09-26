@@ -4,8 +4,12 @@ class Room {
   final double price;
   final double capacity;
   final String description;
-  final double length;
-  final double breadth;
+ final double roomLength;
+  final    double roomBreath;
+  final  double hallLength;
+  final     double hallBreadth;
+  final  double kitchenLength;
+  final     double kitchenbreadth;
   final List<String> photo;
   final String panoramaImg;
   final double electricity;
@@ -29,8 +33,12 @@ class Room {
     required this.price,
     required this.capacity,
     required this.description,
-    required this.length,
-    required this.breadth,
+    required this.roomLength,
+    required this.roomBreath,
+    required this.hallLength,
+    required this.hallBreadth,
+    required this.kitchenLength,
+    required this.kitchenbreadth,
     required this.photo,
     required this.panoramaImg,
     required this.electricity,

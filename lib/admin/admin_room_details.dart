@@ -150,7 +150,7 @@ class _AdminRoomDetailsState extends State<AdminRoomDetails> {
                                       ),
                                       const SizedBox(height: 14),
                                       Text(
-                                        "Dimension: ${widget.room.length} * ${widget.room.breadth}",
+                                        "Dimension: ${widget.room.roomLength} * ${widget.room.roomBreath}",
                                         style: TextStyle(
                                             color: Colors.grey.shade800,
                                             fontSize: 16),

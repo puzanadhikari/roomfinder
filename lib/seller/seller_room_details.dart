@@ -153,7 +153,7 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
                                       ),
                                       const SizedBox(height: 14),
                                       Text(
-                                        "Dimension: ${widget.room.length} * ${widget.room.breadth}",
+                                        "Dimension: ${widget.room.roomBreath} * ${widget.room.roomLength}",
                                         style: TextStyle(
                                             color: Colors.grey.shade600,
                                             fontSize: 16),
