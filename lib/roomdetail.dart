@@ -108,36 +108,36 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            GestureDetector(
-                              onTap:(){
-                      Navigator.push(context,
-                      MaterialPageRoute(builder: (context) =>  PanoramaFullPage(room: widget.room)));
-                      },
-                              child: Container(
-                                height: 300, // Adjust height as necessary
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(16.0), // Rounded corners
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.2), // Shadow color
-                                      spreadRadius: 2, // Spread radius
-                                      blurRadius: 10, // Blur radius
-                                      offset: Offset(0, 3), // Offset for the shadow
-                                    ),
-                                  ],
-                                  color: Colors.white, // Background color
-                                ),
-                                clipBehavior: Clip.hardEdge, // Clip child widgets to the rounded corners
-                                child: Panorama(
-                                  animSpeed: 1.0,
-                                  sensorControl: SensorControl.Orientation,
-                                  child: Image.network(
-                                    widget.room.panoramaImg, // Use network image for panorama
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                            ),
+                            //       GestureDetector(
+                            //         onTap:(){
+                            // Navigator.push(context,
+                            // MaterialPageRoute(builder: (context) =>  PanoramaFullPage(room: widget.room)));
+                            // },
+                            //         child: Container(
+                            //           height: 300, // Adjust height as necessary
+                            //           decoration: BoxDecoration(
+                            //             borderRadius: BorderRadius.circular(16.0), // Rounded corners
+                            //             boxShadow: [
+                            //               BoxShadow(
+                            //                 color: Colors.black.withOpacity(0.2), // Shadow color
+                            //                 spreadRadius: 2, // Spread radius
+                            //                 blurRadius: 10, // Blur radius
+                            //                 offset: Offset(0, 3), // Offset for the shadow
+                            //               ),
+                            //             ],
+                            //             color: Colors.white, // Background color
+                            //           ),
+                            //           clipBehavior: Clip.hardEdge, // Clip child widgets to the rounded corners
+                            //           child: Panorama(
+                            //             animSpeed: 1.0,
+                            //             sensorControl: SensorControl.Orientation,
+                            //             child: Image.network(
+                            //               widget.room.panoramaImg, // Use network image for panorama
+                            //               fit: BoxFit.cover,
+                            //             ),
+                            //           ),
+                            //         ),
+                            //       ),
                             Text(
                               widget.room.name.toUpperCase(),
                               style: TextStyle(
@@ -162,54 +162,153 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 25),
+                            const SizedBox(height: 8),
+                            Text(
+                              widget.room.locationName,
+                              style: const TextStyle(
+                                  color: Color(0xFF4D4D4D),
+                                  fontSize: 16),
+                            ),
+                            const SizedBox(height: 8),
+                            const Text(
+                              "1.5 km from Gwarko",
+                              style: TextStyle(
+                                  color: Color(0xFF4D4D4D),
+                                  fontSize: 16),
+                            ),
+                            const SizedBox(height: 16),
+                            const Divider(color: Colors.grey),
+                            const SizedBox(height: 15),
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Expanded(
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white, // Background color
+                                    borderRadius: BorderRadius.circular(16.0),
+                                  ),
                                   child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      const Text(
-                                        "1.5 km from Gwarko",
-                                        style: TextStyle(
-                                            color: Color(0xFF4D4D4D),
-                                            fontSize: 16),
+                                      Row(
+                                        children: [
+                                          const Icon(Icons.king_bed, color: Colors.black), // Icon for room
+                                          const SizedBox(width: 8), // Space between icon and text
+                                          Text(
+                                            "Room: ${widget.room.roomLength}m x ${widget.room.roomBreath}m",
+                                            style: const TextStyle(
+                                              color: Color(0xFF4D4D4D),
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                      const SizedBox(height: 8),
-                                      Text(
-                                        widget.room.locationName,
-                                        style: const TextStyle(
-                                            color: Color(0xFF4D4D4D),
-                                            fontSize: 16),
+                                      const SizedBox(height: 10),
+                                      Row(
+                                        children: [
+                                          const Icon(Icons.kitchen, color: Colors.black),
+                                          const SizedBox(width: 8),
+                                          Text(
+                                            "Kitchen: ${widget.room.kitchenLength}m x ${widget.room.kitchenbreadth}m",
+                                            style: const TextStyle(
+                                              color: Color(0xFF4D4D4D),
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                      const SizedBox(height: 8),
-                                      Text(
-                                        "${widget.room.roomLength} * ${widget.room.roomBreath}",
-                                        style: const TextStyle(
-                                            color: Color(0xFF4D4D4D),
-                                            fontSize: 16),
+                                      const SizedBox(height: 10),
+
+                                      // Hall dimensions
+                                      Row(
+                                        children: [
+                                          const Icon(Icons.tv, color: Colors.black), // Icon for hall
+                                          const SizedBox(width: 8),
+                                          Text(
+                                            "Hall: ${widget.room.hallLength}m x ${widget.room.hallBreadth}m",
+                                            style: const TextStyle(
+                                              color: Color(0xFF4D4D4D),
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
                                 ),
-                                const SizedBox(width: 8),
-                                ConstrainedBox(
-                                  constraints: BoxConstraints(
-                                    maxWidth:
-                                        MediaQuery.of(context).size.width *
-                                            0.4, // Adjust as needed
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => PanoramaFullPage(room: widget.room),
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15), // Padding for the container
+                                    decoration: BoxDecoration(
+                                      color: kThemeColor, // Background color (use your theme color)
+                                      borderRadius: BorderRadius.circular(20), // Rounded corners
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withOpacity(0.2), // Shadow color
+                                          blurRadius: 8, // Blur radius for the shadow
+                                          offset: const Offset(0, 3), // Shadow offset
+                                        ),
+                                      ],
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min, // To wrap content within the button
+                                      children: const [
+                                        Icon(
+                                          Icons.threed_rotation, // 360 icon to represent the view
+                                          color: Colors.white, // Icon color
+                                        ),
+                                        SizedBox(width: 10), // Space between icon and text
+                                        Text(
+                                          '360 View',
+                                          style: TextStyle(
+                                            color: Colors.white, // Text color
+                                            fontSize: 18, // Text size
+                                            fontWeight: FontWeight.bold, // Text weight
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  child: mapImageUrl.isNotEmpty
-                                      ? Image.network(
-                                          mapImageUrl,
-                                          height: 120,
-                                          fit: BoxFit.cover,
-                                        )
-                                      : Image.network(
-                                          "https://media.licdn.com/dms/image/D5603AQFD6ld3NWc2HQ/profile-displayphoto-shrink_200_200/0/1684164054868?e=2147483647&v=beta&t=cwQoyfhgAl_91URX5FTEXLwLDEHWe1H337EMebpgntQ"),
                                 ),
                               ],
+                            ),
+                            const SizedBox(height: 16),
+                            Center(
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  maxWidth: MediaQuery.of(context).size.width * 0.9, // Use 90% of screen width
+                                ),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(16.0), // Rounded corners for the image
+                                  ),
+                                  clipBehavior: Clip.hardEdge, // Clip the image to rounded corners
+                                  child: mapImageUrl.isNotEmpty
+                                      ? Image.network(
+                                    mapImageUrl,
+                                    width: MediaQuery.of(context).size.width, // Make the image full width
+                                    height: 200, // Adjust the height to maintain the aspect ratio
+                                    fit: BoxFit.cover, // Cover to ensure the image fills the container
+                                  )
+                                      : Image.network(
+                                    "https://media.licdn.com/dms/image/D5603AQFD6ld3NWc2HQ/profile-displayphoto-shrink_200_200/0/1684164054868?e=2147483647&v=beta&t=cwQoyfhgAl_91URX5FTEXLwLDEHWe1H337EMebpgntQ",
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 200,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
                             ),
                             const SizedBox(height: 25),
                             const Divider(
@@ -286,20 +385,17 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                                 ),
                                 Row(
                                   children: [
-                                    Icon(widget.room.status[
-                                    'statusDisplay'] ==
-                                        "Owned"
-                                        ? Icons
-                                        .check_circle
-                                        : Icons
-                                        .flag_circle,
+                                    Icon(
+                                        widget.room.status['statusDisplay'] ==
+                                                "Owned"
+                                            ? Icons.check_circle
+                                            : Icons.flag_circle,
                                         size: 16,
                                         color: kThemeColor),
                                     Text(
                                       '${widget.room.status['statusDisplay'] ?? "To Buy"}',
                                       style: const TextStyle(
-                                          color:
-                                          Colors.black45),
+                                          color: Colors.black45),
                                     ),
                                   ],
                                 ),
@@ -310,7 +406,8 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                             const SizedBox(height: 30),
                             const Text(
                               "Facilities",
-                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 16),
                             ),
                             const SizedBox(height: 20),
                             if (widget.room.facilities.isNotEmpty) ...[
@@ -318,7 +415,8 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                                 child: Wrap(
                                   spacing: 8.0,
                                   runSpacing: 8.0,
-                                  children: widget.room.facilities.map((facility) {
+                                  children:
+                                      widget.room.facilities.map((facility) {
                                     return Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
@@ -335,7 +433,10 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                             ],
                             const SizedBox(height: 20),
                             Visibility(
-                              visible: widget.room.status["statusDisplay"] == "Owned" ? false : true,
+                              visible:
+                                  widget.room.status["statusDisplay"] == "Owned"
+                                      ? false
+                                      : true,
                               child: SizedBox(
                                 width: double.infinity,
                                 height: 45,
@@ -367,7 +468,7 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                   top: carouselHeight - 50,
                   child: GestureDetector(
                     onTap: () {
-                      addToWishlist( widget.room);
+                      addToWishlist(widget.room);
                       // wishlistProvider.isInWishlist(widget.room) == true
                       //     ? wishlistProvider.removeFromWishlist(widget.room)
                       //     : wishlistProvider.addToWishlist(widget.room);
@@ -386,6 +487,7 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
       ),
     );
   }
+
   Future<void> addToWishlist(Room room) async {
     try {
       String uid = FirebaseAuth.instance.currentUser!.uid;
@@ -398,9 +500,9 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
         'name': room.name,
         'capacity': room.capacity,
         'description': room.description,
-        "price":room.price,
+        "price": room.price,
         "roomLength": room.roomLength,
-        "roomBreadth":room.roomBreath,
+        "roomBreadth": room.roomBreath,
         "hallLength": room.hallLength,
         "hallBreadth": room.hallBreadth,
         "kitchenLength": room.kitchenLength,
@@ -416,14 +518,12 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
         'locationName': room.locationName,
         'details': room.details,
         'status': room.status,
-        'water':room.water,
+        'water': room.water,
         'isFavorite': room.isFavorite,
-        "detail":room.details,
-        "statusByAdmin":room.statusByAdmin,
+        "detail": room.details,
+        "statusByAdmin": room.statusByAdmin,
         "facilities": room.facilities,
-        "report":{
-
-        },
+        "report": {},
       });
       Fluttertoast.showToast(
         msg: "Room added to wishlist successfully.",

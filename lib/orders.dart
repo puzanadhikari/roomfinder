@@ -167,9 +167,9 @@ class _OrderPageState extends State<OrderPage> {
               return Center(
                 child: Text('Error: ${snapshot.error}'),
               );
-            } else if (!snapshot.hasData || snapshot.data!['rooms'].isEmpty) {
+            } else if (!snapshot.hasData || snapshot.data?['rooms'] == null || snapshot.data!['rooms'].isEmpty) {
               return const Center(
-                child: Text('No rooms found.'),
+                child: Text('No orders rooms found.'),
               );
             }
 
