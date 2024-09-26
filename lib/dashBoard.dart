@@ -1284,7 +1284,6 @@ class _PriceRangeScreenState extends State<PriceRangeScreen> {
                     return const Center(
                         child: Text('No rooms available.'));
                   }
-
                   List<Room> filteredRooms1  = snapshot.data!
                         .where((room) => room.price >= startPrice! && room.price <= endPrice!)
                         .toList();
