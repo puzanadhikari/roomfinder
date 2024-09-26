@@ -356,7 +356,7 @@ class _MyListingsPageState extends State<MyListingsPage> {
                                                     child: Expanded(
                                                       child: OutlinedButton.icon(
                                                         onPressed: () {
-                                                          showDialog(
+                                                          roomStatus[index].report['electricity'] != null ? showDialog(
                                                             context: context,
                                                             builder: (BuildContext context) {
                                                               return AlertDialog(
@@ -423,7 +423,7 @@ class _MyListingsPageState extends State<MyListingsPage> {
                                                                 ],
                                                               );
                                                             },
-                                                          );
+                                                          ):"";
                                                         },
                                                         icon: Icon(Icons.folder_copy, color: kThemeColor),
                                                         label: const Text("Room Report"),

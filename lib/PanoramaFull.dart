@@ -28,7 +28,6 @@ class _PanoramaFullPageState extends State<PanoramaFullPage> {
               fit: BoxFit.cover,
             ),
           ),
-          // Overlay for top bar (Back button & Title)
           Positioned(
             top: 40,
             left: 16,
@@ -36,20 +35,21 @@ class _PanoramaFullPageState extends State<PanoramaFullPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Back button
                 GestureDetector(
                   onTap: () {
                     Navigator.pop(context);
                   },
                   child: Container(
-                    padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
                       color: Colors.black.withOpacity(0.5),
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(
-                      Icons.arrow_back,
-                      color: Colors.white,
+                    child: const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Icon(
+                        Icons.arrow_back_ios_new,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),

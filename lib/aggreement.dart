@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import 'Constants/styleConsts.dart';
+import 'orders.dart';
 
 class AgreementPage extends StatefulWidget {
   final String? sellerName;
@@ -38,7 +39,7 @@ class _AgreementPageState extends State<AgreementPage> {
           .doc(roomUid)
           .update({'status': newStatus});
       Fluttertoast.showToast(
-        msg: "Room status updated to Sold!",
+        msg: "Room status updated to Owned!",
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
@@ -46,7 +47,8 @@ class _AgreementPageState extends State<AgreementPage> {
         textColor: Colors.white,
         fontSize: 16.0,
       );
-      Navigator.of(context).pop(); // Close the agreement page
+      Navigator.of(context).pop();
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => OrderPage()));// Close the agreement page
     } catch (e) {
       Fluttertoast.showToast(
         msg: "Failed to update status: $e",

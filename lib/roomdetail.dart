@@ -74,14 +74,22 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
               Positioned(
                   top: 50,
                   left: 10,
-                  child: IconButton(
-                    onPressed: () {
+                  child:  GestureDetector(
+                    onTap: () {
                       Navigator.pop(context);
                     },
-                    icon: const Icon(
-                      Icons.arrow_back_ios,
-                      color: Colors.white,
-                      size: 30,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.5),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Icon(
+                          Icons.arrow_back_ios_new,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
                   )),
               Positioned(
@@ -249,10 +257,10 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                                     );
                                   },
                                   child: Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15), // Padding for the container
+                                    padding: const EdgeInsets.all(15), // Adjust padding for a circular button
                                     decoration: BoxDecoration(
-                                      color: kThemeColor, // Background color (use your theme color)
-                                      borderRadius: BorderRadius.circular(20), // Rounded corners
+                                      color: kThemeColor, // Use your theme color
+                                      shape: BoxShape.circle, // Circular shape
                                       boxShadow: [
                                         BoxShadow(
                                           color: Colors.black.withOpacity(0.2), // Shadow color
@@ -261,26 +269,20 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                                         ),
                                       ],
                                     ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min, // To wrap content within the button
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min, // To wrap content within the circle
+                                      mainAxisAlignment: MainAxisAlignment.center, // Center items in the circle
                                       children: const [
                                         Icon(
-                                          Icons.threed_rotation, // 360 icon to represent the view
+                                          Icons.threed_rotation, // 360 view icon
                                           color: Colors.white, // Icon color
-                                        ),
-                                        SizedBox(width: 10), // Space between icon and text
-                                        Text(
-                                          '360 View',
-                                          style: TextStyle(
-                                            color: Colors.white, // Text color
-                                            fontSize: 18, // Text size
-                                            fontWeight: FontWeight.bold, // Text weight
-                                          ),
+                                          size: 30, // Increase icon size
                                         ),
                                       ],
                                     ),
                                   ),
-                                ),
+                                )
+
                               ],
                             ),
                             const SizedBox(height: 16),
@@ -434,14 +436,14 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                             const SizedBox(height: 20),
                             Visibility(
                               visible:
-                                  widget.room.status["statusDisplay"] == "Owned"
-                                      ? false
-                                      : true,
+                                  widget.room.status["statusDisplay"] == "To Buy",
                               child: SizedBox(
                                 width: double.infinity,
                                 height: 45,
                                 child: ElevatedButton(
-                                  onPressed: _bookRoom,
+                                  onPressed: (){
+                                    _bookRoom;
+                                  },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xFF072A2E),
                                     shape: RoundedRectangleBorder(
@@ -554,6 +556,8 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
 
     try {
       User? user = FirebaseAuth.instance.currentUser;
+
+      // Prepare status and room details
       Map<String, dynamic> newStatus = {
         'By': user?.displayName,
         'uId': user?.uid,
@@ -579,19 +583,22 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
         "lat": widget.room.lat,
         "lng": widget.room.lng,
         "locationName": widget.room.locationName,
-        "status": 'To Buy'
+        "status": 'To Buy' // Consider changing this if the field already exists
       };
 
+      // Update the status in the 'onSale' collection
       await FirebaseFirestore.instance
           .collection('onSale')
           .doc(widget.room.uid)
-          .update({'status': newStatus});
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(user?.uid)
-          .update({
+          .set({'status': newStatus}, SetOptions(merge: true));
+
+      // Update the user's 'rooms' field
+      await FirebaseFirestore.instance.collection('users').doc(user?.uid).set({
         'rooms': FieldValue.arrayUnion([roomDetail]),
-      });
+      }, SetOptions(merge: true));
+
+      // Only pop once to avoid navigation issues
+      Navigator.pop(context);
 
       Fluttertoast.showToast(
         msg: 'Room Requested successfully!',
@@ -603,7 +610,7 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
 
       setState(() {
         _isBooking = false;
-        widget.room.status = newStatus;
+        widget.room.status = newStatus; // You might need to adjust this based on your logic
       });
     } catch (e) {
       Fluttertoast.showToast(
