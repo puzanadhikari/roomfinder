@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -514,17 +515,28 @@ class _MyListingsPageState extends State<MyListingsPage> {
           .doc(roomUid)
           .update({'report': report});
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Room status updated to Sold!')),
+      Fluttertoast.showToast(
+        msg: "Room status updated to Sold!",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.black,
+        textColor: Colors.white,
+        fontSize: 16.0,
       );
-
       // setState(() {
       //   room!.status = newStatus;
       // });
     } catch (e) {
       log(e.toString());
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to update status: $e')),
+      Fluttertoast.showToast(
+        msg: "Failed to update status: $e",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 2,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
       );
     }
   }

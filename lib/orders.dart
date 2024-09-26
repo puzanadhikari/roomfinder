@@ -393,13 +393,14 @@ class _OrderPageState extends State<OrderPage> {
                                                       if (roomStatus['report']
                                                               ['electricity'] ==
                                                           null) {
-                                                        ScaffoldMessenger.of(
-                                                                context)
-                                                            .showSnackBar(
-                                                          const SnackBar(
-                                                            content: Text(
-                                                                "No Report Generated Yet."),
-                                                          ),
+                                                        Fluttertoast.showToast(
+                                                          msg: "No Report Generated Yet.",
+                                                          toastLength: Toast.LENGTH_SHORT,
+                                                          gravity: ToastGravity.BOTTOM,
+                                                          timeInSecForIosWeb: 1,
+                                                          backgroundColor: Colors.orange, // Choose a color that fits your theme
+                                                          textColor: Colors.white,
+                                                          fontSize: 16.0,
                                                         );
                                                       } else {
                                                         showDialog(

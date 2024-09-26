@@ -129,12 +129,16 @@ class FirebaseAuthService {
       } else {
         log('Email not verified. Please check your email for verification.');
         FirebaseAuth.instance.signOut();
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-                'Email not verified. Please check your email for verification.'),
-          ),
+        Fluttertoast.showToast(
+          msg: "Email not verified. Please check your email for verification.",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 2,
+          backgroundColor: Colors.orange,
+          textColor: Colors.white,
+          fontSize: 16.0,
         );
+
       }
     } catch (e) {
       log("Error during login: $e");

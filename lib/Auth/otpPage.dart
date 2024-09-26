@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:meroapp/Constants/styleConsts.dart';
 import 'package:meroapp/homePage.dart';
@@ -107,8 +108,15 @@ class _OTPPageState extends State<OTPPage> {
       setState(() {
         isLoading = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to verify OTP')));
+      Fluttertoast.showToast(
+        msg: "Failed to verify OTP",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red, // Choose a color that fits your theme
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
       log('Error verifying OTP: $e');
       // Handle error here
     }

@@ -53,13 +53,24 @@ class _DashBoardState extends State<DashBoard> {
         'active': false,
         'statusByAdmin': 'Rejected',
       });
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Room rejected successfully.')),
+      Fluttertoast.showToast(
+        msg: "Room rejected successfully.",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.black,
+        textColor: Colors.white,
+        fontSize: 16.0,
       );
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error rejecting room: $e')),
+      Fluttertoast.showToast(
+        msg: "Error rejecting room: $e",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 2,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
       );
     }
   }
@@ -196,7 +207,10 @@ class _DashBoardState extends State<DashBoard> {
     );
   }
 
-  Widget _buildRoomList({required Stream<List<Room>> stream, required bool showApproveRejectButtons}) {
+  Widget _buildRoomList({
+    required Stream<List<Room>> stream,
+    required bool showApproveRejectButtons,
+  }) {
     return StreamBuilder<List<Room>>(
       stream: stream,
       builder: (context, snapshot) {
@@ -204,7 +218,9 @@ class _DashBoardState extends State<DashBoard> {
           return Center(child: CircularProgressIndicator(color: kThemeColor));
         }
         if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}', style: TextStyle(color: kThemeColor)));
+          return Center(
+              child: Text('Error: ${snapshot.error}',
+                  style: TextStyle(color: kThemeColor)));
         }
 
         final rooms = snapshot.data ?? [];
@@ -215,7 +231,10 @@ class _DashBoardState extends State<DashBoard> {
           itemCount: rooms.length,
           itemBuilder: (context, index) {
             final room = rooms[index];
-            return _buildRoomCard(room, showApproveRejectButtons);
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 16.0),
+              child: _buildRoomCard(room, showApproveRejectButtons),
+            ); // Added bottom padding between cards
           },
         );
       },
@@ -234,94 +253,120 @@ class _DashBoardState extends State<DashBoard> {
       },
       child: Card(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12.0),
+          borderRadius: BorderRadius.circular(16.0),
         ),
-        elevation: 6,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12.0),
-                child: Image.network(
-                  room.photo.isNotEmpty ? room.photo[0] : '',
-                  height: 150, // Adjust height as needed
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => Container(
-                    color: Colors.grey.shade200,
-                    height: 150,
+        elevation: 8, // Add more shadow for depth
+        shadowColor: Colors.grey.shade200,
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16.0),
+            color: Colors.grey.shade100, // Soft background color
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12.0),
+                  child: Image.network(
+                    room.photo.isNotEmpty ? room.photo[0] : '',
+                    height: 150, // Adjust height as needed
                     width: double.infinity,
-                    child: const Icon(Icons.image_not_supported, size: 100, color: Colors.grey),
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      color: Colors.grey.shade300,
+                      height: 150,
+                      width: double.infinity,
+                      child: const Icon(Icons.image_not_supported,
+                          size: 100, color: Colors.grey),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                room.name.toUpperCase(),
-                style: TextStyle(
-                  color: kThemeColor,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                room.locationName,
-                style: TextStyle(
-                  color: Colors.grey.shade700,
-                  fontSize: 14,
-                ),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                "Rs.${room.price}/ per month",
-                style: TextStyle(
-                  color: kThemeColor,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(height: 12),
-              if (showApproveRejectButtons)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                        foregroundColor: Colors.white,
-                        textStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                      ),
-                      onPressed: () => approveRoom(room.uid),
-                      child: const Text("Approve"),
-                    ),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                        foregroundColor: Colors.white,
-                        textStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                      ),
-                      onPressed: () => rejectRoom(room.uid),
-                      child: const Text("Reject"),
-                    ),
-                  ],
-                ),
-              if (!showApproveRejectButtons)
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: kThemeColor,
-                      foregroundColor: Colors.white,
-                      textStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                    ),
-                    onPressed: () {},
-                    child: const Text("Approved"),
+                const SizedBox(height: 12),
+                Text(
+                  room.name.toUpperCase(),
+                  style: TextStyle(
+                    color: kThemeColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20, // Increase size
                   ),
                 ),
-            ],
+                const SizedBox(height: 8),
+                Text(
+                  room.locationName,
+                  style: TextStyle(
+                    color: Colors.grey.shade600,
+                    fontSize: 14,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  "Rs.${room.price}/ per month",
+                  style: TextStyle(
+                    color: kThemeColor,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                if (showApproveRejectButtons)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                          textStyle: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        onPressed: () => approveRoom(room.uid),
+                        child: const Text("Approve"),
+                      ),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                          textStyle: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        onPressed: () => rejectRoom(room.uid),
+                        child: const Text("Reject"),
+                      ),
+                    ],
+                  ),
+                if (!showApproveRejectButtons)
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: kThemeColor,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        textStyle: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      onPressed: () {},
+                      child: const Text("Approved"),
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
       ),
