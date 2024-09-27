@@ -244,13 +244,15 @@ class _MyListingsPageState extends State<MyListingsPage> {
                                                           .flag_circle,
                                                       size: 16,
                                                       color: kThemeColor),
-                                                  Text(
-                                                    '${roomStatus[index].status['statusDisplay'] ?? "To Buy"}''  (${roomStatus[index].status['ownedBy'] ?? "N/A"})',
-                                                    style: const TextStyle(
-                                                      fontSize: 13,
-                                                      fontWeight: FontWeight.bold,
-                                                        color:
-                                                        Colors.black45),
+                                                  Flexible(
+                                                    child: Text(
+                                                      '${roomStatus[index].status['statusDisplay'] ?? "To Buy"}''  (${roomStatus[index].status['ownedBy'] ?? "Pending to sign the agreement"})',
+                                                      style: const TextStyle(
+                                                        fontSize: 13,
+                                                        fontWeight: FontWeight.bold,
+                                                          color:
+                                                          Colors.black45),
+                                                    ),
                                                   ),
                                                 ],
                                               ),

@@ -404,7 +404,7 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
                                 child: ElevatedButton(
                                   onPressed: (){
                                     _approveRoomStatus(widget.room.uid, widget.room);
-                                    Navigator.of(context).pop(); // Close the dialog
+                                    Navigator.of(context).pop();
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xFF072A2E),
@@ -498,15 +498,15 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
     } catch (e) {
       log("Error updating room status: $e");
 
-      Fluttertoast.showToast(
-        msg: "Failed to update status: $e",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 2,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
+      // Fluttertoast.showToast(
+      //   msg: "Failed to update status: $e",
+      //   toastLength: Toast.LENGTH_LONG,
+      //   gravity: ToastGravity.BOTTOM,
+      //   timeInSecForIosWeb: 2,
+      //   backgroundColor: Colors.red,
+      //   textColor: Colors.white,
+      //   fontSize: 16.0,
+      // );
     }
   }
 }

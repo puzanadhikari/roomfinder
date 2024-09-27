@@ -607,14 +607,13 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
         widget.room.status = newStatus;
       });
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: 'Booking failed: $e',
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-      );
-
+      // Fluttertoast.showToast(
+      //   msg: 'Booking failed: $e',
+      //   toastLength: Toast.LENGTH_SHORT,
+      //   gravity: ToastGravity.BOTTOM,
+      //   backgroundColor: Colors.red,
+      //   textColor: Colors.white,
+      // );
       setState(() {
         _isBooking = false;
       });

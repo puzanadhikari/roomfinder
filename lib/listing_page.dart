@@ -310,7 +310,7 @@ class _ListingState extends State<Listing> {
                                         );
                                       },
                                       child: Visibility(
-                                        visible: displayedProducts[index].status.isEmpty||displayedProducts[index].status['statusDisplay']=="Sold"?true:false,
+                                        visible: displayedProducts[index].status.isEmpty||displayedProducts[index].status['statusDisplay']=="Sold" || displayedProducts[index].status['statusDisplay']=="To Buy"?true:false,
                                         child: Container(
                                           decoration: BoxDecoration(
                                             borderRadius:
@@ -610,7 +610,7 @@ class _ListingState extends State<Listing> {
                                         );
                                       },
                                       child: Visibility(
-                                        visible: room.status.isEmpty||room.status['statusDisplay']=="Sold"?true:false,
+                                        visible: room.status.isEmpty||room.status['statusDisplay']=="Sold" || room.status['statusDisplay']=="To Buy"?true:false,
                                         child: Container(
                                           decoration: BoxDecoration(
                                             borderRadius:
@@ -906,7 +906,7 @@ class _ListingState extends State<Listing> {
                                       );
                                     },
                                     child: Visibility(
-                                      visible: room.status.isEmpty||room.status['statusDisplay']=="Sold"?true:false,
+                                      visible: room.status.isEmpty||room.status['statusDisplay']=="Sold" || room.status['statusDisplay']=="To Buy"?true:false,
                                       child: Container(
                                         decoration: BoxDecoration(
                                           borderRadius:
@@ -1009,18 +1009,21 @@ class _ListingState extends State<Listing> {
                                                             ),
                                                             Row(
                                                               children: [
-                                                                Icon(
-                                                                    Icons
-                                                                        .check_circle,
+                                                                Icon(room.status[
+                                                                'statusDisplay'] ==
+                                                                    "Owned"
+                                                                    ? Icons
+                                                                    .check_circle
+                                                                    : Icons
+                                                                    .flag_circle,
                                                                     size: 16,
-                                                                    color:
-                                                                        kThemeColor),
-                                                                const Text(
-                                                                  "Available",
-                                                                  style: TextStyle(
-                                                                      color: Colors
-                                                                          .black45),
-                                                                )
+                                                                    color: kThemeColor),
+                                                                Text(
+                                                                  '${room.status['statusDisplay'] ?? "To Buy"}',
+                                                                  style: const TextStyle(
+                                                                      color:
+                                                                      Colors.black45),
+                                                                ),
                                                               ],
                                                             ),
                                                           ],
@@ -1182,7 +1185,7 @@ class _ListingState extends State<Listing> {
                                       );
                                     },
                                     child: Visibility(
-                                      visible: displayedProducts[index].status.isEmpty||displayedProducts[index].status['statusDisplay']=="Sold"?true:false,
+                                      visible: displayedProducts[index].status.isEmpty||displayedProducts[index].status['statusDisplay']=="Sold" || displayedProducts[index].status['statusDisplay']=="To Buy"?true:false,
                                       child: Container(
                                         decoration: BoxDecoration(
                                           borderRadius:
@@ -1253,12 +1256,12 @@ class _ListingState extends State<Listing> {
                                                         ),
                                                         const SizedBox(height: 8),
                                                         Text(
-                                                          "Rs. 8000/ per month",
+                                                          "${product.price}/ per month",
                                                           style: TextStyle(
                                                             color: kThemeColor,
                                                             fontSize: 14,
                                                             fontWeight:
-                                                                FontWeight.w600,
+                                                            FontWeight.w600,
                                                           ),
                                                         ),
                                                         const SizedBox(
@@ -1281,20 +1284,23 @@ class _ListingState extends State<Listing> {
                                                             ),
                                                             Row(
                                                               children: [
-                                                                Icon(
-                                                                    Icons
-                                                                        .check_circle,
+                                                                Icon(product.status[
+                                                                'statusDisplay'] ==
+                                                                    "Owned"
+                                                                    ? Icons
+                                                                    .check_circle
+                                                                    : Icons
+                                                                    .flag_circle,
                                                                     size: 16,
-                                                                    color:
-                                                                        kThemeColor),
-                                                                const Text(
-                                                                  "Available",
-                                                                  style: TextStyle(
-                                                                      color: Colors
-                                                                          .black45),
-                                                                )
+                                                                    color: kThemeColor),
+                                                                Text(
+                                                                  '${product.status['statusDisplay'] ?? "To Buy"}',
+                                                                  style: const TextStyle(
+                                                                      color:
+                                                                      Colors.black45),
+                                                                ),
                                                               ],
-                                                            )
+                                                            ),
                                                           ],
                                                         )
                                                       ],

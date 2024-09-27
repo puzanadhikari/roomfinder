@@ -156,11 +156,12 @@ class _WishlistPageState extends State<WishlistPage> {
                                             ),
                                             const SizedBox(height: 8),
                                             Text(
-                                              "Capacity: ${room.capacity}",
+                                              "${room.price}/ per month",
                                               style: TextStyle(
                                                 color: kThemeColor,
                                                 fontSize: 14,
-                                                fontWeight: FontWeight.w600,
+                                                fontWeight:
+                                                FontWeight.w600,
                                               ),
                                             ),
                                             const SizedBox(height: 10),
@@ -177,14 +178,21 @@ class _WishlistPageState extends State<WishlistPage> {
                                               children: [
                                                 Row(
                                                   children: [
-                                                    Icon(Icons.check_circle,
+                                                    Icon(room.status[
+                                                    'statusDisplay'] ==
+                                                        "Owned"
+                                                        ? Icons
+                                                        .check_circle
+                                                        : Icons
+                                                        .flag_circle,
                                                         size: 16,
                                                         color: kThemeColor),
-                                                    const Text(
-                                                      "Available",
-                                                      style: TextStyle(
-                                                          color: Colors.black45),
-                                                    )
+                                                    Text(
+                                                      '${room.status['statusDisplay'] ?? "To Buy"}',
+                                                      style: const TextStyle(
+                                                          color:
+                                                          Colors.black45),
+                                                    ),
                                                   ],
                                                 ),
                                                 GestureDetector(
