@@ -273,67 +273,102 @@ class _MyListingsPageState extends State<MyListingsPage> {
                                                               borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
                                                             ),
                                                             builder: (BuildContext context) {
+                                                              // Get screen height and width using MediaQuery
+                                                              final screenHeight = MediaQuery.of(context).size.height;
+                                                              final screenWidth = MediaQuery.of(context).size.width;
+
+                                                              // Adjust heightFactor dynamically based on screen height
+                                                              double modalHeightFactor = screenHeight < 600 ? 0.8 : 0.6;
+
                                                               return FractionallySizedBox(
-                                                                heightFactor: 0.3,
+                                                                heightFactor: modalHeightFactor,
                                                                 child: Padding(
-                                                                  padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-                                                                  child: Column(
-                                                                    mainAxisSize: MainAxisSize.min,
-                                                                    children: [
-                                                                      Container(
-                                                                        width: 50,
-                                                                        height: 5,
-                                                                        margin: const EdgeInsets.only(bottom: 16.0),
-                                                                        decoration: BoxDecoration(
-                                                                          color: Colors.grey.shade300,
-                                                                          borderRadius: BorderRadius.circular(10.0),
-                                                                        ),
-                                                                      ),
-                                                                      Text(
-                                                                        'Enter Electricity Usage',
-                                                                        style: TextStyle(
-                                                                          fontSize: 18,
-                                                                          fontWeight: FontWeight.bold,
-                                                                          color: kThemeColor,
-                                                                        ),
-                                                                      ),
-                                                                      const SizedBox(height: 20),
-                                                                      TextField(
-                                                                        controller: _electricityController,
-                                                                        keyboardType: TextInputType.number,
-                                                                        decoration: InputDecoration(
-                                                                          labelText: 'Electricity (Unit)',
-                                                                          labelStyle: TextStyle(color: kThemeColor),
-                                                                          border: OutlineInputBorder(
+                                                                  padding: EdgeInsets.symmetric(
+                                                                    horizontal: screenWidth * 0.05, // 5% of screen width for padding
+                                                                    vertical: screenHeight * 0.02, // 2% of screen height for vertical padding
+                                                                  ),
+                                                                  child: SingleChildScrollView(
+                                                                    child: Column(
+                                                                      mainAxisSize: MainAxisSize.min,
+                                                                      children: [
+                                                                        // Drag indicator
+                                                                        Container(
+                                                                          width: 50,
+                                                                          height: 5,
+                                                                          margin: EdgeInsets.only(bottom: screenHeight * 0.02), // Adjust for spacing
+                                                                          decoration: BoxDecoration(
+                                                                            color: Colors.grey.shade300,
                                                                             borderRadius: BorderRadius.circular(10.0),
-                                                                            borderSide: BorderSide(color: kThemeColor),
                                                                           ),
-                                                                          focusedBorder: OutlineInputBorder(
-                                                                            borderRadius: BorderRadius.circular(10.0),
-                                                                            borderSide: BorderSide(color: kThemeColor, width: 2.0),
-                                                                          ),
-                                                                          prefixIcon: Icon(Icons.electric_bolt_rounded, color: kThemeColor),
                                                                         ),
-                                                                      ),
-                                                                      const SizedBox(height: 30),
-                                                                      ElevatedButton.icon(
-                                                                        onPressed: () {
-                                                                          double electricity = double.parse(_electricityController.text);
-                                                                          log('Electricity: $electricity');
-                                                                          _generateReport(room.uid, room, electricity);
-                                                                          Navigator.of(context).pop();
-                                                                        },
-                                                                        icon: const Icon(Icons.send_rounded, color: Colors.white),
-                                                                        label: const Text('Submit'),
-                                                                        style: ElevatedButton.styleFrom(
-                                                                          backgroundColor: kThemeColor,
-                                                                          shape: RoundedRectangleBorder(
-                                                                            borderRadius: BorderRadius.circular(12.0),
+
+                                                                        // Title
+                                                                        Text(
+                                                                          'Enter Electricity Usage',
+                                                                          style: TextStyle(
+                                                                            fontSize: screenWidth * 0.05, // Font size responsive to screen width
+                                                                            fontWeight: FontWeight.bold,
+                                                                            color: kThemeColor,
                                                                           ),
-                                                                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                                                                         ),
-                                                                      ),
-                                                                    ],
+
+                                                                        SizedBox(height: screenHeight * 0.03), // Spacing responsive to screen height
+
+                                                                        // Text Field for Electricity Usage Input
+                                                                        TextField(
+                                                                          controller: _electricityController,
+                                                                          keyboardType: TextInputType.number,
+                                                                          decoration: InputDecoration(
+                                                                            labelText: 'Electricity (Unit)',
+                                                                            labelStyle: TextStyle(
+                                                                              color: kThemeColor,
+                                                                              fontSize: screenWidth * 0.045, // Adjust label text size
+                                                                            ),
+                                                                            border: OutlineInputBorder(
+                                                                              borderRadius: BorderRadius.circular(10.0),
+                                                                              borderSide: BorderSide(color: kThemeColor),
+                                                                            ),
+                                                                            focusedBorder: OutlineInputBorder(
+                                                                              borderRadius: BorderRadius.circular(10.0),
+                                                                              borderSide: BorderSide(color: kThemeColor, width: 2.0),
+                                                                            ),
+                                                                            prefixIcon: Icon(
+                                                                              Icons.electric_bolt_rounded,
+                                                                              color: kThemeColor,
+                                                                              size: screenWidth * 0.06, // Responsive icon size
+                                                                            ),
+                                                                          ),
+                                                                        ),
+
+                                                                        SizedBox(height: screenHeight * 0.05), // Spacing for better alignment
+
+                                                                        // Submit Button
+                                                                        ElevatedButton(
+                                                                          onPressed: () {
+                                                                            double electricity = double.parse(_electricityController.text);
+                                                                            log('Electricity: $electricity');
+                                                                            _generateReport(room.uid, room, electricity);
+                                                                            Navigator.of(context).pop(); // Close the modal after submission
+                                                                          },
+                                                                          style: ElevatedButton.styleFrom(
+                                                                            backgroundColor: kThemeColor,
+                                                                            shape: RoundedRectangleBorder(
+                                                                              borderRadius: BorderRadius.circular(12.0),
+                                                                            ),
+                                                                            padding: EdgeInsets.symmetric(
+                                                                              horizontal: screenWidth * 0.05, // Horizontal padding responsive to screen width
+                                                                              vertical: screenHeight * 0.02, // Vertical padding responsive to screen height
+                                                                            ),
+                                                                          ),
+                                                                          child: Text(
+                                                                            'Submit',
+                                                                            style: TextStyle(
+                                                                              fontSize: screenWidth * 0.045, // Responsive button label size
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
                                                                   ),
                                                                 ),
                                                               );
@@ -425,7 +460,13 @@ class _MyListingsPageState extends State<MyListingsPage> {
                                                                 ],
                                                               );
                                                             },
-                                                          ):"";
+                                                          ): Fluttertoast.showToast(
+                                                              msg: 'Please Enter the Electricity Unit first',
+                                                              backgroundColor: Colors.redAccent.shade700,
+                                                              toastLength: Toast.LENGTH_SHORT,
+                                                              gravity: ToastGravity.TOP_RIGHT,
+                                                              textColor: Colors.white,
+                                                              fontSize: 16.0);;
                                                         },
                                                         icon: Icon(Icons.folder_copy, color: kThemeColor),
                                                         label: const Text("Room Report"),

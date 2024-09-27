@@ -99,19 +99,6 @@ class _CreateRoomState extends State<CreateRoom> {
     }
   }
 
-  Future<void> _capturePanorama() async {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const PanoramaCaptureScreen()),
-    ).then((value) {
-      if (value != null && value is String) {
-        setState(() {
-          _panoramaImagePath = value;
-        });
-      }
-    });
-  }
-
   // Function to get location
   Future<void> _getLocation() async {
     Location location = Location();
@@ -1053,21 +1040,5 @@ class _CreateRoomState extends State<CreateRoom> {
       log("Error uploading image: $e");
       rethrow; // Rethrow the exception to handle it upstream
     }
-  }
-}
-
-class PanoramaCaptureScreen extends StatelessWidget {
-  const PanoramaCaptureScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Panorama Capture')),
-      body: Center(
-        child: Panorama(
-          child: Image.network('https://example.com/panorama.jpg'),
-        ),
-      ),
-    );
   }
 }
