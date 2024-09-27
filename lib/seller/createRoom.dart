@@ -969,7 +969,6 @@ class _CreateRoomState extends State<CreateRoom> {
                                 selectedFacilities,
                               );
                             }
-                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => CreateRoom()));
                             setState(() {
                               _isLoading = false;
                             });
