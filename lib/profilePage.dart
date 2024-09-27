@@ -91,9 +91,9 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      user?.displayName?.toUpperCase() ?? "Guest",
+                      user?.displayName ?? "Guest",
                       style: const TextStyle(
-                        fontSize: 22,
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: Colors.black87,
                       ),
@@ -102,7 +102,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     Text(
                       user?.email ?? "No email",
                       style: const TextStyle(
-                        fontSize: 16,
+                        fontSize: 14,
                         color: Colors.grey,
                       ),
                     ),
@@ -191,7 +191,7 @@ class _ProfilePageState extends State<ProfilePage> {
         title: Text(
           title,
           style: TextStyle(
-            fontSize: 18,
+            fontSize: 14,
             fontWeight: FontWeight.w500,
             color: textColor,
           ),

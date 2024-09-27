@@ -33,11 +33,9 @@ class _RegisterPageState extends State<RegisterPage> {
     return Scaffold(
       body: isLoading
           ? Center(
-              child: LoadingAnimationWidget.discreteCircle(
+              child: LoadingAnimationWidget.threeArchedCircle(
                 color: kThemeColor,
                 size: 60,
-                secondRingColor: appBarColor,
-                thirdRingColor: const Color(0xFFD9D9D9),
               ),
             )
           : NotificationListener<OverscrollIndicatorNotification>(

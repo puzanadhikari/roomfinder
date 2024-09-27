@@ -28,7 +28,7 @@ class _SellerProfileState extends State<SellerProfile> {
         title: Text(
           "Profile",
           style: TextStyle(
-              color: kThemeColor, fontWeight: FontWeight.bold, fontSize: 25),
+              color: kThemeColor, fontWeight: FontWeight.bold, fontSize: 20),
         ),
       ),
       body: NotificationListener<OverscrollIndicatorNotification>(
@@ -90,7 +90,7 @@ class _SellerProfileState extends State<SellerProfile> {
                     Text(
                       user?.displayName?.toUpperCase() ?? "Guest",
                       style: const TextStyle(
-                        fontSize: 22,
+                        fontSize: 16,
                         fontWeight: FontWeight.bold,
                         color: Colors.black87,
                       ),
@@ -99,7 +99,7 @@ class _SellerProfileState extends State<SellerProfile> {
                     Text(
                       user?.email ?? "No email",
                       style: const TextStyle(
-                        fontSize: 16,
+                        fontSize: 12,
                         color: Colors.grey,
                       ),
                     ),
@@ -187,7 +187,7 @@ class _SellerProfileState extends State<SellerProfile> {
         title: Text(
           title,
           style: TextStyle(
-            fontSize: 18,
+            fontSize: 14,
             fontWeight: FontWeight.w500,
             color: textColor,
           ),

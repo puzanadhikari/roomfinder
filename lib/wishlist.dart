@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:meroapp/provider/wishlistProvider.dart';
+import 'package:meroapp/roomdetail.dart';
 import 'package:provider/provider.dart';
 
 import 'Constants/styleConsts.dart';
@@ -42,16 +43,16 @@ class _WishlistPageState extends State<WishlistPage> {
           style: TextStyle(
             color: kThemeColor,
             fontWeight: FontWeight.bold,
-            fontSize: 25,
+            fontSize: 20,
           ),
         ),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 16.0),
             child: IconButton(
-              icon: const Icon(
+              icon: Icon(
                 Icons.favorite,
-                color: Colors.redAccent,
+                color: kThemeColor,
               ),
               onPressed: () {},
             ),
@@ -74,7 +75,7 @@ class _WishlistPageState extends State<WishlistPage> {
                       'Your wishlist is empty.',
                       style: TextStyle(
                         color: Colors.grey,
-                        fontSize: 18,
+                        fontSize: 16,
                       ),
                     ),
                   )
@@ -86,107 +87,142 @@ class _WishlistPageState extends State<WishlistPage> {
                     itemBuilder: (context, index) {
                       final room = wishlistProvider.wishlist[index];
                       return GestureDetector(
-                        onTap: () {},
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16.0),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.shade300,
-                                blurRadius: 5,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
-                          ),
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16.0),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  RoomDetailPage(room: room),
                             ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Row(
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: const BorderRadius.horizontal(
-                                      left: Radius.circular(16.0),
-                                      right: Radius.circular(16.0),
-                                    ),
-                                    child: Image.network(
-                                      room.photo.isNotEmpty
-                                          ? room.photo[0]
-                                          : 'https://via.placeholder.com/150',
-                                      height: 100,
-                                      width: 100,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(16.0),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            room.name.toUpperCase(),
-                                            style: TextStyle(
-                                              color: kThemeColor,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 18,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 8),
-                                          Text(
-                                            room.locationName,
-                                            style: TextStyle(
-                                              color: Colors.grey.shade700,
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 8),
-                                          Text(
-                                            "Capacity: ${room.capacity}",
-                                            style: TextStyle(
-                                              color: kThemeColor,
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 20),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Icon(Icons.location_on_rounded,
-                                                      size: 16,
-                                                      color: kThemeColor),
-                                                ],
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Icon(Icons.check_circle,
-                                                      size: 16,
-                                                      color: kThemeColor),
-                                                  const Text(
-                                                    "Available",
-                                                    style: TextStyle(
-                                                        color: Colors.black45),
-                                                  )
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                          GestureDetector(
-                                              onTap: (){
-                                                removeFromWishlist(room.uid);
-                                              },
-                                              child: const Text("Remove"))
-                                        ],
+                          );
+                        },
+                        child: Visibility(
+                          visible: room.status.isEmpty||room.status['statusDisplay']=="Sold"?true:false,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16.0),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.shade300,
+                                  blurRadius: 5,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16.0),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: Row(
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: const BorderRadius.horizontal(
+                                        left: Radius.circular(16.0),
+                                        right: Radius.circular(16.0),
+                                      ),
+                                      child: Image.network(
+                                        room.photo.isNotEmpty
+                                            ? room.photo[0]
+                                            : 'https://via.placeholder.com/150',
+                                        height: 100,
+                                        width: 100,
+                                        fit: BoxFit.cover,
                                       ),
                                     ),
-                                  ),
-                                ],
+                                    Expanded(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              room.name.toUpperCase(),
+                                              style: TextStyle(
+                                                color: kThemeColor,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 8),
+                                            Text(
+                                              room.locationName,
+                                              style: TextStyle(
+                                                color: Colors.grey.shade700,
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 8),
+                                            Text(
+                                              "${room.price}/ per month",
+                                              style: TextStyle(
+                                                color: kThemeColor,
+                                                fontSize: 14,
+                                                fontWeight:
+                                                FontWeight.w600,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 10),
+                                            Row(
+                                              children: [
+                                                Icon(Icons.location_on_rounded,
+                                                    size: 16,
+                                                    color: kThemeColor),
+                                              ],
+                                            ),
+                                            const SizedBox(height: 10),
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Icon(room.status[
+                                                    'statusDisplay'] ==
+                                                        "Owned"
+                                                        ? Icons
+                                                        .check_circle
+                                                        : Icons
+                                                        .flag_circle,
+                                                        size: 16,
+                                                        color: kThemeColor),
+                                                    Text(
+                                                      '${room.status['statusDisplay'] ?? "To Buy"}',
+                                                      style: const TextStyle(
+                                                          color:
+                                                          Colors.black45),
+                                                    ),
+                                                  ],
+                                                ),
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    removeFromWishlist(room.uid);
+                                                  },
+                                                  child: Container(
+                                                    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                                                    decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius.circular(8),  // Smooth, rounded corners
+                                                      border: Border.all(color: Colors.grey),  // Simple border for a sleek look
+                                                    ),
+                                                    child: Text(
+                                                      "Remove",
+                                                      style: TextStyle(
+                                                        color: Colors.grey[800],  // Neutral color for elegance
+                                                        fontWeight: FontWeight.bold,  // Make the text bold for emphasis
+                                                        fontSize: 12,  // Slightly larger text size for clarity
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),

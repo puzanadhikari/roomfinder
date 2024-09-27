@@ -3,8 +3,10 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'Constants/styleConsts.dart';
+import 'orders.dart';
 
 class AgreementPage extends StatefulWidget {
   final String? sellerName;
@@ -36,15 +38,26 @@ class _AgreementPageState extends State<AgreementPage> {
           .collection('onSale')
           .doc(roomUid)
           .update({'status': newStatus});
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Room status updated to Sold!')),
+      Fluttertoast.showToast(
+        msg: "Room status updated to Owned!",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 16.0,
       );
-
-      Navigator.of(context).pop(); // Close the agreement page
+      Navigator.of(context).pop();
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => OrderPage()));// Close the agreement page
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to update status: $e')),
+      Fluttertoast.showToast(
+        msg: "Failed to update status: $e",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 2,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
       );
     }
   }
@@ -62,7 +75,7 @@ class _AgreementPageState extends State<AgreementPage> {
         title: Text(
           "Room Booking Agreement",
           style: TextStyle(
-              color: kThemeColor, fontWeight: FontWeight.bold, fontSize: 25),
+              color: kThemeColor, fontWeight: FontWeight.bold, fontSize: 20),
         ),
       ),
       body: Padding(

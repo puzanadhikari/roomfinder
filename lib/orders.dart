@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:khalti_flutter/khalti_flutter.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -100,7 +101,7 @@ class _OrderPageState extends State<OrderPage> {
           style: TextStyle(
             color: kThemeColor,
             fontWeight: FontWeight.bold,
-            fontSize: 25,
+            fontSize: 20,
           ),
         ),
       ),
@@ -166,9 +167,9 @@ class _OrderPageState extends State<OrderPage> {
               return Center(
                 child: Text('Error: ${snapshot.error}'),
               );
-            } else if (!snapshot.hasData || snapshot.data!['rooms'].isEmpty) {
+            } else if (!snapshot.hasData || snapshot.data?['rooms'] == null || snapshot.data!['rooms'].isEmpty) {
               return const Center(
-                child: Text('No rooms found.'),
+                child: Text('No orders rooms found.'),
               );
             }
 
@@ -306,7 +307,7 @@ class _OrderPageState extends State<OrderPage> {
                                               style: TextStyle(
                                                 color: kThemeColor,
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 18,
+                                                fontSize: 16,
                                               ),
                                             ),
                                             const SizedBox(height: 8),
@@ -335,11 +336,13 @@ class _OrderPageState extends State<OrderPage> {
                                                   size: 16,
                                                 ),
                                                 const SizedBox(width: 4),
-                                                Text(
-                                                  '$userEmail',
-                                                  style: const TextStyle(
-                                                    fontSize: 14,
-                                                    color: Colors.grey,
+                                                Flexible(
+                                                  child: Text(
+                                                    '$userEmail',
+                                                    style: const TextStyle(
+                                                      fontSize: 14,
+                                                      color: Colors.grey,
+                                                    ),
                                                   ),
                                                 ),
                                               ],
@@ -390,13 +393,14 @@ class _OrderPageState extends State<OrderPage> {
                                                       if (roomStatus['report']
                                                               ['electricity'] ==
                                                           null) {
-                                                        ScaffoldMessenger.of(
-                                                                context)
-                                                            .showSnackBar(
-                                                          const SnackBar(
-                                                            content: Text(
-                                                                "No Report Generated Yet."),
-                                                          ),
+                                                        Fluttertoast.showToast(
+                                                          msg: "No Report Generated Yet.",
+                                                          toastLength: Toast.LENGTH_SHORT,
+                                                          gravity: ToastGravity.BOTTOM,
+                                                          timeInSecForIosWeb: 1,
+                                                          backgroundColor: Colors.orange, // Choose a color that fits your theme
+                                                          textColor: Colors.white,
+                                                          fontSize: 16.0,
                                                         );
                                                       } else {
                                                         showDialog(
@@ -490,48 +494,72 @@ class _OrderPageState extends State<OrderPage> {
                                                                 ),
                                                               ),
                                                               actions: [
-                                                                TextButton(
-                                                                  onPressed:
-                                                                      () {
-
-                                                                        KhaltiScope.of(context).pay(
-                                                                            config: PaymentConfig(
-                                                                                amount: roomStatus['report']
-                                                                                ['total'].toInt()*100,
-                                                                                productIdentity: 'laptop',
-                                                                                productName: 'Dell laptop'),
-                                                                            preferences: [
-                                                                              PaymentPreference.khalti,
-                                                                              PaymentPreference.connectIPS
-                                                                            ],
-                                                                            onSuccess: (success){
-
-                                                                            },
-                                                                            onFailure: (failure){
-
-                                                                            });
+                                                              Row(
+                                                                mainAxisAlignment:MainAxisAlignment.spaceAround,
+                                                                children: [
+                                                                  GestureDetector(
+                                                                    onTap:
+                                                                        () {
+                                                                      KhaltiScope.of(context).pay(
+                                                                          config: PaymentConfig(
+                                                                              amount: roomStatus['report']
+                                                                              ['total'].toInt()*100,
+                                                                              productIdentity: 'laptop',
+                                                                              productName: 'Dell laptop'),
+                                                                          preferences: [
+                                                                            PaymentPreference.khalti,
+                                                                            PaymentPreference.connectIPS,
+                                                                            PaymentPreference.mobileBanking
+                                                                          ],
+                                                                          onSuccess: (success){
+                                                                            Fluttertoast.showToast(
+                                                                              msg: "Payment Successful",
+                                                                              toastLength: Toast.LENGTH_LONG,
+                                                                              timeInSecForIosWeb: 4,
+                                                                              gravity: ToastGravity.BOTTOM,
+                                                                              backgroundColor: Colors.green,
+                                                                              textColor: Colors.white,
+                                                                              fontSize: 16.0,
+                                                                            );
+                                                                            Navigator.pop(context);
+                                                                            Navigator.pop(context);
                                                                           },
-                                                                  child: Text(
-                                                                    'Pay Now',
-                                                                    style: TextStyle(
-                                                                        color:
-                                                                        kThemeColor),
+                                                                          onFailure: (failure){
+                                                                            Fluttertoast.showToast(
+                                                                              msg: "Payment Failed",
+                                                                              timeInSecForIosWeb: 4,
+                                                                              toastLength: Toast.LENGTH_LONG,
+                                                                              gravity: ToastGravity.BOTTOM,
+                                                                              backgroundColor: Colors.green,
+                                                                              textColor: Colors.white,
+                                                                              fontSize: 16.0,
+                                                                            );
+                                                                            Navigator.pop(context);
+                                                                            Navigator.pop(context);
+                                                                          });
+                                                                    },
+                                                                    child: Image.asset(
+                                                                      'assets/img.png',
+                                                                      height: 80,
+                                                                      width: 80,
+                                                                    ),
                                                                   ),
-                                                                ),
-                                                                TextButton(
-                                                                  onPressed:
-                                                                      () {
-                                                                    Navigator.of(
-                                                                            context)
-                                                                        .pop();
-                                                                  },
-                                                                  child: Text(
-                                                                    'Close',
-                                                                    style: TextStyle(
-                                                                        color:
-                                                                            kThemeColor),
+                                                                  TextButton(
+                                                                    onPressed:
+                                                                        () {
+                                                                      Navigator.of(
+                                                                          context)
+                                                                          .pop();
+                                                                    },
+                                                                    child: Text(
+                                                                      'Close',
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                          kThemeColor),
+                                                                    ),
                                                                   ),
-                                                                ),
+                                                                ],
+                                                              )
                                                               ],
                                                             );
                                                           },

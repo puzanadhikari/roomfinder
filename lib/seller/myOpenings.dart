@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -30,8 +31,12 @@ Future<List<Room>> fetchMyListings() async {
       capacity: data['capacity'],
       price: data["price"],
       description: data['description'],
-      length: data['length'],
-      breadth: data['breadth'],
+      roomLength: data['roomLength'],
+      roomBreath: data['roomBreadth'],
+      hallBreadth: data['hallBreadth'],
+      hallLength: data['hallLength'],
+      kitchenbreadth: data['kitchenBreadth'],
+      kitchenLength: data['kitchenLength'],
       water: doc['water'],
       photo: List<String>.from(data['photo']),
       panoramaImg: data['panoramaImg'],
@@ -86,7 +91,7 @@ class _MyListingsPageState extends State<MyListingsPage> {
         backgroundColor: Colors.grey.shade200,
         title: Text("Listings",
             style: TextStyle(
-                color: kThemeColor, fontWeight: FontWeight.bold, fontSize: 25)),
+                color: kThemeColor, fontWeight: FontWeight.bold, fontSize: 20)),
       ),
       body: Padding(
         padding: const EdgeInsets.all(14.0),
@@ -189,7 +194,7 @@ class _MyListingsPageState extends State<MyListingsPage> {
                                                 style: TextStyle(
                                                   color: kThemeColor,
                                                   fontWeight: FontWeight.bold,
-                                                  fontSize: 18,
+                                                  fontSize: 16,
                                                 ),
                                               ),
                                               const SizedBox(height: 8),
@@ -209,192 +214,116 @@ class _MyListingsPageState extends State<MyListingsPage> {
                                                   fontWeight: FontWeight.w600,
                                                 ),
                                               ),
-                                              const SizedBox(height: 20),
+                                              const SizedBox(height: 10),
                                               Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
                                                 children: [
-                                                  Row(
-                                                    children: [
-                                                      Icon(
-                                                          Icons
-                                                              .location_on_rounded,
-                                                          size: 16,
-                                                          color: kThemeColor),
-                                                      Text(
-                                                        "${(rooms[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
-                                                        style: const TextStyle(
-                                                            color:
-                                                                Colors.black45),
-                                                      ),
-                                                    ],
+                                                  Icon(
+                                                      Icons
+                                                          .location_on_rounded,
+                                                      size: 16,
+                                                      color: kThemeColor),
+                                                  Text(
+                                                    "${(rooms[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
+                                                    style: const TextStyle(
+                                                        color:
+                                                            Colors.black45),
                                                   ),
-                                                  Row(
-                                                    children: [
-                                                      Icon(
-                                                          roomStatus[index]
-                                                                          .status[
-                                                                      'statusDisplay'] ==
-                                                                  "Owned"
-                                                              ? Icons
-                                                                  .check_circle
-                                                              : Icons
-                                                                  .flag_circle,
-                                                          size: 16,
-                                                          color: kThemeColor),
-                                                      Text(
-                                                        '${roomStatus[index].status['statusDisplay'] ?? "To Buy"}',
-                                                        style: const TextStyle(
-                                                            color:
-                                                                Colors.black45),
-                                                      ),
-                                                    ],
+                                                ],
+                                              ),
+                                              const SizedBox(height: 10),
+                                              Row(
+                                                children: [
+                                                  Icon(
+                                                      roomStatus[index]
+                                                          .status[
+                                                      'statusDisplay'] ==
+                                                          "Owned"
+                                                          ? Icons
+                                                          .check_circle
+                                                          : Icons
+                                                          .flag_circle,
+                                                      size: 16,
+                                                      color: kThemeColor),
+                                                  Flexible(
+                                                    child: Text(
+                                                      '${roomStatus[index].status['statusDisplay'] ?? "To Buy"}''  (${roomStatus[index].status['ownedBy'] ?? "Pending to sign the agreement"})',
+                                                      style: const TextStyle(
+                                                        fontSize: 13,
+                                                        fontWeight: FontWeight.bold,
+                                                          color:
+                                                          Colors.black45),
+                                                    ),
                                                   ),
                                                 ],
                                               ),
                                               const SizedBox(height: 5),
                                               Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 children: [
                                                   Visibility(
-                                                    visible: roomStatus[index]
-                                                                    .status[
-                                                                'statusDisplay'] ==
-                                                            "Owned"
-                                                        ? true
-                                                        : false,
-                                                    child: Text(
-                                                      'Owned BY: ${roomStatus[index].status['ownedBy'] ?? "N/A"}',
-                                                      style: TextStyle(
-                                                          color: Colors
-                                                              .grey.shade700),
-                                                    ),
-                                                  ),
-                                                  Row(
-                                                    children: [
-                                                      Visibility(
-                                                        visible: roomStatus[index].status['statusDisplay'] == "Owned",
-                                                        child: GestureDetector(
-                                                          onTap: () {
-                                                            showDialog(
-                                                              context: context,
-                                                              builder: (BuildContext context) {
-                                                                return AlertDialog(
-                                                                  shape: RoundedRectangleBorder(
-                                                                    borderRadius: BorderRadius.circular(20.0),
+                                                    visible: roomStatus[index].status['statusDisplay'] == "Owned",
+                                                    child: Expanded(
+                                                      child: ElevatedButton.icon(
+                                                        onPressed: () {
+                                                          showModalBottomSheet(
+                                                            context: context,
+                                                            enableDrag: true,
+                                                            isScrollControlled: true,
+                                                            shape: const RoundedRectangleBorder(
+                                                              borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+                                                            ),
+                                                            builder: (BuildContext context) {
+                                                              // Get screen height and width using MediaQuery
+                                                              final screenHeight = MediaQuery.of(context).size.height;
+                                                              final screenWidth = MediaQuery.of(context).size.width;
+
+                                                              // Adjust heightFactor dynamically based on screen height
+                                                              double modalHeightFactor = screenHeight < 600 ? 0.8 : 0.6;
+
+                                                              return FractionallySizedBox(
+                                                                heightFactor: modalHeightFactor,
+                                                                child: Padding(
+                                                                  padding: EdgeInsets.symmetric(
+                                                                    horizontal: screenWidth * 0.05, // 5% of screen width for padding
+                                                                    vertical: screenHeight * 0.02, // 2% of screen height for vertical padding
                                                                   ),
-                                                                  title: Row(
-                                                                    children: [
-                                                                      Icon(Icons.report, color: kThemeColor),
-                                                                      const SizedBox(width: 8),
-                                                                      Text(
-                                                                        'Room Report',
-                                                                        style: TextStyle(
-                                                                          color: kThemeColor,
-                                                                          fontWeight: FontWeight.bold,
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                  content: SingleChildScrollView(
-                                                                    child: Column(
-                                                                      children: [
-                                                                        Table(
-                                                                          border: TableBorder(
-                                                                            horizontalInside: BorderSide(
-                                                                              color: Colors.grey.shade300,
-                                                                              width: 1,
-                                                                            ),
-                                                                            bottom: BorderSide(
-                                                                              color: Colors.grey.shade300,
-                                                                              width: 1,
-                                                                            ),
-                                                                          ),
-                                                                          columnWidths: const {
-                                                                            0: FlexColumnWidth(2),
-                                                                            1: FlexColumnWidth(3),
-                                                                          },
-                                                                          children: [
-                                                                            _buildTableRow('Electricity', roomStatus[index].report['electricity']),
-                                                                            _buildTableRow('Fohor', roomStatus[index].report['fohor']),
-                                                                            _buildTableRow('Generated Date', roomStatus[index].report['generatedDate']),
-                                                                            _buildTableRow('Room Cost', roomStatus[index].report['roomCost']),
-                                                                            _buildTableRow('Water', roomStatus[index].report['water']),
-                                                                            _buildTableRow('Total', roomStatus[index].report['total']),
-                                                                          ],
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  ),
-                                                                  actions: [
-                                                                    ElevatedButton.icon(
-                                                                      onPressed: () {
-                                                                        Navigator.of(context).pop();
-                                                                      },
-                                                                      icon: const Icon(Icons.close, color: Colors.white),
-                                                                      label: const Text('Close'),
-                                                                      style: ElevatedButton.styleFrom(
-                                                                        backgroundColor: kThemeColor,
-                                                                        shape: RoundedRectangleBorder(
-                                                                          borderRadius: BorderRadius.circular(10.0),
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                );
-                                                              },
-                                                            );
-                                                          },
-                                                          child: Icon(Icons.view_agenda, color: kThemeColor),
-                                                        ),
-                                                      ),
-                                                      const SizedBox(width: 10),
-                                                      Visibility(
-                                                        visible: roomStatus[index].status['statusDisplay'] == "Owned",
-                                                        child: GestureDetector(
-                                                          onTap: () {
-                                                            showModalBottomSheet(
-                                                              context: context,
-                                                              enableDrag: true,
-                                                              isScrollControlled: true,
-                                                              shape: const RoundedRectangleBorder(
-                                                                borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
-                                                              ),
-                                                              builder: (BuildContext context) {
-                                                                return FractionallySizedBox(
-                                                                  heightFactor: 0.5,
-                                                                  child: Padding(
-                                                                    padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+                                                                  child: SingleChildScrollView(
                                                                     child: Column(
                                                                       mainAxisSize: MainAxisSize.min,
                                                                       children: [
+                                                                        // Drag indicator
                                                                         Container(
                                                                           width: 50,
                                                                           height: 5,
-                                                                          margin: const EdgeInsets.only(bottom: 16.0),
+                                                                          margin: EdgeInsets.only(bottom: screenHeight * 0.02), // Adjust for spacing
                                                                           decoration: BoxDecoration(
                                                                             color: Colors.grey.shade300,
                                                                             borderRadius: BorderRadius.circular(10.0),
                                                                           ),
                                                                         ),
+
+                                                                        // Title
                                                                         Text(
                                                                           'Enter Electricity Usage',
                                                                           style: TextStyle(
-                                                                            fontSize: 18,
+                                                                            fontSize: screenWidth * 0.05, // Font size responsive to screen width
                                                                             fontWeight: FontWeight.bold,
                                                                             color: kThemeColor,
                                                                           ),
                                                                         ),
-                                                                        const SizedBox(height: 20),
+
+                                                                        SizedBox(height: screenHeight * 0.03), // Spacing responsive to screen height
+
+                                                                        // Text Field for Electricity Usage Input
                                                                         TextField(
                                                                           controller: _electricityController,
                                                                           keyboardType: TextInputType.number,
                                                                           decoration: InputDecoration(
                                                                             labelText: 'Electricity (Unit)',
-                                                                            labelStyle: TextStyle(color: kThemeColor),
+                                                                            labelStyle: TextStyle(
+                                                                              color: kThemeColor,
+                                                                              fontSize: screenWidth * 0.045, // Adjust label text size
+                                                                            ),
                                                                             border: OutlineInputBorder(
                                                                               borderRadius: BorderRadius.circular(10.0),
                                                                               borderSide: BorderSide(color: kThemeColor),
@@ -403,41 +332,156 @@ class _MyListingsPageState extends State<MyListingsPage> {
                                                                               borderRadius: BorderRadius.circular(10.0),
                                                                               borderSide: BorderSide(color: kThemeColor, width: 2.0),
                                                                             ),
-                                                                            prefixIcon: Icon(Icons.electric_bolt_rounded, color: kThemeColor),
+                                                                            prefixIcon: Icon(
+                                                                              Icons.electric_bolt_rounded,
+                                                                              color: kThemeColor,
+                                                                              size: screenWidth * 0.06, // Responsive icon size
+                                                                            ),
                                                                           ),
                                                                         ),
-                                                                        const SizedBox(height: 30),
-                                                                        ElevatedButton.icon(
+
+                                                                        SizedBox(height: screenHeight * 0.05), // Spacing for better alignment
+
+                                                                        // Submit Button
+                                                                        ElevatedButton(
                                                                           onPressed: () {
                                                                             double electricity = double.parse(_electricityController.text);
                                                                             log('Electricity: $electricity');
                                                                             _generateReport(room.uid, room, electricity);
-                                                                            Navigator.of(context).pop();
+                                                                            Navigator.of(context).pop(); // Close the modal after submission
                                                                           },
-                                                                          icon: const Icon(Icons.send_rounded, color: Colors.white),
-                                                                          label: const Text('Submit'),
                                                                           style: ElevatedButton.styleFrom(
                                                                             backgroundColor: kThemeColor,
                                                                             shape: RoundedRectangleBorder(
                                                                               borderRadius: BorderRadius.circular(12.0),
                                                                             ),
-                                                                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                                                                            padding: EdgeInsets.symmetric(
+                                                                              horizontal: screenWidth * 0.05, // Horizontal padding responsive to screen width
+                                                                              vertical: screenHeight * 0.02, // Vertical padding responsive to screen height
+                                                                            ),
+                                                                          ),
+                                                                          child: Text(
+                                                                            'Submit',
+                                                                            style: TextStyle(
+                                                                              fontSize: screenWidth * 0.045, // Responsive button label size
+                                                                            ),
                                                                           ),
                                                                         ),
                                                                       ],
                                                                     ),
                                                                   ),
-                                                                );
-                                                              },
-                                                            );
-                                                          },
-                                                          child: Icon(Icons.electric_bolt_rounded, color: kThemeColor),
+                                                                ),
+                                                              );
+                                                            },
+                                                          );
+                                                        },
+                                                        icon: const Icon(Icons.electric_bolt_rounded),
+                                                        label: const Text("Electricity Usage"),
+                                                        style: ElevatedButton.styleFrom(
+                                                          backgroundColor: kThemeColor,
+                                                          shape: RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.circular(12),
+                                                          ),
+                                                          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
                                                         ),
-                                                      )
-                                                    ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(width: 10),
+                                                  Visibility(
+                                                    visible: roomStatus[index].status['statusDisplay'] == "Owned",
+                                                    child: Expanded(
+                                                      child: OutlinedButton.icon(
+                                                        onPressed: () {
+                                                          roomStatus[index].report['electricity'] != null ? showDialog(
+                                                            context: context,
+                                                            builder: (BuildContext context) {
+                                                              return AlertDialog(
+                                                                shape: RoundedRectangleBorder(
+                                                                  borderRadius: BorderRadius.circular(20.0),
+                                                                ),
+                                                                title: Row(
+                                                                  children: [
+                                                                    Icon(Icons.report, color: kThemeColor),
+                                                                    const SizedBox(width: 8),
+                                                                    Text(
+                                                                      'Room Report',
+                                                                      style: TextStyle(
+                                                                        color: kThemeColor,
+                                                                        fontWeight: FontWeight.bold,
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                content: SingleChildScrollView(
+                                                                  child: Column(
+                                                                    children: [
+                                                                      Table(
+                                                                        border: TableBorder(
+                                                                          horizontalInside: BorderSide(
+                                                                            color: Colors.grey.shade300,
+                                                                            width: 1,
+                                                                          ),
+                                                                          bottom: BorderSide(
+                                                                            color: Colors.grey.shade300,
+                                                                            width: 1,
+                                                                          ),
+                                                                        ),
+                                                                        columnWidths: const {
+                                                                          0: FlexColumnWidth(2),
+                                                                          1: FlexColumnWidth(3),
+                                                                        },
+                                                                        children: [
+                                                                          _buildTableRow('Electricity', roomStatus[index].report['electricity']),
+                                                                          _buildTableRow('Fohor', roomStatus[index].report['fohor']),
+                                                                          _buildTableRow('Generated Date', roomStatus[index].report['generatedDate']),
+                                                                          _buildTableRow('Room Cost', roomStatus[index].report['roomCost']),
+                                                                          _buildTableRow('Water', roomStatus[index].report['water']),
+                                                                          _buildTableRow('Total', roomStatus[index].report['total']),
+                                                                        ],
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                                actions: [
+                                                                  ElevatedButton.icon(
+                                                                    onPressed: () {
+                                                                      Navigator.of(context).pop();
+                                                                    },
+                                                                    icon: const Icon(Icons.close, color: Colors.white),
+                                                                    label: const Text('Close'),
+                                                                    style: ElevatedButton.styleFrom(
+                                                                      backgroundColor: kThemeColor,
+                                                                      shape: RoundedRectangleBorder(
+                                                                        borderRadius: BorderRadius.circular(10.0),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              );
+                                                            },
+                                                          ): Fluttertoast.showToast(
+                                                              msg: 'Please Enter the Electricity Unit first',
+                                                              backgroundColor: Colors.redAccent.shade700,
+                                                              toastLength: Toast.LENGTH_SHORT,
+                                                              gravity: ToastGravity.TOP_RIGHT,
+                                                              textColor: Colors.white,
+                                                              fontSize: 16.0);;
+                                                        },
+                                                        icon: Icon(Icons.folder_copy, color: kThemeColor),
+                                                        label: const Text("Room Report"),
+                                                        style: OutlinedButton.styleFrom(
+                                                          shape: RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.circular(12),
+                                                          ),
+                                                          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
+                                                          side: BorderSide(color: kThemeColor),
+                                                        ),
+                                                      ),
+                                                    ),
                                                   ),
                                                 ],
-                                              ),
+                                              )
                                             ],
                                           ),
                                         ),
@@ -518,17 +562,28 @@ class _MyListingsPageState extends State<MyListingsPage> {
           .doc(roomUid)
           .update({'report': report});
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Room status updated to Sold!')),
+      Fluttertoast.showToast(
+        msg: "Room status updated to Sold!",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.black,
+        textColor: Colors.white,
+        fontSize: 16.0,
       );
-
       // setState(() {
       //   room!.status = newStatus;
       // });
     } catch (e) {
       log(e.toString());
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to update status: $e')),
+      Fluttertoast.showToast(
+        msg: "Failed to update status: $e",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 2,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
       );
     }
   }

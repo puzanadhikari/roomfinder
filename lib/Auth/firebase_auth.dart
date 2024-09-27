@@ -129,12 +129,16 @@ class FirebaseAuthService {
       } else {
         log('Email not verified. Please check your email for verification.');
         FirebaseAuth.instance.signOut();
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-                'Email not verified. Please check your email for verification.'),
-          ),
+        Fluttertoast.showToast(
+          msg: "Email not verified. Please check your email for verification.",
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 2,
+          backgroundColor: Colors.orange,
+          textColor: Colors.white,
+          fontSize: 16.0,
         );
+
       }
     } catch (e) {
       log("Error during login: $e");
@@ -177,8 +181,12 @@ class FirebaseAuthService {
       double price,
       double capacity,
       String description,
-      double length,
-      double breadth,
+      double roomLength,
+      double roomBreath,
+      double hallLength,
+      double hallBreadth,
+      double kitchenLength,
+      double kitchenbreadth,
       List<String> photo,
       String? panorama,
       double electricity,
@@ -203,8 +211,12 @@ class FirebaseAuthService {
           "price":price,
           "capacity": capacity,
           "description": description,
-          "length": length,
-          "breadth": breadth,
+          "roomLength": roomLength,
+          "roomBreadth": roomBreath,
+          "hallLength": hallLength,
+          "hallBreadth": hallBreadth,
+          "kitchenLength": kitchenLength,
+          "kitchenBreadth": kitchenbreadth,
           "photo": photo,
           "panoramaImg": panorama, // Store panorama URL
           "electricity": electricity,

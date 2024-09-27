@@ -57,8 +57,12 @@ class _ListingState extends State<Listing> {
           capacity: productData['capacity'],
           description: productData['description'],
           water: productData['water'],
-          length: productData['length'],
-          breadth: productData['breadth'],
+          roomLength: productData['roomLength'],
+          roomBreath: productData['roomBreadth'],
+          hallBreadth: productData['hallBreadth'],
+          hallLength: productData['hallLength'],
+          kitchenbreadth: productData['kitchenBreadth'],
+          kitchenLength: productData['kitchenLength'],
           photo: List<String>.from(productData['photo']),
           panoramaImg: productData['panoramaImg'],
           electricity: productData['electricity'],
@@ -96,9 +100,14 @@ class _ListingState extends State<Listing> {
         capacity: data['capacity'],
         water: doc['water'],
         description: data['description'],
-        length: data['length'],
+        roomLength: data['roomLength'],
+        roomBreath: data['roomBreadth'],
+        hallBreadth: data['hallBreadth'],
+        hallLength: data['hallLength'],
+        kitchenbreadth: data['kitchenBreadth'],
+        kitchenLength: data['kitchenLength'],
         statusByAdmin: data["statusByAdmin"],
-        breadth: data['breadth'],
+
         photo: List<String>.from(data['photo']),
         panoramaImg: data['panoramaImg'],
         electricity: data['electricity'],
@@ -137,7 +146,7 @@ class _ListingState extends State<Listing> {
               style: TextStyle(
                   color: kThemeColor,
                   fontWeight: FontWeight.bold,
-                  fontSize: 25)),
+                  fontSize: 20)),
         ),
         body: pageProvider.choice == "From Main"
             ? NotificationListener<OverscrollIndicatorNotification>(
@@ -300,133 +309,130 @@ class _ListingState extends State<Listing> {
                                           ),
                                         );
                                       },
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(16.0),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Colors.grey.shade300,
-                                              blurRadius: 5,
-                                              offset: const Offset(0, 4),
-                                            ),
-                                          ],
-                                        ),
-                                        child: Card(
-                                          shape: RoundedRectangleBorder(
+                                      child: Visibility(
+                                        visible: displayedProducts[index].status.isEmpty||displayedProducts[index].status['statusDisplay']=="Sold" || displayedProducts[index].status['statusDisplay']=="To Buy"?true:false,
+                                        child: Container(
+                                          decoration: BoxDecoration(
                                             borderRadius:
                                                 BorderRadius.circular(16.0),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.grey.shade300,
+                                                blurRadius: 5,
+                                                offset: const Offset(0, 4),
+                                              ),
+                                            ],
                                           ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 8.0),
-                                            child: Row(
-                                              children: [
-                                                ClipRRect(
-                                                  borderRadius:
-                                                      const BorderRadius
-                                                          .horizontal(
-                                                    left: Radius.circular(16.0),
-                                                    right:
-                                                        Radius.circular(16.0),
-                                                  ),
-                                                  child: Image.network(
-                                                    product.photo.isNotEmpty
-                                                        ? product.photo[0]
-                                                        : 'https://via.placeholder.com/150',
-                                                    height: 100,
-                                                    width: 100,
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            16.0),
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        Text(
-                                                          product.name
-                                                              .toUpperCase(),
-                                                          style: TextStyle(
-                                                            color: kThemeColor,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize: 18,
-                                                          ),
-                                                        ),
-                                                        const SizedBox(
-                                                            height: 8),
-                                                        Text(
-                                                          product.locationName,
-                                                          style: TextStyle(
-                                                            color: Colors
-                                                                .grey.shade700,
-                                                            fontSize: 14,
-                                                          ),
-                                                        ),
-                                                        const SizedBox(
-                                                            height: 8),
-                                                        Text(
-                                                          "${product.price}/ per month",
-                                                          style: TextStyle(
-                                                            color: kThemeColor,
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                            FontWeight.w600,
-                                                          ),
-                                                        ),
-                                                        const SizedBox(
-                                                            height: 20),
-                                                        Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          children: [
-                                                            Row(
-                                                              children: [
-                                                                Icon(
-                                                                  Icons
-                                                                      .location_on_rounded,
-                                                                  size: 16,
-                                                                  color:
-                                                                      kThemeColor,
-                                                                ),
-                                                              ],
-                                                            ),
-                                                            Row(
-                                                              children: [
-                                                                Icon(displayedProducts[index].status[
-                                                                'statusDisplay'] ==
-                                                                    "Owned"
-                                                                    ? Icons
-                                                                    .check_circle
-                                                                    : Icons
-                                                                    .flag_circle,
-                                                                    size: 16,
-                                                                    color: kThemeColor),
-                                                                Text(
-                                                                  '${displayedProducts[index].status['statusDisplay']}',
-                                                                  style: const TextStyle(
-                                                                      color:
-                                                                      Colors.black45),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        )
-                                                      ],
+                                          child: Card(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(16.0),
+                                            ),
+                                            child: Padding(
+                                              padding: const EdgeInsets.symmetric(
+                                                  horizontal: 8.0),
+                                              child: Row(
+                                                children: [
+                                                  ClipRRect(
+                                                    borderRadius:
+                                                        const BorderRadius
+                                                            .horizontal(
+                                                      left: Radius.circular(16.0),
+                                                      right:
+                                                          Radius.circular(16.0),
+                                                    ),
+                                                    child: Image.network(
+                                                      product.photo.isNotEmpty
+                                                          ? product.photo[0]
+                                                          : 'https://via.placeholder.com/150',
+                                                      height: 100,
+                                                      width: 100,
+                                                      fit: BoxFit.cover,
                                                     ),
                                                   ),
-                                                ),
-                                              ],
+                                                  Expanded(
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              16.0),
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Text(
+                                                            product.name
+                                                                .toUpperCase(),
+                                                            style: TextStyle(
+                                                              color: kThemeColor,
+                                                              fontWeight:
+                                                                  FontWeight.bold,
+                                                              fontSize: 16,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                              height: 8),
+                                                          Text(
+                                                            product.locationName,
+                                                            style: TextStyle(
+                                                              color: Colors
+                                                                  .grey.shade700,
+                                                              fontSize: 14,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                              height: 8),
+                                                          Text(
+                                                            "${product.price}/ per month",
+                                                            style: TextStyle(
+                                                              color: kThemeColor,
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                              FontWeight.w600,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                              height: 10),
+                                                          Row(
+                                                            children: [
+                                                              Icon(
+                                                                Icons
+                                                                    .location_on_rounded,
+                                                                size: 16,
+                                                                color:
+                                                                    kThemeColor,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          const SizedBox(height: 10),
+                                                          Row(
+                                                            children: [
+                                                              Icon(displayedProducts[index].status[
+                                                              'statusDisplay'] ==
+                                                                  "Owned"
+                                                                  ? Icons
+                                                                  .check_circle
+                                                                  : Icons
+                                                                  .flag_circle,
+                                                                  size: 16,
+                                                                  color: kThemeColor),
+                                                              Text(
+                                                                '${displayedProducts[index].status['statusDisplay']??"To Buy"}',
+                                                                style: const TextStyle(
+                                                                    color:
+                                                                    Colors.black45),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -603,138 +609,135 @@ class _ListingState extends State<Listing> {
                                           ),
                                         );
                                       },
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(16.0),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Colors.grey.shade300,
-                                              blurRadius: 5,
-                                              offset: const Offset(0, 4),
-                                            ),
-                                          ],
-                                        ),
-                                        child: Card(
-                                          shape: RoundedRectangleBorder(
+                                      child: Visibility(
+                                        visible: room.status.isEmpty||room.status['statusDisplay']=="Sold" || room.status['statusDisplay']=="To Buy"?true:false,
+                                        child: Container(
+                                          decoration: BoxDecoration(
                                             borderRadius:
                                                 BorderRadius.circular(16.0),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.grey.shade300,
+                                                blurRadius: 5,
+                                                offset: const Offset(0, 4),
+                                              ),
+                                            ],
                                           ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 8.0),
-                                            child: Row(
-                                              children: [
-                                                ClipRRect(
-                                                  borderRadius:
-                                                      const BorderRadius
-                                                          .horizontal(
-                                                    left: Radius.circular(16.0),
-                                                    right:
-                                                        Radius.circular(16.0),
-                                                  ),
-                                                  child: Image.network(
-                                                    room.photo.isNotEmpty
-                                                        ? room.photo[0]
-                                                        : 'https://via.placeholder.com/150',
-                                                    height: 100,
-                                                    width: 100,
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            16.0),
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        Text(
-                                                          room.name
-                                                              .toUpperCase(),
-                                                          style: TextStyle(
-                                                            color: kThemeColor,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize: 18,
-                                                          ),
-                                                        ),
-                                                        const SizedBox(
-                                                            height: 8),
-                                                        Text(
-                                                          room.locationName,
-                                                          style: TextStyle(
-                                                            color: Colors
-                                                                .grey.shade700,
-                                                            fontSize: 14,
-                                                          ),
-                                                        ),
-                                                        const SizedBox(
-                                                            height: 8),
-                                                        Text(
-                                                          "${room.price}/ per month",
-                                                          style: TextStyle(
-                                                            color: kThemeColor,
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                            FontWeight.w600,
-                                                          ),
-                                                        ),
-                                                        const SizedBox(
-                                                            height: 20),
-                                                        Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          children: [
-                                                            Row(
-                                                              children: [
-                                                                Icon(
-                                                                    Icons
-                                                                        .location_on_rounded,
-                                                                    size: 16,
-                                                                    color:
-                                                                        kThemeColor),
-                                                                // Text(
-                                                                //   "${(sortedRooms[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
-                                                                //   style: TextStyle(
-                                                                //       color: Colors
-                                                                //           .black45),
-                                                                // ),
-                                                              ],
-                                                            ),
-                                                            Row(
-                                                              children: [
-                                                                Icon(room.status[
-                                                                'statusDisplay'] ==
-                                                                    "Owned"
-                                                                    ? Icons
-                                                                    .check_circle
-                                                                    : Icons
-                                                                    .flag_circle,
-                                                                    size: 16,
-                                                                    color: kThemeColor),
-                                                                Text(
-                                                                  '${room.status['statusDisplay'] ?? "To Buy"}',
-                                                                  style: const TextStyle(
-                                                                      color:
-                                                                      Colors.black45),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ],
+                                          child: Card(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(16.0),
+                                            ),
+                                            child: Padding(
+                                              padding: const EdgeInsets.symmetric(
+                                                  horizontal: 8.0),
+                                              child: Row(
+                                                children: [
+                                                  ClipRRect(
+                                                    borderRadius:
+                                                        const BorderRadius
+                                                            .horizontal(
+                                                      left: Radius.circular(16.0),
+                                                      right:
+                                                          Radius.circular(16.0),
+                                                    ),
+                                                    child: Image.network(
+                                                      room.photo.isNotEmpty
+                                                          ? room.photo[0]
+                                                          : 'https://via.placeholder.com/150',
+                                                      height: 100,
+                                                      width: 100,
+                                                      fit: BoxFit.cover,
                                                     ),
                                                   ),
-                                                ),
-                                              ],
+                                                  Expanded(
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              16.0),
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Text(
+                                                            room.name
+                                                                .toUpperCase(),
+                                                            style: TextStyle(
+                                                              color: kThemeColor,
+                                                              fontWeight:
+                                                                  FontWeight.bold,
+                                                              fontSize: 16,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                              height: 8),
+                                                          Text(
+                                                            room.locationName,
+                                                            style: TextStyle(
+                                                              color: Colors
+                                                                  .grey.shade700,
+                                                              fontSize: 14,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                              height: 8),
+                                                          Text(
+                                                            "${room.price}/ per month",
+                                                            style: TextStyle(
+                                                              color: kThemeColor,
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                              FontWeight.w600,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                              height: 10),
+                                                          Row(
+                                                            children: [
+                                                              Icon(
+                                                                  Icons
+                                                                      .location_on_rounded,
+                                                                  size: 16,
+                                                                  color:
+                                                                      kThemeColor),
+                                                              // Text(
+                                                              //   "${(sortedRooms[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
+                                                              //   style: TextStyle(
+                                                              //       color: Colors
+                                                              //           .black45),
+                                                              // ),
+                                                            ],
+                                                          ),
+                                                          const SizedBox(height: 10),
+                                                          Row(
+                                                            children: [
+                                                              Icon(room.status[
+                                                              'statusDisplay'] ==
+                                                                  "Owned"
+                                                                  ? Icons
+                                                                  .check_circle
+                                                                  : Icons
+                                                                  .flag_circle,
+                                                                  size: 16,
+                                                                  color: kThemeColor),
+                                                              Text(
+                                                                '${room.status['statusDisplay'] ?? "To Buy"}',
+                                                                style: const TextStyle(
+                                                                    color:
+                                                                    Colors.black45),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -902,129 +905,135 @@ class _ListingState extends State<Listing> {
                                         ),
                                       );
                                     },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(16.0),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.grey.shade300,
-                                            blurRadius: 5,
-                                            offset: const Offset(0, 4),
-                                          ),
-                                        ],
-                                      ),
-                                      child: Card(
-                                        shape: RoundedRectangleBorder(
+                                    child: Visibility(
+                                      visible: room.status.isEmpty||room.status['statusDisplay']=="Sold" || room.status['statusDisplay']=="To Buy"?true:false,
+                                      child: Container(
+                                        decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(16.0),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.grey.shade300,
+                                              blurRadius: 5,
+                                              offset: const Offset(0, 4),
+                                            ),
+                                          ],
                                         ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 8.0),
-                                          child: Row(
-                                            children: [
-                                              ClipRRect(
-                                                borderRadius: const BorderRadius
-                                                    .horizontal(
-                                                  left: Radius.circular(16.0),
-                                                  right: Radius.circular(16.0),
-                                                ),
-                                                child: Image.network(
-                                                  room.photo.isNotEmpty
-                                                      ? room.photo[0]
-                                                      : 'https://via.placeholder.com/150',
-                                                  height: 100,
-                                                  width: 100,
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              ),
-                                              Expanded(
-                                                child: Padding(
-                                                  padding: const EdgeInsets.all(
-                                                      16.0),
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Text(
-                                                        room.name.toUpperCase(),
-                                                        style: TextStyle(
-                                                          color: kThemeColor,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 18,
-                                                        ),
-                                                      ),
-                                                      const SizedBox(height: 8),
-                                                      Text(
-                                                        room.locationName,
-                                                        style: TextStyle(
-                                                          color: Colors
-                                                              .grey.shade700,
-                                                          fontSize: 14,
-                                                        ),
-                                                      ),
-                                                      const SizedBox(height: 8),
-                                                      Text(
-                                                        "Capacity: ${room.capacity}",
-                                                        style: TextStyle(
-                                                          color: kThemeColor,
-                                                          fontSize: 14,
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                        ),
-                                                      ),
-                                                      const SizedBox(
-                                                          height: 20),
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        children: [
-                                                          Row(
-                                                            children: [
-                                                              Icon(
-                                                                  Icons
-                                                                      .location_on_rounded,
-                                                                  size: 16,
-                                                                  color:
-                                                                      kThemeColor),
-                                                              // Text(
-                                                              //   "${(sortedRooms[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
-                                                              //   style: TextStyle(
-                                                              //       color: Colors
-                                                              //           .black45),
-                                                              // ),
-                                                            ],
-                                                          ),
-                                                          Row(
-                                                            children: [
-                                                              Icon(
-                                                                  Icons
-                                                                      .check_circle,
-                                                                  size: 16,
-                                                                  color:
-                                                                      kThemeColor),
-                                                              const Text(
-                                                                "Available",
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .black45),
-                                                              )
-                                                            ],
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ],
+                                        child: Card(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(16.0),
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 8.0),
+                                            child: Row(
+                                              children: [
+                                                ClipRRect(
+                                                  borderRadius: const BorderRadius
+                                                      .horizontal(
+                                                    left: Radius.circular(16.0),
+                                                    right: Radius.circular(16.0),
+                                                  ),
+                                                  child: Image.network(
+                                                    room.photo.isNotEmpty
+                                                        ? room.photo[0]
+                                                        : 'https://via.placeholder.com/150',
+                                                    height: 100,
+                                                    width: 100,
+                                                    fit: BoxFit.cover,
                                                   ),
                                                 ),
-                                              ),
-                                            ],
+                                                Expanded(
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.all(
+                                                        16.0),
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Text(
+                                                          room.name.toUpperCase(),
+                                                          style: TextStyle(
+                                                            color: kThemeColor,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 18,
+                                                          ),
+                                                        ),
+                                                        const SizedBox(height: 8),
+                                                        Text(
+                                                          room.locationName,
+                                                          style: TextStyle(
+                                                            color: Colors
+                                                                .grey.shade700,
+                                                            fontSize: 14,
+                                                          ),
+                                                        ),
+                                                        const SizedBox(height: 8),
+                                                        Text(
+                                                          "Capacity: ${room.capacity}",
+                                                          style: TextStyle(
+                                                            color: kThemeColor,
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                          ),
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 20),
+                                                        Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: [
+                                                            Row(
+                                                              children: [
+                                                                Icon(
+                                                                    Icons
+                                                                        .location_on_rounded,
+                                                                    size: 16,
+                                                                    color:
+                                                                        kThemeColor),
+                                                                // Text(
+                                                                //   "${(sortedRooms[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
+                                                                //   style: TextStyle(
+                                                                //       color: Colors
+                                                                //           .black45),
+                                                                // ),
+                                                              ],
+                                                            ),
+                                                            Row(
+                                                              children: [
+                                                                Icon(room.status[
+                                                                'statusDisplay'] ==
+                                                                    "Owned"
+                                                                    ? Icons
+                                                                    .check_circle
+                                                                    : Icons
+                                                                    .flag_circle,
+                                                                    size: 16,
+                                                                    color: kThemeColor),
+                                                                Text(
+                                                                  '${room.status['statusDisplay'] ?? "To Buy"}',
+                                                                  style: const TextStyle(
+                                                                      color:
+                                                                      Colors.black45),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -1175,125 +1184,131 @@ class _ListingState extends State<Listing> {
                                         ),
                                       );
                                     },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(16.0),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.grey.shade300,
-                                            blurRadius: 5,
-                                            offset: const Offset(0, 4),
-                                          ),
-                                        ],
-                                      ),
-                                      child: Card(
-                                        shape: RoundedRectangleBorder(
+                                    child: Visibility(
+                                      visible: displayedProducts[index].status.isEmpty||displayedProducts[index].status['statusDisplay']=="Sold" || displayedProducts[index].status['statusDisplay']=="To Buy"?true:false,
+                                      child: Container(
+                                        decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(16.0),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.grey.shade300,
+                                              blurRadius: 5,
+                                              offset: const Offset(0, 4),
+                                            ),
+                                          ],
                                         ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 8.0),
-                                          child: Row(
-                                            children: [
-                                              ClipRRect(
-                                                borderRadius: const BorderRadius
-                                                    .horizontal(
-                                                  left: Radius.circular(16.0),
-                                                  right: Radius.circular(16.0),
-                                                ),
-                                                child: Image.network(
-                                                  product.photo.isNotEmpty
-                                                      ? product.photo[0]
-                                                      : 'https://via.placeholder.com/150',
-                                                  height: 100,
-                                                  width: 100,
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              ),
-                                              Expanded(
-                                                child: Padding(
-                                                  padding: const EdgeInsets.all(
-                                                      16.0),
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Text(
-                                                        product.name
-                                                            .toUpperCase(),
-                                                        style: TextStyle(
-                                                          color: kThemeColor,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 18,
-                                                        ),
-                                                      ),
-                                                      const SizedBox(height: 8),
-                                                      Text(
-                                                        product.locationName,
-                                                        style: TextStyle(
-                                                          color: Colors
-                                                              .grey.shade700,
-                                                          fontSize: 14,
-                                                        ),
-                                                      ),
-                                                      const SizedBox(height: 8),
-                                                      Text(
-                                                        "Rs. 8000/ per month",
-                                                        style: TextStyle(
-                                                          color: kThemeColor,
-                                                          fontSize: 14,
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                        ),
-                                                      ),
-                                                      const SizedBox(
-                                                          height: 20),
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        children: [
-                                                          Row(
-                                                            children: [
-                                                              Icon(
-                                                                Icons
-                                                                    .location_on_rounded,
-                                                                size: 16,
-                                                                color:
-                                                                    kThemeColor,
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          Row(
-                                                            children: [
-                                                              Icon(
-                                                                  Icons
-                                                                      .check_circle,
-                                                                  size: 16,
-                                                                  color:
-                                                                      kThemeColor),
-                                                              const Text(
-                                                                "Available",
-                                                                style: TextStyle(
-                                                                    color: Colors
-                                                                        .black45),
-                                                              )
-                                                            ],
-                                                          )
-                                                        ],
-                                                      )
-                                                    ],
+                                        child: Card(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(16.0),
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 8.0),
+                                            child: Row(
+                                              children: [
+                                                ClipRRect(
+                                                  borderRadius: const BorderRadius
+                                                      .horizontal(
+                                                    left: Radius.circular(16.0),
+                                                    right: Radius.circular(16.0),
+                                                  ),
+                                                  child: Image.network(
+                                                    product.photo.isNotEmpty
+                                                        ? product.photo[0]
+                                                        : 'https://via.placeholder.com/150',
+                                                    height: 100,
+                                                    width: 100,
+                                                    fit: BoxFit.cover,
                                                   ),
                                                 ),
-                                              ),
-                                            ],
+                                                Expanded(
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.all(
+                                                        16.0),
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Text(
+                                                          product.name
+                                                              .toUpperCase(),
+                                                          style: TextStyle(
+                                                            color: kThemeColor,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 18,
+                                                          ),
+                                                        ),
+                                                        const SizedBox(height: 8),
+                                                        Text(
+                                                          product.locationName,
+                                                          style: TextStyle(
+                                                            color: Colors
+                                                                .grey.shade700,
+                                                            fontSize: 14,
+                                                          ),
+                                                        ),
+                                                        const SizedBox(height: 8),
+                                                        Text(
+                                                          "${product.price}/ per month",
+                                                          style: TextStyle(
+                                                            color: kThemeColor,
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                            FontWeight.w600,
+                                                          ),
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 20),
+                                                        Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          children: [
+                                                            Row(
+                                                              children: [
+                                                                Icon(
+                                                                  Icons
+                                                                      .location_on_rounded,
+                                                                  size: 16,
+                                                                  color:
+                                                                      kThemeColor,
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            Row(
+                                                              children: [
+                                                                Icon(product.status[
+                                                                'statusDisplay'] ==
+                                                                    "Owned"
+                                                                    ? Icons
+                                                                    .check_circle
+                                                                    : Icons
+                                                                    .flag_circle,
+                                                                    size: 16,
+                                                                    color: kThemeColor),
+                                                                Text(
+                                                                  '${product.status['statusDisplay'] ?? "To Buy"}',
+                                                                  style: const TextStyle(
+                                                                      color:
+                                                                      Colors.black45),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ),
                                       ),
