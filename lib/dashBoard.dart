@@ -223,7 +223,6 @@ class _DashBoardState extends State<DashBoard> {
                 child: Column(
                   children: [
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         CircleAvatar(
                           radius: 20,
@@ -236,17 +235,6 @@ class _DashBoardState extends State<DashBoard> {
                                 color: kThemeColor,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 20)),
-                        IconButton(
-                          icon: Badge.count(
-                            count: 5,
-                            child: Icon(
-                              Icons.notifications_none_outlined,
-                              color: kThemeColor,
-                              size: 30,
-                            ),
-                          ),
-                          onPressed: () {},
-                        ),
                       ],
                     ),
                     const SizedBox(height: 20),
@@ -1271,7 +1259,26 @@ class _PriceRangeScreenState extends State<PriceRangeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Select Price Range'),
+        elevation: 0,
+        centerTitle: true,
+        actionsIconTheme: IconThemeData(
+          color: kThemeColor, // Color for the action icons
+        ),
+        backgroundColor: Colors.grey.shade200,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: kThemeColor),
+          onPressed: () {
+            Navigator.pop(context); // Action to go back
+          },
+        ),
+        title: Text(
+          "Select Price Range",
+          style: TextStyle(
+            color: kThemeColor,
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+          ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
