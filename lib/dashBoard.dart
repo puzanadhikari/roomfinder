@@ -587,16 +587,21 @@ class _DashBoardState extends State<DashBoard> {
                             itemCount: filteredRooms.length,
                             itemBuilder: (context, index) {
                               final room = filteredRooms[index];
-
+                              final distance = calculateDistance(
+                                widget.lat,
+                                widget.lng,
+                                room.lat,
+                                room.lng,
+                              ).toStringAsFixed(1);
                               return GestureDetector(
                                 onTap: () {
-                                  // Navigator.push(
-                                  //   context,
-                                  //   MaterialPageRoute(
-                                  //     builder: (context) =>
-                                  //         RoomDetailPage(room: room),
-                                  //   ),
-                                  // );
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          RoomDetailPage(room: room,distance: distance),
+                                    ),
+                                  );
                                 },
                                 child: Container(
                                   width: 200,

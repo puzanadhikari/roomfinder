@@ -922,168 +922,179 @@ class _ListingState extends State<Listing> {
                           return true;
                         },
                         child: SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              const Text("Suggested"),
-                              ListView.builder(
-                                itemCount: sortedRooms.length,
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemBuilder: (context, index) {
-                                  final room = sortedRooms[index];
-                                  final distance = calculateDistance(
-                                    widget.lat,
-                                    widget.lng,
-                                    room.lat,
-                                    room.lng,
-                                  ).toStringAsFixed(1);
-                                  return GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              RoomDetailPage(room: room,distance: distance),
-                                        ),
-                                      );
-                                    },
-                                    child: Visibility(
-                                      visible: room.status.isEmpty||room.status['statusDisplay']=="Sold" || room.status['statusDisplay']=="To Buy"?true:false,
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(16.0),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Colors.grey.shade300,
-                                              blurRadius: 5,
-                                              offset: const Offset(0, 4),
-                                            ),
-                                          ],
-                                        ),
-                                        child: Card(
-                                          shape: RoundedRectangleBorder(
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  "Suggested",
+                                  style: TextStyle(
+                                    color: Color(0xFF072A2E),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                ListView.builder(
+                                  itemCount: sortedRooms.length,
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemBuilder: (context, index) {
+                                    final room = sortedRooms[index];
+                                    final distance = calculateDistance(
+                                      widget.lat,
+                                      widget.lng,
+                                      room.lat,
+                                      room.lng,
+                                    ).toStringAsFixed(1);
+                                    return GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                RoomDetailPage(room: room,distance: distance),
+                                          ),
+                                        );
+                                      },
+                                      child: Visibility(
+                                        visible: room.status.isEmpty||room.status['statusDisplay']=="Sold" || room.status['statusDisplay']=="To Buy"?true:false,
+                                        child: Container(
+                                          decoration: BoxDecoration(
                                             borderRadius:
                                                 BorderRadius.circular(16.0),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.grey.shade300,
+                                                blurRadius: 5,
+                                                offset: const Offset(0, 4),
+                                              ),
+                                            ],
                                           ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 8.0),
-                                            child: Row(
-                                              children: [
-                                                ClipRRect(
-                                                  borderRadius: const BorderRadius
-                                                      .horizontal(
-                                                    left: Radius.circular(16.0),
-                                                    right: Radius.circular(16.0),
-                                                  ),
-                                                  child: Image.network(
-                                                    room.photo.isNotEmpty
-                                                        ? room.photo[0]
-                                                        : 'https://via.placeholder.com/150',
-                                                    height: 100,
-                                                    width: 100,
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.all(
-                                                        16.0),
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        Text(
-                                                          room.name.toUpperCase(),
-                                                          style: TextStyle(
-                                                            color: kThemeColor,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize: 18,
-                                                          ),
-                                                        ),
-                                                        const SizedBox(height: 8),
-                                                        Text(
-                                                          room.locationName,
-                                                          style: TextStyle(
-                                                            color: Colors
-                                                                .grey.shade700,
-                                                            fontSize: 14,
-                                                          ),
-                                                        ),
-                                                        const SizedBox(height: 8),
-                                                        Text(
-                                                          "Capacity: ${room.capacity}",
-                                                          style: TextStyle(
-                                                            color: kThemeColor,
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                          ),
-                                                        ),
-                                                        const SizedBox(
-                                                            height: 20),
-                                                        Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          children: [
-                                                            Row(
-                                                              children: [
-                                                                Icon(
-                                                                    Icons
-                                                                        .location_on_rounded,
-                                                                    size: 16,
-                                                                    color:
-                                                                    kThemeColor),
-                                                                Text(
-                                                                  "$distance km from you.",
-                                                                  style: const TextStyle(
-                                                                      color: Colors
-                                                                          .black45),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                            Row(
-                                                              children: [
-                                                                Icon(room.status[
-                                                                'statusDisplay'] ==
-                                                                    "Owned"
-                                                                    ? Icons
-                                                                    .check_circle
-                                                                    : Icons
-                                                                    .flag_circle,
-                                                                    size: 16,
-                                                                    color: kThemeColor),
-                                                                Text(
-                                                                  '${room.status['statusDisplay'] ?? "To Buy"}',
-                                                                  style: const TextStyle(
-                                                                      color:
-                                                                      Colors.black45),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ],
+                                          child: Card(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(16.0),
+                                            ),
+                                            child: Padding(
+                                              padding: const EdgeInsets.symmetric(
+                                                  horizontal: 8.0),
+                                              child: Row(
+                                                children: [
+                                                  ClipRRect(
+                                                    borderRadius: const BorderRadius
+                                                        .horizontal(
+                                                      left: Radius.circular(16.0),
+                                                      right: Radius.circular(16.0),
+                                                    ),
+                                                    child: Image.network(
+                                                      room.photo.isNotEmpty
+                                                          ? room.photo[0]
+                                                          : 'https://via.placeholder.com/150',
+                                                      height: 100,
+                                                      width: 100,
+                                                      fit: BoxFit.cover,
                                                     ),
                                                   ),
-                                                ),
-                                              ],
+                                                  Expanded(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(
+                                                          16.0),
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Text(
+                                                            room.name.toUpperCase(),
+                                                            style: TextStyle(
+                                                              color: kThemeColor,
+                                                              fontWeight:
+                                                                  FontWeight.bold,
+                                                              fontSize: 18,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(height: 8),
+                                                          Text(
+                                                            room.locationName,
+                                                            style: TextStyle(
+                                                              color: Colors
+                                                                  .grey.shade700,
+                                                              fontSize: 14,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(height: 8),
+                                                          Text(
+                                                            "Capacity: ${room.capacity}",
+                                                            style: TextStyle(
+                                                              color: kThemeColor,
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                                  FontWeight.w600,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                              height: 20),
+                                                          Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
+                                                            children: [
+                                                              Row(
+                                                                children: [
+                                                                  Icon(
+                                                                      Icons
+                                                                          .location_on_rounded,
+                                                                      size: 16,
+                                                                      color:
+                                                                      kThemeColor),
+                                                                  Text(
+                                                                    "$distance km from you.",
+                                                                    style: const TextStyle(
+                                                                        color: Colors
+                                                                            .black45),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              Row(
+                                                                children: [
+                                                                  Icon(room.status[
+                                                                  'statusDisplay'] ==
+                                                                      "Owned"
+                                                                      ? Icons
+                                                                      .check_circle
+                                                                      : Icons
+                                                                      .flag_circle,
+                                                                      size: 16,
+                                                                      color: kThemeColor),
+                                                                  Text(
+                                                                    '${room.status['statusDisplay'] ?? "To Buy"}',
+                                                                    style: const TextStyle(
+                                                                        color:
+                                                                        Colors.black45),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ],
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       );
