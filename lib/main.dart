@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
       builder: (context, _) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          title: "Khalti integration app",
+          title: "Room Finder",
           navigatorKey: _,
           home: SplashScreen(),
           theme: ThemeData(

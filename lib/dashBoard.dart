@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:meroapp/Constants/styleConsts.dart';
 import 'package:meroapp/provider/pageProvider.dart';
@@ -39,6 +40,21 @@ class DashBoard extends StatefulWidget {
 }
 
 class _DashBoardState extends State<DashBoard> {
+
+  String? profilePhotoUrl;
+  Future<void> _loadProfilePhoto() async {
+    String? url = await getProfilePhotoUrl();
+    setState(() {
+      profilePhotoUrl = url;
+    });
+  }
+  Future<String?> getProfilePhotoUrl() async {
+    String userId = FirebaseAuth.instance.currentUser!.uid;
+    DocumentSnapshot userSnapshot =
+    await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    return userSnapshot['photoUrl'];
+  }
+
   bool showAllMostSearch = false;
   bool showAllNearYou = false;
   TextEditingController searchController = TextEditingController();
@@ -174,6 +190,7 @@ class _DashBoardState extends State<DashBoard> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    _loadProfilePhoto();
     rooms = fetchRooms();
   }
 
@@ -223,18 +240,40 @@ class _DashBoardState extends State<DashBoard> {
                 child: Column(
                   children: [
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         CircleAvatar(
                           radius: 20,
                           backgroundColor: kThemeColor,
-                          backgroundImage: const NetworkImage(
-                              "https://media.licdn.com/dms/image/D5603AQFD6ld3NWc2HQ/profile-displayphoto-shrink_200_200/0/1684164054868?e=2147483647&v=beta&t=cwQoyfhgAl_91URX5FTEXLwLDEHWe1H337EMebpgntQ"),
+                          backgroundImage: profilePhotoUrl != null
+                              ? NetworkImage(profilePhotoUrl!)
+                              : const AssetImage('assets/pic1.jpg') as ImageProvider,
                         ),
                         Text("Home",
                             style: TextStyle(
                                 color: kThemeColor,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 20)),
+                        Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: kThemeColor,
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          child: IconButton(
+                            icon: const Icon(Icons.filter_list, color: Colors.white),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => PriceRangeScreen(widget.lat, widget.lng),
+                                ),
+                              );
+                            },
+                            iconSize: 20,
+                          ),
+                        )
                       ],
                     ),
                     const SizedBox(height: 20),
@@ -255,25 +294,11 @@ class _DashBoardState extends State<DashBoard> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text("Find a property anywhere.",
-                                  style: TextStyle(
-                                      color: Color(0xAA616161),
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16)),
-                              IconButton(
-                                icon: Icon(Icons.filter_list, color: Color(0xAA616161)),
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => PriceRangeScreen(widget.lat,widget.lng)),
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
+                          Text("Find a property anywhere.",
+                              style: TextStyle(
+                                  color: Color(0xAA616161),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16)),
                           const SizedBox(height: 5),
                           TextFormField(
                             controller: searchController,

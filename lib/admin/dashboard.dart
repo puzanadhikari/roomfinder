@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:meroapp/admin/admin_room_details.dart';
@@ -14,6 +15,25 @@ class DashBoard extends StatefulWidget {
 }
 
 class _DashBoardState extends State<DashBoard> {
+  String? profilePhotoUrl;
+  Future<void> _loadProfilePhoto() async {
+    String? url = await getProfilePhotoUrl();
+    setState(() {
+      profilePhotoUrl = url;
+    });
+  }
+  Future<String?> getProfilePhotoUrl() async {
+    String userId = FirebaseAuth.instance.currentUser!.uid;
+    DocumentSnapshot userSnapshot =
+    await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    return userSnapshot['photoUrl'];
+  }
+  @override
+  void initState() {
+    super.initState();
+    _loadProfilePhoto();
+  }
+
   Future<void> approveRoom(String uid) async {
     try {
       DocumentReference roomRef = FirebaseFirestore.instance.collection('onSale').doc(uid);
@@ -195,8 +215,9 @@ class _DashBoardState extends State<DashBoard> {
         CircleAvatar(
           radius: 20,
           backgroundColor: kThemeColor,
-          backgroundImage: const NetworkImage(
-              "https://media.licdn.com/dms/image/D5603AQFD6ld3NWc2HQ/profile-displayphoto-shrink_200_200/0/1684164054868?e=2147483647&v=beta&t=cwQoyfhgAl_91URX5FTEXLwLDEHWe1H337EMebpgntQ"),
+          backgroundImage: profilePhotoUrl != null
+              ? NetworkImage(profilePhotoUrl!)
+              : const AssetImage('assets/pic1.jpg') as ImageProvider, // Fallback image
         ),
         Text("Home",
             style: TextStyle(
