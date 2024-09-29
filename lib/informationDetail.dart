@@ -21,6 +21,7 @@ class _InformationDetailsState extends State<InformationDetails> {
   final TextEditingController _phoneController = TextEditingController();
   String? _photoUrl; // To store the URL of the user's profile photo
   File? _imageFile; // To store the image file temporarily
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -40,6 +41,9 @@ class _InformationDetailsState extends State<InformationDetails> {
   }
 
   Future<void> _updateUserProfile() async {
+    setState(() {
+      _isLoading = true; // Start loading
+    });
     try {
       String? newPhotoUrl;
 
@@ -67,6 +71,7 @@ class _InformationDetailsState extends State<InformationDetails> {
         textColor: Colors.white,
         fontSize: 16.0,
       );
+      Navigator.pop(context);
 
       _initializeFields();
     } catch (e) {
@@ -79,6 +84,10 @@ class _InformationDetailsState extends State<InformationDetails> {
         textColor: Colors.white,
         fontSize: 16.0,
       );
+    }finally{
+      setState(() {
+        _isLoading = false; // Stop loading
+      });
     }
   }
 
@@ -105,14 +114,17 @@ class _InformationDetailsState extends State<InformationDetails> {
       appBar: AppBar(
         elevation: 0,
         centerTitle: true,
-        backgroundColor: kThemeColor,
-        title: const Text(
+        backgroundColor: Colors.grey.shade200,
+        title: Text(
           "User Profile",
           style: TextStyle(
+            color: kThemeColor,
             fontWeight: FontWeight.bold,
-            fontSize: 28,
-            color: Colors.white,
+            fontSize: 20,
           ),
+        ),
+        iconTheme: IconThemeData(
+          color: kThemeColor,
         ),
       ),
       body: SingleChildScrollView(
@@ -125,7 +137,11 @@ class _InformationDetailsState extends State<InformationDetails> {
             _buildInfoCard(),
             const SizedBox(height: 20),
             Center(
-              child: ElevatedButton(
+              child: _isLoading
+                  ? CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(kThemeColor),
+              )
+                  : ElevatedButton(
                 onPressed: _updateUserProfile,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: kThemeColor,
@@ -206,6 +222,7 @@ class _InformationDetailsState extends State<InformationDetails> {
               controller: _emailController,
               icon: Icons.email,
               onEdit: () {},
+              enabled: false
             ),
             _buildDivider(),
             _buildEditableListTile(
@@ -229,6 +246,7 @@ class _InformationDetailsState extends State<InformationDetails> {
     required TextEditingController controller,
     required IconData icon,
     required Function onEdit,
+    bool enabled = true,
   }) {
     return ListTile(
       title: Text(
@@ -241,6 +259,7 @@ class _InformationDetailsState extends State<InformationDetails> {
       ),
       subtitle: TextField(
         controller: controller,
+        enabled: enabled,
         decoration: InputDecoration(
           hintText: 'Enter $title',
           border: OutlineInputBorder(

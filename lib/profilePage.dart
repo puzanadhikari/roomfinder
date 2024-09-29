@@ -84,7 +84,8 @@ class _ProfilePageState extends State<ProfilePage> {
           User? currentUser = _auth.currentUser;
           String username = userData['username'] ?? 'Username not found';
           String email = currentUser?.email ?? 'Email not found';
-          String contactNumber = userData['contactNumber'] ?? 'Contact not found';
+          String contactNumber =
+              userData['contactNumber'] ?? 'Contact not found';
           String userType = userData['userType'] ?? 'User Type not found';
           String photoUrl = userData['photoUrl'] ?? '';
 
@@ -153,7 +154,9 @@ class _ProfilePageState extends State<ProfilePage> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => WishlistPage(widget.lat, widget.lng)),
+                        MaterialPageRoute(
+                          builder: (context) => WishlistPage(widget.lat, widget.lng),
+                        ),
                       );
                     },
                   ),
@@ -163,7 +166,9 @@ class _ProfilePageState extends State<ProfilePage> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const OrderPage()),
+                        MaterialPageRoute(
+                          builder: (context) => const OrderPage(),
+                        ),
                       );
                     },
                   ),
@@ -173,7 +178,9 @@ class _ProfilePageState extends State<ProfilePage> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const InformationDetails()),
+                        MaterialPageRoute(
+                          builder: (context) => const InformationDetails(),
+                        ),
                       );
                     },
                   ),
@@ -204,24 +211,30 @@ class _ProfilePageState extends State<ProfilePage> {
   }) {
     return InkWell(
       onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 15.0),
-        child: Row(
-          children: [
-            Icon(icon, size: 28, color: color ?? kThemeColor),
-            const SizedBox(width: 20),
-            Expanded(
-              child: Text(
-                title,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: color ?? Colors.black,
+      child: Card(
+        elevation: 3,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 10.0),
+          child: Row(
+            children: [
+              Icon(icon, size: 28, color: color ?? kThemeColor),
+              const SizedBox(width: 20),
+              Expanded(
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: color ?? Colors.black,
+                  ),
                 ),
               ),
-            ),
-            const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
-          ],
+              const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
+            ],
+          ),
         ),
       ),
     );
