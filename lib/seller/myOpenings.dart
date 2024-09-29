@@ -218,22 +218,6 @@ class _MyListingsPageState extends State<MyListingsPage> {
                                               Row(
                                                 children: [
                                                   Icon(
-                                                      Icons
-                                                          .location_on_rounded,
-                                                      size: 16,
-                                                      color: kThemeColor),
-                                                  Text(
-                                                    "${(rooms[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
-                                                    style: const TextStyle(
-                                                        color:
-                                                            Colors.black45),
-                                                  ),
-                                                ],
-                                              ),
-                                              const SizedBox(height: 10),
-                                              Row(
-                                                children: [
-                                                  Icon(
                                                       roomStatus[index]
                                                           .status[
                                                       'statusDisplay'] ==

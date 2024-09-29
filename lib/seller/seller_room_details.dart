@@ -152,13 +152,6 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
                                   color: Color(0xFF4D4D4D),
                                   fontSize: 16),
                             ),
-                            const SizedBox(height: 8),
-                            const Text(
-                              "1.5 km from Gwarko",
-                              style: TextStyle(
-                                  color: Color(0xFF4D4D4D),
-                                  fontSize: 16),
-                            ),
                             const SizedBox(height: 16),
                             const Divider(color: Colors.grey),
                             const SizedBox(height: 15),
@@ -178,7 +171,7 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
                                           const Icon(Icons.king_bed, color: Colors.black), // Icon for room
                                           const SizedBox(width: 8), // Space between icon and text
                                           Text(
-                                            "Room: ${widget.room.roomLength}m x ${widget.room.roomBreath}m",
+                                            "Room: ${widget.room.roomLength}ft x ${widget.room.roomBreath}ft",
                                             style: const TextStyle(
                                               color: Color(0xFF4D4D4D),
                                               fontSize: 16,
@@ -193,7 +186,7 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
                                           const Icon(Icons.kitchen, color: Colors.black),
                                           const SizedBox(width: 8),
                                           Text(
-                                            "Kitchen: ${widget.room.kitchenLength}m x ${widget.room.kitchenbreadth}m",
+                                            "Kitchen: ${widget.room.kitchenLength}ft x ${widget.room.kitchenbreadth}ft",
                                             style: const TextStyle(
                                               color: Color(0xFF4D4D4D),
                                               fontSize: 16,
@@ -210,7 +203,7 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
                                           const Icon(Icons.tv, color: Colors.black), // Icon for hall
                                           const SizedBox(width: 8),
                                           Text(
-                                            "Hall: ${widget.room.hallLength}m x ${widget.room.hallBreadth}m",
+                                            "Hall: ${widget.room.hallLength}ft x ${widget.room.hallBreadth}ft",
                                             style: const TextStyle(
                                               color: Color(0xFF4D4D4D),
                                               fontSize: 16,

@@ -11,7 +11,9 @@ import 'informationDetail.dart';
 import 'orders.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+  double lat, lng;
+
+  ProfilePage(this.lat, this.lng, {super.key});
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -153,7 +155,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const WishlistPage(),
+                      builder: (context) => WishlistPage(widget.lat,widget.lng),
                     ),
                   );
                 },

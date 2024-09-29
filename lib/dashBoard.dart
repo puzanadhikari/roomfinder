@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,22 @@ import 'model/onSaleModel.dart';
 RangeValues _currentRangeValues = RangeValues(0, 100000);
 double? startPrice=0.0;
 double? endPrice=1000.0;
+double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+  const R = 6371;
+  final dLat = _deg2rad(lat2 - lat1);
+  final dLon = _deg2rad(lon2 - lon1);
+
+  final a = sin(dLat / 2) * sin(dLat / 2) +
+      cos(_deg2rad(lat1)) * cos(_deg2rad(lat2)) *
+          sin(dLon / 2) * sin(dLon / 2);
+  final c = 2 * atan2(sqrt(a), sqrt(1 - a));
+  final distance = R * c;
+  return distance;
+}
+
+double _deg2rad(double deg) {
+  return deg * (pi / 180);
+}
 class DashBoard extends StatefulWidget {
   double lat, lng;
 
@@ -263,7 +280,7 @@ class _DashBoardState extends State<DashBoard> {
                                 onPressed: () {
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => PriceRangeScreen()),
+                                    MaterialPageRoute(builder: (context) => PriceRangeScreen(widget.lat,widget.lng)),
                                   );
                                 },
                               ),
@@ -368,6 +385,12 @@ class _DashBoardState extends State<DashBoard> {
                               itemCount: sortedRooms.length,
                               itemBuilder: (context, index) {
                                 final room = sortedRooms[index];
+                                final distance = calculateDistance(
+                                  widget.lat,
+                                  widget.lng,
+                                  room.lat,
+                                  room.lng,
+                                ).toStringAsFixed(1);
                                 return GestureDetector(
                                   onTap: () {
                                     recordSearch(searchQuery, room.uid);
@@ -453,9 +476,9 @@ class _DashBoardState extends State<DashBoard> {
                                                                 .location_on_rounded,
                                                             size: 16,
                                                             color:
-                                                                kThemeColor),
+                                                            kThemeColor),
                                                         Text(
-                                                          "${(sortedRooms[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
+                                                          "$distance km from you.",
                                                           style: const TextStyle(
                                                               color: Colors
                                                                   .black45),
@@ -567,13 +590,13 @@ class _DashBoardState extends State<DashBoard> {
 
                               return GestureDetector(
                                 onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          RoomDetailPage(room: room),
-                                    ),
-                                  );
+                                  // Navigator.push(
+                                  //   context,
+                                  //   MaterialPageRoute(
+                                  //     builder: (context) =>
+                                  //         RoomDetailPage(room: room),
+                                  //   ),
+                                  // );
                                 },
                                 child: Container(
                                   width: 200,
@@ -703,206 +726,203 @@ class _DashBoardState extends State<DashBoard> {
                         // ),
                       ],
                     ),
-                    FutureBuilder<List<Room>>(
-                      future: fetchMostSearchedProducts(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
-                          return Shimmer.fromColors(
-                            baseColor: Colors.grey.shade300,
-                            highlightColor: Colors.grey.shade100,
-                            child: SizedBox(
-                              height: 500,
-                              child: ListView.builder(
-                                itemCount: 3,
-                                itemBuilder: (context, index) => Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 8.0),
-                                  child: Container(
-                                    height: 120,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(16.0),
-                                    ),
+                  FutureBuilder<List<Room>>(
+                    future: fetchMostSearchedProducts(),  // Assuming this fetches the room data
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Shimmer.fromColors(
+                          baseColor: Colors.grey.shade300,
+                          highlightColor: Colors.grey.shade100,
+                          child: SizedBox(
+                            height: 500,
+                            child: ListView.builder(
+                              itemCount: 3,
+                              itemBuilder: (context, index) => Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                child: Container(
+                                  height: 120,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(16.0),
                                   ),
                                 ),
                               ),
                             ),
-                          );
-                        } else if (snapshot.hasError) {
-                          return Center(child: Text('Error: ${snapshot.error}'));
-                        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                          return const Center(child: Text('No products found.'));
-                        }
-                        final displayedProducts = showAllMostSearch
-                            ? snapshot.data!
-                            : snapshot.data!.take(3).toList();
-                        return Column(
-                          children: [
-                            ListView.builder(
-                              itemCount: displayedProducts.length,
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemBuilder: (context, index) {
-                                final product = displayedProducts[index];
-                                return GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            RoomDetailPage(room: product),
-                                      ),
-                                    );
-                                  },
-                                  child: Visibility(
-                                    visible: displayedProducts[index].status.isEmpty||displayedProducts[index].status['statusDisplay']=="Sold" || displayedProducts[index].status['statusDisplay']=="To Buy"?true:false,
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(16.0),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.grey.shade300,
-                                            blurRadius: 5,
-                                            offset: const Offset(0, 4),
-                                          ),
-                                        ],
-                                      ),
-                                      child: Card(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(16.0),
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 8.0),
-                                          child: Row(
-                                            children: [
-                                              ClipRRect(
-                                                borderRadius:
-                                                    const BorderRadius.horizontal(
-                                                  left: Radius.circular(16.0),
-                                                  right: Radius.circular(16.0),
-                                                ),
-                                                child: Image.network(
-                                                  product.photo.isNotEmpty
-                                                      ? product.photo[0]
-                                                      : 'https://via.placeholder.com/150',
-                                                  height: 100,
-                                                  width: 100,
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              ),
-                                              Expanded(
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(16.0),
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.center,
-                                                    children: [
-                                                      Text(
-                                                        product.name.toUpperCase(),
-                                                        style: TextStyle(
-                                                          color: kThemeColor,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 16,
-                                                        ),
-                                                      ),
-                                                      const SizedBox(height: 8),
-                                                      Text(
-                                                        product.locationName,
-                                                        style: TextStyle(
-                                                          color:
-                                                              Colors.grey.shade700,
-                                                          fontSize: 14,
-                                                        ),
-                                                      ),
-                                                      const SizedBox(height: 8),
-                                                      Text(
-                                                        "${product.price}/ per month",
-                                                        style: TextStyle(
-                                                          color: kThemeColor,
-                                                          fontSize: 14,
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                        ),
-                                                      ),
-                                                      const SizedBox(height: 10),
-                                                      Row(
-                                                        children: [
-                                                          Icon(
-                                                            Icons
-                                                                .location_on_rounded,
-                                                            size: 16,
-                                                            color: kThemeColor,
-                                                          ),
-                                                          Text(
-                                                            "${(displayedProducts[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
-                                                            style: const TextStyle(
-                                                                color: Colors
-                                                                    .black45),
-                                                          )
-                                                        ],
-                                                      ),
-                                                      const SizedBox(height: 10),
-                                                      Row(
-                                                        children: [
-                                                          Icon(
-                                                              displayedProducts[index]
-                                                                  .status[
-                                                              'statusDisplay'] ==
-                                                                  "Owned"
-                                                                  ? Icons
-                                                                  .check_circle
-                                                                  : Icons
-                                                                  .flag_circle,
-                                                              size: 16,
-                                                              color:
-                                                              kThemeColor),
-                                                          Text(
-                                                            '${displayedProducts[index].status['statusDisplay'] ?? "To Buy"}',
-                                                            style: const TextStyle(
-                                                                color: Colors
-                                                                    .black45),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                            if (!showAllMostSearch && snapshot.data!.length > 3)
-                              TextButton(
-                                onPressed: () {
-                                  setState(() {
-                                    pageProvider.setPage(1);
-                                    pageProvider.setChoice("From homepage");
-                                  });
-                                },
-                                child: Text(
-                                  'View All',
-                                  style: TextStyle(
-                                    color: kThemeColor,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                          ],
+                          ),
                         );
-                      },
-                    ),
+                      } else if (snapshot.hasError) {
+                        return Center(child: Text('Error: ${snapshot.error}'));
+                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return const Center(child: Text('No products found.'));
+                      }
+
+                      final displayedProducts = showAllMostSearch
+                          ? snapshot.data!
+                          : snapshot.data!.take(3).toList();
+
+                      return Column(
+                        children: [
+                          ListView.builder(
+                            itemCount: displayedProducts.length,
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              final product = displayedProducts[index];
+
+                              // Calculate distance using Haversine formula
+                              final distance = calculateDistance(
+                                widget.lat,
+                                widget.lng,
+                                product.lat,
+                                product.lng,
+                              ).toStringAsFixed(1);  // Convert to a string with 1 decimal precision
+
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => RoomDetailPage(room: product, distance: distance),
+                                    ),
+                                  );
+                                },
+                                child: Visibility(
+                                  visible: product.status.isEmpty ||
+                                      product.status['statusDisplay'] == "Sold" ||
+                                      product.status['statusDisplay'] == "To Buy",
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(16.0),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.shade300,
+                                          blurRadius: 5,
+                                          offset: const Offset(0, 4),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Card(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(16.0),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                        child: Row(
+                                          children: [
+                                            ClipRRect(
+                                              borderRadius: const BorderRadius.horizontal(
+                                                left: Radius.circular(16.0),
+                                                right: Radius.circular(16.0),
+                                              ),
+                                              child: Image.network(
+                                                product.photo.isNotEmpty
+                                                    ? product.photo[0]
+                                                    : 'https://via.placeholder.com/150',
+                                                height: 100,
+                                                width: 100,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                            Expanded(
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(16.0),
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      product.name.toUpperCase(),
+                                                      style: TextStyle(
+                                                        color: kThemeColor,
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 16,
+                                                      ),
+                                                    ),
+                                                    const SizedBox(height: 8),
+                                                    Text(
+                                                      product.locationName,
+                                                      style: TextStyle(
+                                                        color: Colors.grey.shade700,
+                                                        fontSize: 14,
+                                                      ),
+                                                    ),
+                                                    const SizedBox(height: 8),
+                                                    Text(
+                                                      "${product.price}/ per month",
+                                                      style: TextStyle(
+                                                        color: kThemeColor,
+                                                        fontSize: 14,
+                                                        fontWeight: FontWeight.w600,
+                                                      ),
+                                                    ),
+                                                    const SizedBox(height: 10),
+                                                    Row(
+                                                      children: [
+                                                        Icon(
+                                                          Icons.location_on_rounded,
+                                                          size: 16,
+                                                          color: kThemeColor,
+                                                        ),
+                                                        Text(
+                                                          "$distance km from you.",
+                                                          style: const TextStyle(
+                                                            color: Colors.black45,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    const SizedBox(height: 10),
+                                                    Row(
+                                                      children: [
+                                                        Icon(
+                                                          product.status['statusDisplay'] == "Owned"
+                                                              ? Icons.check_circle
+                                                              : Icons.flag_circle,
+                                                          size: 16,
+                                                          color: kThemeColor,
+                                                        ),
+                                                        Text(
+                                                          product.status['statusDisplay'] ?? "To Buy",
+                                                          style: const TextStyle(
+                                                            color: Colors.black45,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                          if (!showAllMostSearch && snapshot.data!.length > 3)
+                            TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  pageProvider.setPage(1);
+                                  pageProvider.setChoice("From homepage");
+                                });
+                              },
+                              child: Text(
+                                'View All',
+                                style: TextStyle(
+                                  color: kThemeColor,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                        ],
+                      );
+                    },
+                  ),
                     const SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1004,7 +1024,7 @@ class _DashBoardState extends State<DashBoard> {
                             ? sortedRooms
                             : sortedRooms.take(3).toList();
 
-                        log(sortedRooms.length.toString());
+                        print(sortedRooms.length.toString());
 
                         return Column(
                           children: [
@@ -1014,13 +1034,19 @@ class _DashBoardState extends State<DashBoard> {
                               physics: const NeverScrollableScrollPhysics(),
                               itemBuilder: (context, index) {
                                 final room = sortedRooms[index];
+                                final distance = calculateDistance(
+                                  widget.lat,
+                                  widget.lng,
+                                  room.lat,
+                                  room.lng,
+                                ).toStringAsFixed(1);
                                 return GestureDetector(
                                   onTap: () {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) =>
-                                            RoomDetailPage(room: room),
+                                            RoomDetailPage(room: room,distance: distance),
                                       ),
                                     );
                                   },
@@ -1109,7 +1135,7 @@ class _DashBoardState extends State<DashBoard> {
                                                               color:
                                                                   kThemeColor),
                                                           Text(
-                                                            "${(room.lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
+                                                            "$distance km from you.",
                                                             style: const TextStyle(
                                                                 color: Colors
                                                                     .black45),
@@ -1182,6 +1208,9 @@ class _DashBoardState extends State<DashBoard> {
   }
 }
 class PriceRangeScreen extends StatefulWidget {
+  double lat, lng;
+
+  PriceRangeScreen(this.lat, this.lng, {super.key});
   @override
   _PriceRangeScreenState createState() => _PriceRangeScreenState();
 }
@@ -1280,7 +1309,7 @@ class _PriceRangeScreenState extends State<PriceRangeScreen> {
                 startPrice = _currentRangeValues.start;
                 endPrice = _currentRangeValues.end;
                 fetchRoomsForFilter();
-                log('Selected Price Range: ${_currentRangeValues.start} - ${_currentRangeValues.end}');
+                print('Selected Price Range: ${_currentRangeValues.start} - ${_currentRangeValues.end}');
                 setState(() {
 
                 });
@@ -1302,7 +1331,7 @@ class _PriceRangeScreenState extends State<PriceRangeScreen> {
                     return const Center(
                         child: Text('No rooms available.'));
                   }
-                        log("data:"+snapshot.data.toString());
+                  print("data:"+snapshot.data.toString());
                   List<Room> filteredRooms1 = [];
 
                  snapshot.data == null?"":  filteredRooms1  = snapshot.data!
@@ -1315,13 +1344,19 @@ class _PriceRangeScreenState extends State<PriceRangeScreen> {
                     itemCount: filteredRooms1.length,
                     itemBuilder: (context, index) {
                       final room = filteredRooms1[index];
+                      final distance = calculateDistance(
+                        widget.lat,
+                        widget.lng,
+                        room.lat,
+                        room.lng,
+                      ).toStringAsFixed(1);
                       return GestureDetector(
                         onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) =>
-                                  RoomDetailPage(room: room),
+                                  RoomDetailPage(room: room,distance: distance),
                             ),
                           );
                         },
@@ -1409,12 +1444,12 @@ class _PriceRangeScreenState extends State<PriceRangeScreen> {
                                                     size: 16,
                                                     color:
                                                     kThemeColor),
-                                                // Text(
-                                                //   "${(sortedRooms[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
-                                                //   style: const TextStyle(
-                                                //       color: Colors
-                                                //           .black45),
-                                                // ),
+                                                Text(
+                                                  "$distance km from you.",
+                                                  style: const TextStyle(
+                                                      color: Colors
+                                                          .black45),
+                                                ),
                                               ],
                                             ),
                                             const SizedBox(height: 10),

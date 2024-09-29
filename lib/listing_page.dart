@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:meroapp/provider/pageProvider.dart';
@@ -19,6 +21,23 @@ class Listing extends StatefulWidget {
 
 class _ListingState extends State<Listing> {
   String searchQuery = '';
+
+  double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+    const R = 6371;
+    final dLat = _deg2rad(lat2 - lat1);
+    final dLon = _deg2rad(lon2 - lon1);
+
+    final a = sin(dLat / 2) * sin(dLat / 2) +
+        cos(_deg2rad(lat1)) * cos(_deg2rad(lat2)) *
+            sin(dLon / 2) * sin(dLon / 2);
+    final c = 2 * atan2(sqrt(a), sqrt(1 - a));
+    final distance = R * c;
+    return distance;
+  }
+
+  double _deg2rad(double deg) {
+    return deg * (pi / 180);
+  }
 
   List<Room> sortedRoomsByDistance(
       List<Room> rooms, double userLat, double userLng) {
@@ -299,13 +318,19 @@ class _ListingState extends State<Listing> {
                                   physics: const NeverScrollableScrollPhysics(),
                                   itemBuilder: (context, index) {
                                     final product = displayedProducts[index];
+                                    final distance = calculateDistance(
+                                      widget.lat,
+                                      widget.lng,
+                                      product.lat,
+                                      product.lng,
+                                    ).toStringAsFixed(1);
                                     return GestureDetector(
                                       onTap: () {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) =>
-                                                RoomDetailPage(room: product),
+                                                RoomDetailPage(room: product, distance: distance),
                                           ),
                                         );
                                       },
@@ -399,11 +424,16 @@ class _ListingState extends State<Listing> {
                                                           Row(
                                                             children: [
                                                               Icon(
-                                                                Icons
-                                                                    .location_on_rounded,
-                                                                size: 16,
-                                                                color:
-                                                                    kThemeColor,
+                                                                  Icons
+                                                                      .location_on_rounded,
+                                                                  size: 16,
+                                                                  color:
+                                                                  kThemeColor),
+                                                              Text(
+                                                                "$distance km from you.",
+                                                                style: const TextStyle(
+                                                                    color: Colors
+                                                                        .black45),
                                                               ),
                                                             ],
                                                           ),
@@ -599,13 +629,19 @@ class _ListingState extends State<Listing> {
                                   physics: const NeverScrollableScrollPhysics(),
                                   itemBuilder: (context, index) {
                                     final room = sortedRooms[index];
+                                    final distance = calculateDistance(
+                                      widget.lat,
+                                      widget.lng,
+                                      room.lat,
+                                      room.lng,
+                                    ).toStringAsFixed(1);
                                     return GestureDetector(
                                       onTap: () {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) =>
-                                                RoomDetailPage(room: room),
+                                                RoomDetailPage(room: room, distance: distance),
                                           ),
                                         );
                                       },
@@ -703,13 +739,13 @@ class _ListingState extends State<Listing> {
                                                                       .location_on_rounded,
                                                                   size: 16,
                                                                   color:
-                                                                      kThemeColor),
-                                                              // Text(
-                                                              //   "${(sortedRooms[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
-                                                              //   style: TextStyle(
-                                                              //       color: Colors
-                                                              //           .black45),
-                                                              // ),
+                                                                  kThemeColor),
+                                                              Text(
+                                                                "$distance km from you.",
+                                                                style: const TextStyle(
+                                                                    color: Colors
+                                                                        .black45),
+                                                              ),
                                                             ],
                                                           ),
                                                           const SizedBox(height: 10),
@@ -895,13 +931,19 @@ class _ListingState extends State<Listing> {
                                 physics: const NeverScrollableScrollPhysics(),
                                 itemBuilder: (context, index) {
                                   final room = sortedRooms[index];
+                                  final distance = calculateDistance(
+                                    widget.lat,
+                                    widget.lng,
+                                    room.lat,
+                                    room.lng,
+                                  ).toStringAsFixed(1);
                                   return GestureDetector(
                                     onTap: () {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                              RoomDetailPage(room: room),
+                                              RoomDetailPage(room: room,distance: distance),
                                         ),
                                       );
                                     },
@@ -998,13 +1040,13 @@ class _ListingState extends State<Listing> {
                                                                         .location_on_rounded,
                                                                     size: 16,
                                                                     color:
-                                                                        kThemeColor),
-                                                                // Text(
-                                                                //   "${(sortedRooms[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
-                                                                //   style: TextStyle(
-                                                                //       color: Colors
-                                                                //           .black45),
-                                                                // ),
+                                                                    kThemeColor),
+                                                                Text(
+                                                                  "$distance km from you.",
+                                                                  style: const TextStyle(
+                                                                      color: Colors
+                                                                          .black45),
+                                                                ),
                                                               ],
                                                             ),
                                                             Row(
@@ -1174,13 +1216,19 @@ class _ListingState extends State<Listing> {
                                 physics: const NeverScrollableScrollPhysics(),
                                 itemBuilder: (context, index) {
                                   final product = displayedProducts[index];
+                                  final distance = calculateDistance(
+                                    widget.lat,
+                                    widget.lng,
+                                    product.lat,
+                                    product.lng,
+                                  ).toStringAsFixed(1);
                                   return GestureDetector(
                                     onTap: () {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                              RoomDetailPage(room: product),
+                                              RoomDetailPage(room: product,distance: distance),
                                         ),
                                       );
                                     },
@@ -1274,11 +1322,16 @@ class _ListingState extends State<Listing> {
                                                             Row(
                                                               children: [
                                                                 Icon(
-                                                                  Icons
-                                                                      .location_on_rounded,
-                                                                  size: 16,
-                                                                  color:
-                                                                      kThemeColor,
+                                                                    Icons
+                                                                        .location_on_rounded,
+                                                                    size: 16,
+                                                                    color:
+                                                                    kThemeColor),
+                                                                Text(
+                                                                  "$distance km from you.",
+                                                                  style: const TextStyle(
+                                                                      color: Colors
+                                                                          .black45),
                                                                 ),
                                                               ],
                                                             ),

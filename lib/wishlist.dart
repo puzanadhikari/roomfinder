@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -9,13 +11,33 @@ import 'package:provider/provider.dart';
 import 'Constants/styleConsts.dart';
 
 class WishlistPage extends StatefulWidget {
-  const WishlistPage({super.key});
+  double lat, lng;
+
+  WishlistPage(this.lat, this.lng, {super.key});
 
   @override
   State<WishlistPage> createState() => _WishlistPageState();
 }
 
 class _WishlistPageState extends State<WishlistPage> {
+
+  double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+    const R = 6371;
+    final dLat = _deg2rad(lat2 - lat1);
+    final dLon = _deg2rad(lon2 - lon1);
+
+    final a = sin(dLat / 2) * sin(dLat / 2) +
+        cos(_deg2rad(lat1)) * cos(_deg2rad(lat2)) *
+            sin(dLon / 2) * sin(dLon / 2);
+    final c = 2 * atan2(sqrt(a), sqrt(1 - a));
+    final distance = R * c;
+    return distance;
+  }
+
+  double _deg2rad(double deg) {
+    return deg * (pi / 180);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -86,13 +108,19 @@ class _WishlistPageState extends State<WishlistPage> {
                     physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) {
                       final room = wishlistProvider.wishlist[index];
+                      final distance = calculateDistance(
+                        widget.lat,
+                        widget.lng,
+                        room.lat,
+                        room.lng,
+                      ).toStringAsFixed(1);
                       return GestureDetector(
                         onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) =>
-                                  RoomDetailPage(room: room),
+                                  RoomDetailPage(room: room,distance: distance),
                             ),
                           );
                         },
