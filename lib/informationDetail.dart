@@ -1,5 +1,10 @@
+import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:meroapp/Constants/styleConsts.dart';
 
 class InformationDetails extends StatefulWidget {
@@ -11,6 +16,88 @@ class InformationDetails extends StatefulWidget {
 
 class _InformationDetailsState extends State<InformationDetails> {
   User? user = FirebaseAuth.instance.currentUser;
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  String? _photoUrl; // To store the URL of the user's profile photo
+  File? _imageFile; // To store the image file temporarily
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeFields();
+  }
+
+  void _initializeFields() async {
+    if (user != null) {
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(user!.uid).get();
+      _nameController.text = userDoc['username'] ?? '';
+      _emailController.text = user?.email ?? '';
+      _phoneController.text = userDoc['contactNumber'] ?? '';
+      _photoUrl = userDoc['photoUrl']; // Fetch existing photo URL
+      setState(() {});
+    }
+  }
+
+  Future<void> _updateUserProfile() async {
+    try {
+      String? newPhotoUrl;
+
+      if (_imageFile != null) {
+        newPhotoUrl = await _uploadImage(_imageFile!);
+      }
+
+      await FirebaseFirestore.instance.collection('users').doc(user!.uid).update({
+        'username': _nameController.text,
+        'contactNumber': _phoneController.text,
+        'photoUrl': newPhotoUrl ?? _photoUrl,
+      });
+
+      await user?.updateProfile(displayName: _nameController.text, photoURL: newPhotoUrl);
+
+      await user?.reload();
+      user = FirebaseAuth.instance.currentUser;
+
+      Fluttertoast.showToast(
+        msg: 'Profile updated successfully',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+
+      _initializeFields();
+    } catch (e) {
+      Fluttertoast.showToast(
+        msg: 'Failed to update profile: $e',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+    }
+  }
+
+  Future<String> _uploadImage(File image) async {
+    final ref = FirebaseStorage.instance.ref().child('profile_photos/${user!.uid}.jpg');
+    await ref.putFile(image);
+    return await ref.getDownloadURL();
+  }
+
+  Future<void> _pickImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _imageFile = File(pickedFile.path);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,205 +105,40 @@ class _InformationDetailsState extends State<InformationDetails> {
       appBar: AppBar(
         elevation: 0,
         centerTitle: true,
-        backgroundColor: Colors.grey.shade200,
-        iconTheme: IconThemeData(color: kThemeColor),
-        title: Text(
-          "Details",
+        backgroundColor: kThemeColor,
+        title: const Text(
+          "User Profile",
           style: TextStyle(
-            color: kThemeColor,
             fontWeight: FontWeight.bold,
-            fontSize: 25,
+            fontSize: 28,
+            color: Colors.white,
           ),
         ),
       ),
-      body: NotificationListener<OverscrollIndicatorNotification>(
-        onNotification: (overscroll) {
-          overscroll.disallowIndicator();
-          return true;
-        },
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Center(
-                child: Text(
-                  "Personal Information",
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.0),
-                ),
-                elevation: 4,
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12.0),
-                    color: Colors.white,
-                  ),
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      GestureDetector(
-                        onTap: () {
-                          showDialog(
-                            context: context,
-                            builder: (context) => const ChangeNameDialog(),
-                          );
-                        },
-                        child: ListTile(
-                          title: const Text(
-                            'Name:',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                              color: Colors.black87,
-                            ),
-                          ),
-                          subtitle: Text(
-                            user?.displayName ?? 'Name not saved yet',
-                            style: TextStyle(
-                              color: Colors.grey.shade700,
-                            ),
-                          ),
-                          trailing:
-                          Icon(Icons.edit, color: kThemeColor, size: 22),
-                        ),
-                      ),
-                      Divider(height: 1, color: Colors.grey.shade300),
-                      ListTile(
-                        title: const Text(
-                          'Email:',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                            color: Colors.black87,
-                          ),
-                        ),
-                        subtitle: Text(
-                          user?.email ?? 'Email not received yet',
-                          style: TextStyle(
-                            color: Colors.grey.shade700,
-                          ),
-                        ),
-                        trailing:
-                        Icon(Icons.email, color: kThemeColor, size: 22),
-                      ),
-                      Divider(height: 1, color: Colors.grey.shade300),
-                      ListTile(
-                        title: const Text(
-                          'Phone:',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                            color: Colors.black87,
-                          ),
-                        ),
-                        subtitle: Text(
-                          user?.phoneNumber ?? 'Phone number not available',
-                          style: TextStyle(
-                            color: Colors.grey.shade700,
-                          ),
-                        ),
-                        trailing:
-                        Icon(Icons.phone, color: kThemeColor, size: 22),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-class ChangeNameDialog extends StatefulWidget {
-  const ChangeNameDialog({super.key});
-
-  @override
-  _ChangeNameDialogState createState() => _ChangeNameDialogState();
-}
-
-class _ChangeNameDialogState extends State<ChangeNameDialog> {
-  final TextEditingController _firstNameController = TextEditingController();
-  final TextEditingController _middleNameController = TextEditingController();
-  final TextEditingController _lastNameController = TextEditingController();
-
-  @override
-  void dispose() {
-    _firstNameController.dispose();
-    _middleNameController.dispose();
-    _lastNameController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12.0),
-      ),
-      child: Container(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12.0),
-          color: Colors.white,
-        ),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Change Name',
-              style: TextStyle(
-                fontSize: 22.0,
-                fontWeight: FontWeight.bold,
-                color: kThemeColor,
+            _buildUserProfileHeader(),
+            const SizedBox(height: 20),
+            _buildInfoCard(),
+            const SizedBox(height: 20),
+            Center(
+              child: ElevatedButton(
+                onPressed: _updateUserProfile,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: kThemeColor,
+                  padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 12.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.0),
+                  ),
+                ),
+                child: const Text(
+                  'Update',
+                  style: TextStyle(fontSize: 20),
+                ),
               ),
-            ),
-            const SizedBox(height: 20.0),
-            _buildTextField(_firstNameController, 'First Name'),
-            const SizedBox(height: 12.0),
-            _buildTextField(_middleNameController, 'Middle Name'),
-            const SizedBox(height: 12.0),
-            _buildTextField(_lastNameController, 'Last Name'),
-            const SizedBox(height: 20.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text(
-                    'Cancel',
-                    style: TextStyle(color: Colors.grey.shade600),
-                  ),
-                ),
-                const SizedBox(width: 12.0),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    // Add logic to save the new name
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: kThemeColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12.0),
-                    ),
-                  ),
-                  child: const Text('Save'),
-                ),
-              ],
             ),
           ],
         ),
@@ -224,15 +146,108 @@ class _ChangeNameDialogState extends State<ChangeNameDialog> {
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, String label) {
-    return TextField(
-      controller: controller,
-      decoration: InputDecoration(
-        labelText: label,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12.0),
+  Widget _buildUserProfileHeader() {
+    return Center(
+      child: Column(
+        children: [
+          GestureDetector(
+            onTap: _pickImage, // Allow user to change profile picture on tap
+            child: CircleAvatar(
+              radius: 50,
+              backgroundImage: _imageFile != null
+                  ? FileImage(_imageFile!)
+                  : NetworkImage(
+                _photoUrl ?? 'https://via.placeholder.com/150',
+              ) as ImageProvider,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            _nameController.text.isNotEmpty ? _nameController.text : 'User Name',
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: kThemeColor,
+            ),
+          ),
+          const SizedBox(height: 5),
+          Text(
+            _emailController.text.isNotEmpty ? _emailController.text : 'user@example.com',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey.shade600,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInfoCard() {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16.0),
+      ),
+      elevation: 4,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            _buildEditableListTile(
+              title: 'Name',
+              controller: _nameController,
+              icon: Icons.person,
+              onEdit: () {},
+            ),
+            _buildDivider(),
+            _buildEditableListTile(
+              title: 'Email',
+              controller: _emailController,
+              icon: Icons.email,
+              onEdit: () {},
+            ),
+            _buildDivider(),
+            _buildEditableListTile(
+              title: 'Phone',
+              controller: _phoneController,
+              icon: Icons.phone,
+              onEdit: () {},
+            ),
+          ],
         ),
-        prefixIcon: Icon(Icons.person, color: kThemeColor),
+      ),
+    );
+  }
+
+  Widget _buildDivider() {
+    return Divider(height: 20, color: Colors.grey.shade300);
+  }
+
+  Widget _buildEditableListTile({
+    required String title,
+    required TextEditingController controller,
+    required IconData icon,
+    required Function onEdit,
+  }) {
+    return ListTile(
+      title: Text(
+        title,
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 20,
+          color: kThemeColor,
+        ),
+      ),
+      subtitle: TextField(
+        controller: controller,
+        decoration: InputDecoration(
+          hintText: 'Enter $title',
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12.0),
+          ),
+          prefixIcon: Icon(icon, color: kThemeColor),
+        ),
       ),
     );
   }

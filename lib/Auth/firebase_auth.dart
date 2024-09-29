@@ -36,7 +36,7 @@ class FirebaseAuthService {
   }
 
   Future<User?> register(BuildContext context, String name, String email,
-      String password,String contactNumber, String userType) async {
+      String password,String contactNumber, String userType, String photoUrl) async {
     try {
       UserCredential userCredential =
           await _auth.createUserWithEmailAndPassword(
@@ -44,7 +44,7 @@ class FirebaseAuthService {
         password: password,
       );
       await userCredential.user?.updateDisplayName(name);
-      await addUserData(email, name, password,contactNumber, userType);
+      await addUserData(email, name, password,contactNumber, userType,photoUrl);
       Fluttertoast.showToast(
           msg: 'Register successfully',
           backgroundColor: appBarColor,
@@ -62,7 +62,7 @@ class FirebaseAuthService {
   }
 
   Future addUserData(
-      String email, String name, String password, String contactNumber, String userType) async {
+      String email, String name, String password, String contactNumber, String userType, String photoUrl) async {
     try {
       User? user = FirebaseAuth.instance.currentUser;
 
@@ -75,6 +75,7 @@ class FirebaseAuthService {
           "password": password,
           "contactNumber": contactNumber,
           "userType": userType,
+          "photoUrl": photoUrl
         };
 
         DocumentReference userRef =
