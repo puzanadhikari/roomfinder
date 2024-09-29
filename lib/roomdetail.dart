@@ -10,6 +10,7 @@ import 'package:meroapp/provider/wishlistProvider.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:panorama/panorama.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'PanoramaFull.dart';
 import 'model/onSaleModel.dart';
 
@@ -25,6 +26,18 @@ class RoomDetailPage extends StatefulWidget {
 class _RoomDetailPageState extends State<RoomDetailPage> {
   bool _isBooking = false;
   final String _mapApiKey = 'AIzaSyAGFdLuw0m2pCFxNxmFA5EzJia6IzUM3iU';
+
+  Future<void> _openGoogleMap(String lat, String lng) async {
+    final String googleMapsUrl = 'https://www.google.com/maps/search/?api=1&query=$lat,$lng';
+    final Uri url = Uri.parse(googleMapsUrl);
+
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+    } else {
+      throw 'Could not launch $googleMapsUrl';
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -291,23 +304,26 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                                 constraints: BoxConstraints(
                                   maxWidth: MediaQuery.of(context).size.width * 0.9, // Use 90% of screen width
                                 ),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(16.0), // Rounded corners for the image
-                                  ),
-                                  clipBehavior: Clip.hardEdge, // Clip the image to rounded corners
-                                  child: mapImageUrl.isNotEmpty
-                                      ? Image.network(
-                                    mapImageUrl,
-                                    width: MediaQuery.of(context).size.width, // Make the image full width
-                                    height: 200, // Adjust the height to maintain the aspect ratio
-                                    fit: BoxFit.cover, // Cover to ensure the image fills the container
-                                  )
-                                      : Image.network(
-                                    "https://media.licdn.com/dms/image/D5603AQFD6ld3NWc2HQ/profile-displayphoto-shrink_200_200/0/1684164054868?e=2147483647&v=beta&t=cwQoyfhgAl_91URX5FTEXLwLDEHWe1H337EMebpgntQ",
-                                    width: MediaQuery.of(context).size.width,
-                                    height: 200,
-                                    fit: BoxFit.cover,
+                                child: GestureDetector(
+                                  onTap: () => _openGoogleMap(widget.room.lat.toString(), widget.room.lng.toString()),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(16.0), // Rounded corners for the image
+                                    ),
+                                    clipBehavior: Clip.hardEdge, // Clip the image to rounded corners
+                                    child: mapImageUrl.isNotEmpty
+                                        ? Image.network(
+                                      mapImageUrl,
+                                      width: MediaQuery.of(context).size.width, // Make the image full width
+                                      height: 200, // Adjust the height to maintain the aspect ratio
+                                      fit: BoxFit.cover, // Cover to ensure the image fills the container
+                                    )
+                                        : Image.network(
+                                      "https://media.licdn.com/dms/image/D5603AQFD6ld3NWc2HQ/profile-displayphoto-shrink_200_200/0/1684164054868?e=2147483647&v=beta&t=cwQoyfhgAl_91URX5FTEXLwLDEHWe1H337EMebpgntQ",
+                                      width: MediaQuery.of(context).size.width,
+                                      height: 200,
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
                                 ),
                               ),
