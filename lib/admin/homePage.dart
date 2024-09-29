@@ -18,7 +18,6 @@ class _AdminHomePageState extends State<AdminHomePage> {
   final List<Widget> _screens = const [
     DashBoard(),
     UserListing(),
-    SettingsScreen(),
     ProfileScreen(),
   ];
 
@@ -46,10 +45,6 @@ class _AdminHomePageState extends State<AdminHomePage> {
             label: 'Users',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.person),
             label: 'Profile',
           ),
@@ -60,18 +55,6 @@ class _AdminHomePageState extends State<AdminHomePage> {
         onTap: _onItemTapped,
         type: BottomNavigationBarType.fixed,
       ),
-    );
-  }
-}
-
-class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Settings")),
-      body: const Center(child: Text("Settings Screen")),
     );
   }
 }
