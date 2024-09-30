@@ -460,6 +460,40 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                             ] else ...[
                               const Text("No facilities available"),
                             ],
+                            const SizedBox(height: 30),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(
+                                  width: 1
+                                )
+                              ),
+                              padding: const EdgeInsets.all(16),
+                              margin: const EdgeInsets.symmetric(vertical: 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    "Seller Details",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20,
+                                      color: Color(0xFF072A2E),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  buildDetailRow(Icons.person, "Name:",
+                                      widget.room.details["sellerName"]),
+                                  const SizedBox(height:5),
+                                  buildDetailRow(Icons.email, "Email:",
+                                      widget.room.details["sellerEmail"]),
+                                  const SizedBox(height: 5),
+                                  buildDetailRow(Icons.phone, "Phone No:",
+                                      widget.room.details["sellerPhone"]),
+                                ],
+                              ),
+                            ),
                             const SizedBox(height: 20),
                             Visibility(
                               visible:
@@ -513,6 +547,27 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget buildDetailRow(IconData icon, String title, String? value) {
+    return Row(
+      children: [
+        Icon(
+          icon,
+          color: Color(0xFF072A2E), // Themed color for icons
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text(
+            "$title  ${value ?? 'N/A'}",
+            style: TextStyle(
+              color: Colors.grey.shade900,
+              fontSize: 16,
+            ),
+          ),
+        ),
+      ],
     );
   }
 

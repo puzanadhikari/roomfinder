@@ -25,7 +25,8 @@ class _AdminRoomDetailsState extends State<AdminRoomDetails> {
   final String _mapApiKey = 'AIzaSyAGFdLuw0m2pCFxNxmFA5EzJia6IzUM3iU';
 
   Future<void> _openGoogleMap(String lat, String lng) async {
-    final String googleMapsUrl = 'https://www.google.com/maps/search/?api=1&query=$lat,$lng';
+    final String googleMapsUrl =
+        'https://www.google.com/maps/search/?api=1&query=$lat,$lng';
     final Uri url = Uri.parse(googleMapsUrl);
 
     if (await canLaunchUrl(url)) {
@@ -34,7 +35,6 @@ class _AdminRoomDetailsState extends State<AdminRoomDetails> {
       throw 'Could not launch $googleMapsUrl';
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -109,7 +109,7 @@ class _AdminRoomDetailsState extends State<AdminRoomDetails> {
                   child: Padding(
                     padding: const EdgeInsets.all(20.0),
                     child:
-                    NotificationListener<OverscrollIndicatorNotification>(
+                        NotificationListener<OverscrollIndicatorNotification>(
                       onNotification: (overscroll) {
                         overscroll.disallowIndicator();
                         return true;
@@ -146,8 +146,7 @@ class _AdminRoomDetailsState extends State<AdminRoomDetails> {
                             Text(
                               widget.room.locationName,
                               style: const TextStyle(
-                                  color: Color(0xFF4D4D4D),
-                                  fontSize: 16),
+                                  color: Color(0xFF4D4D4D), fontSize: 16),
                             ),
                             const SizedBox(height: 16),
                             const Divider(color: Colors.grey),
@@ -161,12 +160,16 @@ class _AdminRoomDetailsState extends State<AdminRoomDetails> {
                                     borderRadius: BorderRadius.circular(16.0),
                                   ),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Row(
                                         children: [
-                                          const Icon(Icons.king_bed, color: Colors.black), // Icon for room
-                                          const SizedBox(width: 8), // Space between icon and text
+                                          const Icon(Icons.king_bed,
+                                              color: Colors.black),
+                                          // Icon for room
+                                          const SizedBox(width: 8),
+                                          // Space between icon and text
                                           Text(
                                             "Room: ${widget.room.roomLength}ft x ${widget.room.roomBreath}ft",
                                             style: const TextStyle(
@@ -180,7 +183,8 @@ class _AdminRoomDetailsState extends State<AdminRoomDetails> {
                                       const SizedBox(height: 10),
                                       Row(
                                         children: [
-                                          const Icon(Icons.kitchen, color: Colors.black),
+                                          const Icon(Icons.kitchen,
+                                              color: Colors.black),
                                           const SizedBox(width: 8),
                                           Text(
                                             "Kitchen: ${widget.room.kitchenLength}ft x ${widget.room.kitchenbreadth}ft",
@@ -197,7 +201,9 @@ class _AdminRoomDetailsState extends State<AdminRoomDetails> {
                                       // Hall dimensions
                                       Row(
                                         children: [
-                                          const Icon(Icons.tv, color: Colors.black), // Icon for hall
+                                          const Icon(Icons.tv,
+                                              color: Colors.black),
+                                          // Icon for hall
                                           const SizedBox(width: 8),
                                           Text(
                                             "Hall: ${widget.room.hallLength}ft x ${widget.room.hallBreadth}ft",
@@ -217,29 +223,40 @@ class _AdminRoomDetailsState extends State<AdminRoomDetails> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => PanoramaFullPage(room: widget.room),
+                                        builder: (context) =>
+                                            PanoramaFullPage(room: widget.room),
                                       ),
                                     );
                                   },
                                   child: Container(
-                                    padding: const EdgeInsets.all(15), // Adjust padding for a circular button
+                                    padding: const EdgeInsets.all(15),
+                                    // Adjust padding for a circular button
                                     decoration: BoxDecoration(
-                                      color: kThemeColor, // Use your theme color
-                                      shape: BoxShape.circle, // Circular shape
+                                      color: kThemeColor,
+                                      // Use your theme color
+                                      shape: BoxShape.circle,
+                                      // Circular shape
                                       boxShadow: [
                                         BoxShadow(
-                                          color: Colors.black.withOpacity(0.2), // Shadow color
-                                          blurRadius: 8, // Blur radius for the shadow
-                                          offset: const Offset(0, 3), // Shadow offset
+                                          color: Colors.black.withOpacity(0.2),
+                                          // Shadow color
+                                          blurRadius: 8,
+                                          // Blur radius for the shadow
+                                          offset: const Offset(
+                                              0, 3), // Shadow offset
                                         ),
                                       ],
                                     ),
                                     child: Column(
-                                      mainAxisSize: MainAxisSize.min, // To wrap content within the circle
-                                      mainAxisAlignment: MainAxisAlignment.center, // Center items in the circle
+                                      mainAxisSize: MainAxisSize.min,
+                                      // To wrap content within the circle
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      // Center items in the circle
                                       children: const [
                                         Icon(
-                                          Icons.threed_rotation, // 360 view icon
+                                          Icons.threed_rotation,
+                                          // 360 view icon
                                           color: Colors.white, // Icon color
                                           size: 30, // Increase icon size
                                         ),
@@ -247,35 +264,46 @@ class _AdminRoomDetailsState extends State<AdminRoomDetails> {
                                     ),
                                   ),
                                 )
-
                               ],
                             ),
                             const SizedBox(height: 16),
                             Center(
                               child: ConstrainedBox(
                                 constraints: BoxConstraints(
-                                  maxWidth: MediaQuery.of(context).size.width * 0.9, // Use 90% of screen width
+                                  maxWidth: MediaQuery.of(context).size.width *
+                                      0.9, // Use 90% of screen width
                                 ),
                                 child: GestureDetector(
-                                  onTap: () => _openGoogleMap(widget.room.lat.toString(), widget.room.lng.toString()),
+                                  onTap: () => _openGoogleMap(
+                                      widget.room.lat.toString(),
+                                      widget.room.lng.toString()),
                                   child: Container(
                                     decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(16.0), // Rounded corners for the image
+                                      borderRadius: BorderRadius.circular(
+                                          16.0), // Rounded corners for the image
                                     ),
-                                    clipBehavior: Clip.hardEdge, // Clip the image to rounded corners
+                                    clipBehavior: Clip.hardEdge,
+                                    // Clip the image to rounded corners
                                     child: mapImageUrl.isNotEmpty
                                         ? Image.network(
-                                      mapImageUrl,
-                                      width: MediaQuery.of(context).size.width, // Make the image full width
-                                      height: 200, // Adjust the height to maintain the aspect ratio
-                                      fit: BoxFit.cover, // Cover to ensure the image fills the container
-                                    )
+                                            mapImageUrl,
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            // Make the image full width
+                                            height: 200,
+                                            // Adjust the height to maintain the aspect ratio
+                                            fit: BoxFit
+                                                .cover, // Cover to ensure the image fills the container
+                                          )
                                         : Image.network(
-                                      "https://media.licdn.com/dms/image/D5603AQFD6ld3NWc2HQ/profile-displayphoto-shrink_200_200/0/1684164054868?e=2147483647&v=beta&t=cwQoyfhgAl_91URX5FTEXLwLDEHWe1H337EMebpgntQ",
-                                      width: MediaQuery.of(context).size.width,
-                                      height: 200,
-                                      fit: BoxFit.cover,
-                                    ),
+                                            "https://media.licdn.com/dms/image/D5603AQFD6ld3NWc2HQ/profile-displayphoto-shrink_200_200/0/1684164054868?e=2147483647&v=beta&t=cwQoyfhgAl_91URX5FTEXLwLDEHWe1H337EMebpgntQ",
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            height: 200,
+                                            fit: BoxFit.cover,
+                                          ),
                                   ),
                                 ),
                               ),
@@ -357,7 +385,7 @@ class _AdminRoomDetailsState extends State<AdminRoomDetails> {
                                   children: [
                                     Icon(
                                         widget.room.status['statusDisplay'] ==
-                                            "Owned"
+                                                "Owned"
                                             ? Icons.check_circle
                                             : Icons.flag_circle,
                                         size: 16,
@@ -386,7 +414,7 @@ class _AdminRoomDetailsState extends State<AdminRoomDetails> {
                                   spacing: 8.0,
                                   runSpacing: 8.0,
                                   children:
-                                  widget.room.facilities.map((facility) {
+                                      widget.room.facilities.map((facility) {
                                     return Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
@@ -401,7 +429,44 @@ class _AdminRoomDetailsState extends State<AdminRoomDetails> {
                             ] else ...[
                               const Text("No facilities available"),
                             ],
-                            const SizedBox(height: 20),
+                            const SizedBox(height: 30),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(16),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.shade300,
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              padding: const EdgeInsets.all(16),
+                              margin: const EdgeInsets.symmetric(vertical: 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    "Seller Details",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20,
+                                      color: Color(0xFF072A2E),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 15),
+                                  buildDetailRow(Icons.person, "Name:",
+                                      widget.room.details["sellerName"]),
+                                  const SizedBox(height: 10),
+                                  buildDetailRow(Icons.email, "Email:",
+                                      widget.room.details["sellerEmail"]),
+                                  const SizedBox(height: 10),
+                                  buildDetailRow(Icons.phone, "Phone No:",
+                                      widget.room.details["sellerPhone"]),
+                                ],
+                              ),
+                            )
                           ],
                         ),
                       ),
@@ -414,13 +479,33 @@ class _AdminRoomDetailsState extends State<AdminRoomDetails> {
                   top: carouselHeight - 50,
                   child: CircleAvatar(
                     backgroundColor: Colors.white,
-                    child: Icon(Icons.bookmark,
-                        color: kThemeColor),
-                  ))
+                    child: Icon(Icons.bookmark, color: kThemeColor),
+                  )),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget buildDetailRow(IconData icon, String title, String? value) {
+    return Row(
+      children: [
+        Icon(
+          icon,
+          color: Color(0xFF072A2E), // Themed color for icons
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text(
+            "$title  ${value ?? 'N/A'}",
+            style: TextStyle(
+              color: Colors.grey.shade900,
+              fontSize: 16,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
