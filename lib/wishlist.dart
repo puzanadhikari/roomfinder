@@ -196,8 +196,11 @@ class _WishlistPageState extends State<WishlistPage> {
                                             Row(
                                               children: [
                                                 Icon(Icons.location_on_rounded,
-                                                    size: 16,
-                                                    color: kThemeColor),
+                                                    size: 16, color: kThemeColor),
+                                                Text(
+                                                  "$distance km from you.",
+                                                  style: const TextStyle(color: Colors.black45),
+                                                ),
                                               ],
                                             ),
                                             const SizedBox(height: 10),

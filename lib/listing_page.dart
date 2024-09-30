@@ -636,7 +636,7 @@ class _ListingState extends State<Listing> {
                           List<Room> sortedRooms = sortedRoomsByDistance(
                               filteredRooms, widget.lat, widget.lng);
 
-                          sortedRooms = snapshot.data!;
+                          // sortedRooms = snapshot.data!;
 
                           return Padding(
                             padding: const EdgeInsets.all(16.0),
@@ -644,7 +644,7 @@ class _ListingState extends State<Listing> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const Text(
-                                  "Suggested",
+                                  "Suggested Near You",
                                   style: TextStyle(
                                     color: Color(0xFF072A2E),
                                     fontSize: 16,
@@ -955,8 +955,6 @@ class _ListingState extends State<Listing> {
                       List<Room> sortedRooms = sortedRoomsByDistance(
                           filteredRooms, widget.lat, widget.lng);
 
-                      sortedRooms = snapshot.data!;
-
                       return NotificationListener<
                           OverscrollIndicatorNotification>(
                         onNotification: (overscroll) {
@@ -970,7 +968,7 @@ class _ListingState extends State<Listing> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const Text(
-                                  "Suggested",
+                                  "Suggested Near You",
                                   style: TextStyle(
                                     color: Color(0xFF072A2E),
                                     fontSize: 16,

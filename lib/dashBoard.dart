@@ -916,10 +916,11 @@ class _DashBoardState extends State<DashBoard> {
                               pageProvider.setChoice("Suggested");
                             });
                           },
-                          child: const Text(
+                          child: Text(
                             'View All',
                             style: TextStyle(
-                              color: Color(0xFF072A2E),
+                              color: kThemeColor,
+                              fontSize: 16,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
