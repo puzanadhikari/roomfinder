@@ -406,29 +406,95 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
                             ],
                             const SizedBox(height: 20),
                             Visibility(
-                              visible: widget.room.status["statusDisplay"] == "To Buy",
-                              child: SizedBox(
-                                width: double.infinity,
-                                height: 45,
-                                child: ElevatedButton(
-                                  onPressed: (){
-                                    _approveRoomStatus(widget.room.uid, widget.room);
-                                    Navigator.of(context).pop();
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFF072A2E),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(5.0),
-                                    ),
-                                  ),
-                                  child: const Text(
-                                    "Approve",
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 18),
-                                  ),
+                              visible:  widget.room.status['statusDisplay'] == "Owned",
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(16),
+                                    border: Border.all(
+                                        width: 1
+                                    )
                                 ),
+                                padding: const EdgeInsets.all(16),
+                                margin: const EdgeInsets.symmetric(vertical: 10),
+                                child:Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      "Owner Details",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20,
+                                        color: Color(0xFF072A2E),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    buildDetailRow(Icons.person, "Name:",
+                                        widget.room.status["ownedBy"]),
+                                    const SizedBox(height:5),
+                                    buildDetailRow(Icons.email, "Email:",
+                                        widget.room.status["ownerEmail"]),
+                                    const SizedBox(height: 5),
+                                    buildDetailRow(Icons.phone, "Phone No:",
+                                        widget.room.status["ownerNumber"]),
+                                  ],
+                                )
                               ),
                             ),
+                            const SizedBox(height: 20),
+                            Visibility(
+                              visible: widget.room.status["statusDisplay"] == "To Buy",
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: SizedBox(
+                                        height: 45,
+                                        child: ElevatedButton(
+                                          onPressed: () {
+                                            _approveRoomStatus(widget.room.uid, widget.room);
+                                            Navigator.of(context).pop();
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: const Color(0xFF072A2E),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(5.0),
+                                            ),
+                                          ),
+                                          child: const Text(
+                                            "Approve",
+                                            style: TextStyle(color: Colors.white, fontSize: 18),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),  // Add some spacing between the buttons
+                                    Expanded(
+                                      child: SizedBox(
+                                        height: 45,
+                                        child: ElevatedButton(
+                                          onPressed: () {
+                                            _rejectRoomStatus(widget.room.uid, widget.room);
+                                            Navigator.of(context).pop();
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.red,  // You can choose any color you want for Reject
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(5.0),
+                                            ),
+                                          ),
+                                          child: const Text(
+                                            "Reject",
+                                            style: TextStyle(color: Colors.white, fontSize: 18),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
                           ],
                         ),
                       ),
@@ -457,6 +523,28 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
       ),
     );
   }
+
+  Widget buildDetailRow(IconData icon, String title, String? value) {
+    return Row(
+      children: [
+        Icon(
+          icon,
+          color: Color(0xFF072A2E), // Themed color for icons
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text(
+            "$title  ${value ?? 'N/A'}",
+            style: TextStyle(
+              color: Colors.grey.shade900,
+              fontSize: 16,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   void _approveRoomStatus(String roomUid, Room room) async {
     try {
       User? user = FirebaseAuth.instance.currentUser;
@@ -517,5 +605,11 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
       //   fontSize: 16.0,
       // );
     }
+  }
+  Future<void> _rejectRoomStatus(String roomUid, Room room) async {
+    await FirebaseFirestore.instance.collection("onSale").doc(roomUid).update({
+      "status": FieldValue.delete(),
+    });
+    Fluttertoast.showToast(msg: "Room request rejected, and status cleared.");
   }
 }

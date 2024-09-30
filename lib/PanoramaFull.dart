@@ -91,7 +91,7 @@ class _PanoramaFullPageState extends State<PanoramaFullPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Room Dimensions: ${widget.room!.roomLength}m x ${widget.room!.roomBreath}m",
+                      "Room Dimensions: ${widget.room!.roomLength}ft x ${widget.room!.roomBreath}ft",
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 16,
@@ -99,7 +99,7 @@ class _PanoramaFullPageState extends State<PanoramaFullPage> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      "Kitchen: ${widget.room!.kitchenLength}m x ${widget.room!.kitchenbreadth}m",
+                      "Kitchen: ${widget.room!.kitchenLength}ft x ${widget.room!.kitchenbreadth}ft",
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 16,
@@ -107,7 +107,7 @@ class _PanoramaFullPageState extends State<PanoramaFullPage> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      "Hall: ${widget.room!.hallLength}m x ${widget.room!.hallBreadth}m",
+                      "Hall: ${widget.room!.hallLength}ft x ${widget.room!.hallBreadth}ft",
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 16,
