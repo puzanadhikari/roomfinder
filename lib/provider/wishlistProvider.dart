@@ -44,7 +44,7 @@ class WishlistProvider extends ChangeNotifier {
           kitchenbreadth: doc['kitchenBreadth'],
           kitchenLength: doc['kitchenLength'],
           photo: List<String>.from(doc['photo']),
-          panoramaImg: doc['panoramaImg'],
+          panoramaImg: List<String>.from(doc['panoramaImg']),
           electricity: doc['electricity'],
           fohor: doc['fohor'],
           water: doc['water'],

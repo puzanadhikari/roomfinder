@@ -656,7 +656,7 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
         "kitchenLength": widget.room.kitchenLength,
         "kitchenBreadth": widget.room.kitchenbreadth,
         "photo": List<String>.from(widget.room.photo),
-        "panoramaImg": widget.room.panoramaImg,
+        "panoramaImg":  List<String>.from(widget.room.panoramaImg),
         "electricity": widget.room.electricity,
         "fohor": widget.room.fohor,
         "lat": widget.room.lat,

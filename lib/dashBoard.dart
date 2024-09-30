@@ -83,7 +83,7 @@ class _DashBoardState extends State<DashBoard> {
         kitchenLength: data['kitchenLength'],
         photo: List<String>.from(data['photo']),
         statusByAdmin: data["statusByAdmin"],
-        panoramaImg: data['panoramaImg'],
+        panoramaImg: List<String>.from(data['panoramaImg']),
         electricity: data['electricity'],
         fohor: data['fohor'],
         lat: data['lat'],
@@ -746,7 +746,6 @@ class _DashBoardState extends State<DashBoard> {
                         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                           return const Center(child: Text('No products found.'));
                         }
-
                         final displayedProducts = showAllMostSearch
                             ? snapshot.data!
                             : snapshot.data!.take(3).toList();
@@ -1152,7 +1151,7 @@ class _PriceRangeScreenState extends State<PriceRangeScreen> {
         kitchenLength: data['kitchenLength'],
         photo: List<String>.from(data['photo']),
         statusByAdmin: data["statusByAdmin"],
-        panoramaImg: data['panoramaImg'],
+        panoramaImg: List<String>.from(data['panoramaImg']),
         electricity: data['electricity'],
         fohor: data['fohor'],
         lat: data['lat'],

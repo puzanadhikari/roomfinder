@@ -63,6 +63,9 @@ class _ProfilePageState extends State<ProfilePage> {
             fontSize: 20,
           ),
         ),
+        actions: [
+          IconButton(onPressed: (){_logout(context);}, icon: Icon(Icons.logout,color: kThemeColor))
+        ],
       ),
       body: FutureBuilder<DocumentSnapshot>(
         future: _getUserData(),

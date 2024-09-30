@@ -47,7 +47,6 @@ class _CreateRoomState extends State<CreateRoom> {
       _electricity,
       _fohor;
   bool _hasElectricity = false, _hasWater = false;
-  String? _panoramaImagePath;
   List<String> names = [
     "24/7 Water",
     "Free Internet",
@@ -83,21 +82,32 @@ class _CreateRoomState extends State<CreateRoom> {
     }
   }
 
-  File? panorama;
-
   final FirebaseAuthService _auth = FirebaseAuthService();
+  File? panorama;
+  String? _panoramaImagePath;
+  // Future<void> _pickPanoramaImage() async {
+  //   final pickedFile =
+  //       await ImagePicker().pickImage(source: ImageSource.gallery);
+  //
+  //   if (pickedFile != null) {
+  //     setState(() {
+  //       _panoramaImagePath = pickedFile.path;
+  //     });
+  //     panorama = File(_panoramaImagePath!);
+  //   }
+  // }
 
+  List<String>? _panoramaImagePaths; // Change from String? to List<String>?
   Future<void> _pickPanoramaImage() async {
-    final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+    final pickedFiles = await ImagePicker().pickMultiImage();
 
-    if (pickedFile != null) {
+    if (pickedFiles != null && pickedFiles.isNotEmpty) {
       setState(() {
-        _panoramaImagePath = pickedFile.path;
+        _panoramaImagePaths = pickedFiles.map((file) => file.path).toList();
       });
-      panorama = File(_panoramaImagePath!);
     }
   }
+
 
   // Function to get location
   Future<void> _getLocation() async {
@@ -749,8 +759,8 @@ class _CreateRoomState extends State<CreateRoom> {
                         expanded: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            if (_panoramaImagePath != null)
-                              Container(
+                            if (_panoramaImagePaths != null)
+                              ..._panoramaImagePaths!.map((path) => Container(
                                 height: 500,
                                 margin: const EdgeInsets.only(top: 10),
                                 decoration: BoxDecoration(
@@ -764,12 +774,12 @@ class _CreateRoomState extends State<CreateRoom> {
                                   borderRadius: BorderRadius.circular(12.0),
                                   child: Panorama(
                                     child: Image.file(
-                                      File(_panoramaImagePath!),
+                                      File(path),
                                       fit: BoxFit.cover,
                                     ),
                                   ),
                                 ),
-                              ),
+                              )).toList(),
                             const SizedBox(height: 20.0),
                             Center(
                               child: SizedBox(
@@ -777,19 +787,15 @@ class _CreateRoomState extends State<CreateRoom> {
                                 height: 50,
                                 child: ElevatedButton.icon(
                                   onPressed: _pickPanoramaImage,
-                                  icon: const Icon(Icons.photo_camera_back,
-                                      color: Colors.white),
+                                  icon: const Icon(Icons.photo_camera_back, color: Colors.white),
                                   label: const Text('Pick Panorama'),
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: kThemeColor,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(8.0),
                                     ),
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 14.0, horizontal: 20.0),
-                                    textStyle: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500),
+                                    padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 20.0),
+                                    textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                                   ),
                                 ),
                               ),
@@ -918,18 +924,23 @@ class _CreateRoomState extends State<CreateRoom> {
                             setState(() {
                               _isLoading = true;
                             });
-                            SharedPreferences prefs =
-                                await SharedPreferences.getInstance();
+                            SharedPreferences prefs = await SharedPreferences.getInstance();
                             if (_formKey.currentState!.validate()) {
                               _formKey.currentState!.save();
                               double? lat = prefs.getDouble("lat");
                               double? lng = prefs.getDouble("lng");
-                              String? location =
-                                  prefs.getString("locationName");
-                              List<String> uploadedPhotoUrls =
-                                  await _uploadImages(_photos);
-                              String uploadedPhotoUrlsPanorama =
-                                  await _uploadImagesPanorama(panorama!);
+                              String? location = prefs.getString("locationName");
+                              List<String> uploadedPhotoUrls = await _uploadImages(_photos);
+
+                              // Upload multiple panorama images
+                              List<String> uploadedPhotoUrlsPanorama = [];
+                              if (_panoramaImagePaths != null) {
+                                for (String path in _panoramaImagePaths!) {
+                                  String uploadedUrl = await _uploadImagesPanorama(File(path));
+                                  uploadedPhotoUrlsPanorama.add(uploadedUrl);
+                                }
+                              }
+
                               List<String> selectedFacilities = _selectedNames;
                               await _auth.addSellerRoomDetail(
                                 _name!,
@@ -943,7 +954,7 @@ class _CreateRoomState extends State<CreateRoom> {
                                 _kitchenLength!,
                                 _kitchenBreadth!,
                                 uploadedPhotoUrls,
-                                uploadedPhotoUrlsPanorama,
+                                uploadedPhotoUrlsPanorama, // Updated to send multiple URLs
                                 _electricity!,
                                 _fohor!,
                                 lat!,

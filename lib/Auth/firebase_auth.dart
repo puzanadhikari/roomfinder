@@ -189,7 +189,7 @@ class FirebaseAuthService {
       double kitchenLength,
       double kitchenbreadth,
       List<String> photo,
-      String? panorama,
+      List<String> panorama,
       double electricity,
       double fohor,
       double lat,
@@ -199,7 +199,7 @@ class FirebaseAuthService {
       String sellerEmail,
       String sellerPhone,
       double water,
-      List<String> facilities
+      List<String> facilities,
       ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -209,7 +209,7 @@ class FirebaseAuthService {
         String uid = user.uid;
         Map<String, dynamic> userData = {
           "name": name,
-          "price":price,
+          "price": price,
           "capacity": capacity,
           "description": description,
           "roomLength": roomLength,
@@ -219,7 +219,7 @@ class FirebaseAuthService {
           "kitchenLength": kitchenLength,
           "kitchenBreadth": kitchenbreadth,
           "photo": photo,
-          "panoramaImg": panorama, // Store panorama URL
+          "panoramaImg": panorama, // Store multiple panorama URLs
           "electricity": electricity,
           "active": false,
           "fohor": fohor,
@@ -228,13 +228,13 @@ class FirebaseAuthService {
           "locationName": locName,
           "featured": false,
           "userId": uid,
-          "statusByAdmin":"Pending",
-          "water":water,
+          "statusByAdmin": "Pending",
+          "water": water,
           "facilities": facilities,
-          "detail":{
-            "sellerName":sellerName,
-            "sellerEmail":sellerEmail,
-            "sellerPhone":sellerPhone
+          "detail": {
+            "sellerName": sellerName,
+            "sellerEmail": sellerEmail,
+            "sellerPhone": sellerPhone
           }
         };
 

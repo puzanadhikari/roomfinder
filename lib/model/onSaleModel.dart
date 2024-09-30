@@ -11,7 +11,7 @@ class Room {
   final  double kitchenLength;
   final     double kitchenbreadth;
   final List<String> photo;
-  final String panoramaImg;
+  final List<String> panoramaImg;
   final double electricity;
   final double fohor;
   final double water;

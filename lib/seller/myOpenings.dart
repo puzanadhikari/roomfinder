@@ -39,7 +39,7 @@ Future<List<Room>> fetchMyListings() async {
       kitchenLength: data['kitchenLength'],
       water: doc['water'],
       photo: List<String>.from(data['photo']),
-      panoramaImg: data['panoramaImg'],
+      panoramaImg: List<String>.from(data['panoramaImg']),
       electricity: data['electricity'],
       fohor: data['fohor'],
       lat: data['lat'],

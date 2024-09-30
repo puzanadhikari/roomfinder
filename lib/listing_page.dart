@@ -133,7 +133,7 @@ class _ListingState extends State<Listing> {
         kitchenLength: data['kitchenLength'],
         statusByAdmin: data["statusByAdmin"],
         photo: List<String>.from(data['photo']),
-        panoramaImg: data['panoramaImg'],
+        panoramaImg: List<String>.from(data['panoramaImg']),
         electricity: data['electricity'],
         fohor: data['fohor'],
         lat: data['lat'],
