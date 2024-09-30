@@ -701,47 +701,6 @@ class _DashBoardState extends State<DashBoard> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        // FutureBuilder<List<Room>>(
-                        //   future: fetchMostSearchedProducts(),
-                        //   builder: (context, snapshot) {
-                        //     if (snapshot.connectionState ==
-                        //         ConnectionState.waiting) {
-                        //       return const Text(
-                        //         "Loading...",
-                        //         style: TextStyle(
-                        //           color: Color(0xFF072A2E),
-                        //           fontSize: 16,
-                        //         ),
-                        //       );
-                        //     } else if (snapshot.hasError) {
-                        //       return const Text(
-                        //         "Error",
-                        //         style: TextStyle(
-                        //           color: Color(0xFF072A2E),
-                        //           fontSize: 16,
-                        //         ),
-                        //       );
-                        //     } else if (!snapshot.hasData ||
-                        //         snapshot.data!.isEmpty) {
-                        //       return const Text(
-                        //         "0 items",
-                        //         style: TextStyle(
-                        //           color: Color(0xFF072A2E),
-                        //           fontSize: 16,
-                        //         ),
-                        //       );
-                        //     }
-                        //     // Display the count of items
-                        //     final itemCount = snapshot.data!.length;
-                        //     return Text(
-                        //       "$itemCount items",
-                        //       style: const TextStyle(
-                        //         color: Color(0xFF072A2E),
-                        //         fontSize: 14,
-                        //       ),
-                        //     );
-                        //   },
-                        // ),
                       ],
                     ),
                   FutureBuilder<List<Room>>(
@@ -806,7 +765,6 @@ class _DashBoardState extends State<DashBoard> {
                                 },
                                 child: Visibility(
                                   visible: product.status.isEmpty ||
-                                      product.status['statusDisplay'] == "Sold" ||
                                       product.status['statusDisplay'] == "To Buy",
                                   child: Container(
                                     decoration: BoxDecoration(
@@ -953,46 +911,6 @@ class _DashBoardState extends State<DashBoard> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        // FutureBuilder<List<Room>>(
-                        //   future: fetchRooms(),
-                        //   builder: (context, snapshot) {
-                        //     if (snapshot.connectionState ==
-                        //         ConnectionState.waiting) {
-                        //       return const Text(
-                        //         "Loading...",
-                        //         style: TextStyle(
-                        //           color: Color(0xFF072A2E),
-                        //           fontSize: 14,
-                        //         ),
-                        //       );
-                        //     } else if (snapshot.hasError) {
-                        //       return const Text(
-                        //         "Error",
-                        //         style: TextStyle(
-                        //           color: Color(0xFF072A2E),
-                        //           fontSize: 14,
-                        //         ),
-                        //       );
-                        //     } else if (!snapshot.hasData ||
-                        //         snapshot.data!.isEmpty) {
-                        //       return const Text(
-                        //         "0 items",
-                        //         style: TextStyle(
-                        //           color: Color(0xFF072A2E),
-                        //           fontSize: 14,
-                        //         ),
-                        //       );
-                        //     }
-                        //     final itemCount = snapshot.data!.length;
-                        //     return Text(
-                        //       "$itemCount items",
-                        //       style: const TextStyle(
-                        //         color: Color(0xFF072A2E),
-                        //         fontSize: 14,
-                        //       ),
-                        //     );
-                        //   },
-                        // ),
                       ],
                     ),
                     FutureBuilder<List<Room>>(
@@ -1069,7 +987,7 @@ class _DashBoardState extends State<DashBoard> {
                                     );
                                   },
                                   child: Visibility(
-                                    visible: room.status.isEmpty||room.status['statusDisplay']=="Sold" || room.status['statusDisplay']=="To Buy"?true:false,
+                                    visible: room.status.isEmpty || room.status['statusDisplay']=="To Buy"?true:false,
                                     child: Container(
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(16.0),

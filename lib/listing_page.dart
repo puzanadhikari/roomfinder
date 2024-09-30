@@ -28,8 +28,10 @@ class _ListingState extends State<Listing> {
     final dLon = _deg2rad(lon2 - lon1);
 
     final a = sin(dLat / 2) * sin(dLat / 2) +
-        cos(_deg2rad(lat1)) * cos(_deg2rad(lat2)) *
-            sin(dLon / 2) * sin(dLon / 2);
+        cos(_deg2rad(lat1)) *
+            cos(_deg2rad(lat2)) *
+            sin(dLon / 2) *
+            sin(dLon / 2);
     final c = 2 * atan2(sqrt(a), sqrt(1 - a));
     final distance = R * c;
     return distance;
@@ -95,8 +97,12 @@ class _ListingState extends State<Listing> {
           status: productData['status'] != null
               ? Map<String, dynamic>.from(productData['status'])
               : {},
-          report: productData['report'] != null ? Map<String, dynamic>.from(productData['report']) : {},
-          facilities: productData['facilities'] != null ? List<String>.from(productData['facilities']) : [],
+          report: productData['report'] != null
+              ? Map<String, dynamic>.from(productData['report'])
+              : {},
+          facilities: productData['facilities'] != null
+              ? List<String>.from(productData['facilities'])
+              : [],
         ));
       }
     }
@@ -126,7 +132,6 @@ class _ListingState extends State<Listing> {
         kitchenbreadth: data['kitchenBreadth'],
         kitchenLength: data['kitchenLength'],
         statusByAdmin: data["statusByAdmin"],
-
         photo: List<String>.from(data['photo']),
         panoramaImg: data['panoramaImg'],
         electricity: data['electricity'],
@@ -139,8 +144,12 @@ class _ListingState extends State<Listing> {
         status: data['status'] != null
             ? Map<String, dynamic>.from(data['status'])
             : {},
-        report: data['report'] != null ? Map<String, dynamic>.from(data['report']) : {},
-        facilities: data['facilities'] != null ? List<String>.from(data['facilities']) : [],
+        report: data['report'] != null
+            ? Map<String, dynamic>.from(data['report'])
+            : {},
+        facilities: data['facilities'] != null
+            ? List<String>.from(data['facilities'])
+            : [],
       );
     }).toList();
   }
@@ -330,12 +339,21 @@ class _ListingState extends State<Listing> {
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) =>
-                                                RoomDetailPage(room: product, distance: distance),
+                                                RoomDetailPage(
+                                                    room: product,
+                                                    distance: distance),
                                           ),
                                         );
                                       },
                                       child: Visibility(
-                                        visible: displayedProducts[index].status.isEmpty||displayedProducts[index].status['statusDisplay']=="Sold" || displayedProducts[index].status['statusDisplay']=="To Buy"?true:false,
+                                        visible: displayedProducts[index]
+                                                    .status
+                                                    .isEmpty ||
+                                                displayedProducts[index].status[
+                                                        'statusDisplay'] ==
+                                                    "To Buy"
+                                            ? true
+                                            : false,
                                         child: Container(
                                           decoration: BoxDecoration(
                                             borderRadius:
@@ -354,15 +372,17 @@ class _ListingState extends State<Listing> {
                                                   BorderRadius.circular(16.0),
                                             ),
                                             child: Padding(
-                                              padding: const EdgeInsets.symmetric(
-                                                  horizontal: 8.0),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 8.0),
                                               child: Row(
                                                 children: [
                                                   ClipRRect(
                                                     borderRadius:
                                                         const BorderRadius
                                                             .horizontal(
-                                                      left: Radius.circular(16.0),
+                                                      left:
+                                                          Radius.circular(16.0),
                                                       right:
                                                           Radius.circular(16.0),
                                                     ),
@@ -392,19 +412,22 @@ class _ListingState extends State<Listing> {
                                                             product.name
                                                                 .toUpperCase(),
                                                             style: TextStyle(
-                                                              color: kThemeColor,
+                                                              color:
+                                                                  kThemeColor,
                                                               fontWeight:
-                                                                  FontWeight.bold,
+                                                                  FontWeight
+                                                                      .bold,
                                                               fontSize: 16,
                                                             ),
                                                           ),
                                                           const SizedBox(
                                                               height: 8),
                                                           Text(
-                                                            product.locationName,
+                                                            product
+                                                                .locationName,
                                                             style: TextStyle(
-                                                              color: Colors
-                                                                  .grey.shade700,
+                                                              color: Colors.grey
+                                                                  .shade700,
                                                               fontSize: 14,
                                                             ),
                                                           ),
@@ -413,10 +436,12 @@ class _ListingState extends State<Listing> {
                                                           Text(
                                                             "${product.price}/ per month",
                                                             style: TextStyle(
-                                                              color: kThemeColor,
+                                                              color:
+                                                                  kThemeColor,
                                                               fontSize: 14,
                                                               fontWeight:
-                                                              FontWeight.w600,
+                                                                  FontWeight
+                                                                      .w600,
                                                             ),
                                                           ),
                                                           const SizedBox(
@@ -428,7 +453,7 @@ class _ListingState extends State<Listing> {
                                                                       .location_on_rounded,
                                                                   size: 16,
                                                                   color:
-                                                                  kThemeColor),
+                                                                      kThemeColor),
                                                               Text(
                                                                 "$distance km from you.",
                                                                 style: const TextStyle(
@@ -437,23 +462,26 @@ class _ListingState extends State<Listing> {
                                                               ),
                                                             ],
                                                           ),
-                                                          const SizedBox(height: 10),
+                                                          const SizedBox(
+                                                              height: 10),
                                                           Row(
                                                             children: [
-                                                              Icon(displayedProducts[index].status[
-                                                              'statusDisplay'] ==
-                                                                  "Owned"
-                                                                  ? Icons
-                                                                  .check_circle
-                                                                  : Icons
-                                                                  .flag_circle,
+                                                              Icon(
+                                                                  displayedProducts[index].status[
+                                                                              'statusDisplay'] ==
+                                                                          "Owned"
+                                                                      ? Icons
+                                                                          .check_circle
+                                                                      : Icons
+                                                                          .flag_circle,
                                                                   size: 16,
-                                                                  color: kThemeColor),
+                                                                  color:
+                                                                      kThemeColor),
                                                               Text(
-                                                                '${displayedProducts[index].status['statusDisplay']??"To Buy"}',
+                                                                '${displayedProducts[index].status['statusDisplay'] ?? "To Buy"}',
                                                                 style: const TextStyle(
-                                                                    color:
-                                                                    Colors.black45),
+                                                                    color: Colors
+                                                                        .black45),
                                                               ),
                                                             ],
                                                           ),
@@ -641,12 +669,18 @@ class _ListingState extends State<Listing> {
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) =>
-                                                RoomDetailPage(room: room, distance: distance),
+                                                RoomDetailPage(
+                                                    room: room,
+                                                    distance: distance),
                                           ),
                                         );
                                       },
                                       child: Visibility(
-                                        visible: room.status.isEmpty||room.status['statusDisplay']=="Sold" || room.status['statusDisplay']=="To Buy"?true:false,
+                                        visible: room.status.isEmpty ||
+                                                room.status['statusDisplay'] ==
+                                                    "To Buy"
+                                            ? true
+                                            : false,
                                         child: Container(
                                           decoration: BoxDecoration(
                                             borderRadius:
@@ -665,15 +699,17 @@ class _ListingState extends State<Listing> {
                                                   BorderRadius.circular(16.0),
                                             ),
                                             child: Padding(
-                                              padding: const EdgeInsets.symmetric(
-                                                  horizontal: 8.0),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 8.0),
                                               child: Row(
                                                 children: [
                                                   ClipRRect(
                                                     borderRadius:
                                                         const BorderRadius
                                                             .horizontal(
-                                                      left: Radius.circular(16.0),
+                                                      left:
+                                                          Radius.circular(16.0),
                                                       right:
                                                           Radius.circular(16.0),
                                                     ),
@@ -703,9 +739,11 @@ class _ListingState extends State<Listing> {
                                                             room.name
                                                                 .toUpperCase(),
                                                             style: TextStyle(
-                                                              color: kThemeColor,
+                                                              color:
+                                                                  kThemeColor,
                                                               fontWeight:
-                                                                  FontWeight.bold,
+                                                                  FontWeight
+                                                                      .bold,
                                                               fontSize: 16,
                                                             ),
                                                           ),
@@ -714,8 +752,8 @@ class _ListingState extends State<Listing> {
                                                           Text(
                                                             room.locationName,
                                                             style: TextStyle(
-                                                              color: Colors
-                                                                  .grey.shade700,
+                                                              color: Colors.grey
+                                                                  .shade700,
                                                               fontSize: 14,
                                                             ),
                                                           ),
@@ -724,10 +762,12 @@ class _ListingState extends State<Listing> {
                                                           Text(
                                                             "${room.price}/ per month",
                                                             style: TextStyle(
-                                                              color: kThemeColor,
+                                                              color:
+                                                                  kThemeColor,
                                                               fontSize: 14,
                                                               fontWeight:
-                                                              FontWeight.w600,
+                                                                  FontWeight
+                                                                      .w600,
                                                             ),
                                                           ),
                                                           const SizedBox(
@@ -739,7 +779,7 @@ class _ListingState extends State<Listing> {
                                                                       .location_on_rounded,
                                                                   size: 16,
                                                                   color:
-                                                                  kThemeColor),
+                                                                      kThemeColor),
                                                               Text(
                                                                 "$distance km from you.",
                                                                 style: const TextStyle(
@@ -748,23 +788,25 @@ class _ListingState extends State<Listing> {
                                                               ),
                                                             ],
                                                           ),
-                                                          const SizedBox(height: 10),
+                                                          const SizedBox(
+                                                              height: 10),
                                                           Row(
                                                             children: [
-                                                              Icon(room.status[
-                                                              'statusDisplay'] ==
-                                                                  "Owned"
-                                                                  ? Icons
-                                                                  .check_circle
-                                                                  : Icons
-                                                                  .flag_circle,
+                                                              Icon(
+                                                                  room.status['statusDisplay'] ==
+                                                                          "Owned"
+                                                                      ? Icons
+                                                                          .check_circle
+                                                                      : Icons
+                                                                          .flag_circle,
                                                                   size: 16,
-                                                                  color: kThemeColor),
+                                                                  color:
+                                                                      kThemeColor),
                                                               Text(
                                                                 '${room.status['statusDisplay'] ?? "To Buy"}',
                                                                 style: const TextStyle(
-                                                                    color:
-                                                                    Colors.black45),
+                                                                    color: Colors
+                                                                        .black45),
                                                               ),
                                                             ],
                                                           ),
@@ -953,12 +995,18 @@ class _ListingState extends State<Listing> {
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) =>
-                                                RoomDetailPage(room: room,distance: distance),
+                                                RoomDetailPage(
+                                                    room: room,
+                                                    distance: distance),
                                           ),
                                         );
                                       },
                                       child: Visibility(
-                                        visible: room.status.isEmpty||room.status['statusDisplay']=="Sold" || room.status['statusDisplay']=="To Buy"?true:false,
+                                        visible: room.status.isEmpty ||
+                                                room.status['statusDisplay'] ==
+                                                    "To Buy"
+                                            ? true
+                                            : false,
                                         child: Container(
                                           decoration: BoxDecoration(
                                             borderRadius:
@@ -977,15 +1025,19 @@ class _ListingState extends State<Listing> {
                                                   BorderRadius.circular(16.0),
                                             ),
                                             child: Padding(
-                                              padding: const EdgeInsets.symmetric(
-                                                  horizontal: 8.0),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 8.0),
                                               child: Row(
                                                 children: [
                                                   ClipRRect(
-                                                    borderRadius: const BorderRadius
-                                                        .horizontal(
-                                                      left: Radius.circular(16.0),
-                                                      right: Radius.circular(16.0),
+                                                    borderRadius:
+                                                        const BorderRadius
+                                                            .horizontal(
+                                                      left:
+                                                          Radius.circular(16.0),
+                                                      right:
+                                                          Radius.circular(16.0),
                                                     ),
                                                     child: Image.network(
                                                       room.photo.isNotEmpty
@@ -998,8 +1050,9 @@ class _ListingState extends State<Listing> {
                                                   ),
                                                   Expanded(
                                                     child: Padding(
-                                                      padding: const EdgeInsets.all(
-                                                          16.0),
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              16.0),
                                                       child: Column(
                                                         crossAxisAlignment:
                                                             CrossAxisAlignment
@@ -1009,31 +1062,38 @@ class _ListingState extends State<Listing> {
                                                                 .center,
                                                         children: [
                                                           Text(
-                                                            room.name.toUpperCase(),
+                                                            room.name
+                                                                .toUpperCase(),
                                                             style: TextStyle(
-                                                              color: kThemeColor,
+                                                              color:
+                                                                  kThemeColor,
                                                               fontWeight:
-                                                                  FontWeight.bold,
+                                                                  FontWeight
+                                                                      .bold,
                                                               fontSize: 18,
                                                             ),
                                                           ),
-                                                          const SizedBox(height: 8),
+                                                          const SizedBox(
+                                                              height: 8),
                                                           Text(
                                                             room.locationName,
                                                             style: TextStyle(
-                                                              color: Colors
-                                                                  .grey.shade700,
+                                                              color: Colors.grey
+                                                                  .shade700,
                                                               fontSize: 14,
                                                             ),
                                                           ),
-                                                          const SizedBox(height: 8),
+                                                          const SizedBox(
+                                                              height: 8),
                                                           Text(
                                                             "Capacity: ${room.capacity}",
                                                             style: TextStyle(
-                                                              color: kThemeColor,
+                                                              color:
+                                                                  kThemeColor,
                                                               fontSize: 14,
                                                               fontWeight:
-                                                                  FontWeight.w600,
+                                                                  FontWeight
+                                                                      .w600,
                                                             ),
                                                           ),
                                                           const SizedBox(
@@ -1050,7 +1110,7 @@ class _ListingState extends State<Listing> {
                                                                           .location_on_rounded,
                                                                       size: 16,
                                                                       color:
-                                                                      kThemeColor),
+                                                                          kThemeColor),
                                                                   Text(
                                                                     "$distance km from you.",
                                                                     style: const TextStyle(
@@ -1061,20 +1121,21 @@ class _ListingState extends State<Listing> {
                                                               ),
                                                               Row(
                                                                 children: [
-                                                                  Icon(room.status[
-                                                                  'statusDisplay'] ==
-                                                                      "Owned"
-                                                                      ? Icons
-                                                                      .check_circle
-                                                                      : Icons
-                                                                      .flag_circle,
+                                                                  Icon(
+                                                                      room.status['statusDisplay'] ==
+                                                                              "Owned"
+                                                                          ? Icons
+                                                                              .check_circle
+                                                                          : Icons
+                                                                              .flag_circle,
                                                                       size: 16,
-                                                                      color: kThemeColor),
+                                                                      color:
+                                                                          kThemeColor),
                                                                   Text(
                                                                     '${room.status['statusDisplay'] ?? "To Buy"}',
                                                                     style: const TextStyle(
-                                                                        color:
-                                                                        Colors.black45),
+                                                                        color: Colors
+                                                                            .black45),
                                                                   ),
                                                                 ],
                                                               ),
@@ -1238,13 +1299,21 @@ class _ListingState extends State<Listing> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                          builder: (context) =>
-                                              RoomDetailPage(room: product,distance: distance),
+                                          builder: (context) => RoomDetailPage(
+                                              room: product,
+                                              distance: distance),
                                         ),
                                       );
                                     },
                                     child: Visibility(
-                                      visible: displayedProducts[index].status.isEmpty||displayedProducts[index].status['statusDisplay']=="Sold" || displayedProducts[index].status['statusDisplay']=="To Buy"?true:false,
+                                      visible: displayedProducts[index]
+                                                  .status
+                                                  .isEmpty ||
+                                              displayedProducts[index].status[
+                                                      'statusDisplay'] ==
+                                                  "To Buy"
+                                          ? true
+                                          : false,
                                       child: Container(
                                         decoration: BoxDecoration(
                                           borderRadius:
@@ -1268,10 +1337,12 @@ class _ListingState extends State<Listing> {
                                             child: Row(
                                               children: [
                                                 ClipRRect(
-                                                  borderRadius: const BorderRadius
-                                                      .horizontal(
+                                                  borderRadius:
+                                                      const BorderRadius
+                                                          .horizontal(
                                                     left: Radius.circular(16.0),
-                                                    right: Radius.circular(16.0),
+                                                    right:
+                                                        Radius.circular(16.0),
                                                   ),
                                                   child: Image.network(
                                                     product.photo.isNotEmpty
@@ -1284,8 +1355,9 @@ class _ListingState extends State<Listing> {
                                                 ),
                                                 Expanded(
                                                   child: Padding(
-                                                    padding: const EdgeInsets.all(
-                                                        16.0),
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            16.0),
                                                     child: Column(
                                                       crossAxisAlignment:
                                                           CrossAxisAlignment
@@ -1304,7 +1376,8 @@ class _ListingState extends State<Listing> {
                                                             fontSize: 18,
                                                           ),
                                                         ),
-                                                        const SizedBox(height: 8),
+                                                        const SizedBox(
+                                                            height: 8),
                                                         Text(
                                                           product.locationName,
                                                           style: TextStyle(
@@ -1313,14 +1386,15 @@ class _ListingState extends State<Listing> {
                                                             fontSize: 14,
                                                           ),
                                                         ),
-                                                        const SizedBox(height: 8),
+                                                        const SizedBox(
+                                                            height: 8),
                                                         Text(
                                                           "${product.price}/ per month",
                                                           style: TextStyle(
                                                             color: kThemeColor,
                                                             fontSize: 14,
                                                             fontWeight:
-                                                            FontWeight.w600,
+                                                                FontWeight.w600,
                                                           ),
                                                         ),
                                                         const SizedBox(
@@ -1337,7 +1411,7 @@ class _ListingState extends State<Listing> {
                                                                         .location_on_rounded,
                                                                     size: 16,
                                                                     color:
-                                                                    kThemeColor),
+                                                                        kThemeColor),
                                                                 Text(
                                                                   "$distance km from you.",
                                                                   style: const TextStyle(
@@ -1348,20 +1422,21 @@ class _ListingState extends State<Listing> {
                                                             ),
                                                             Row(
                                                               children: [
-                                                                Icon(product.status[
-                                                                'statusDisplay'] ==
-                                                                    "Owned"
-                                                                    ? Icons
-                                                                    .check_circle
-                                                                    : Icons
-                                                                    .flag_circle,
+                                                                Icon(
+                                                                    product.status['statusDisplay'] ==
+                                                                            "Owned"
+                                                                        ? Icons
+                                                                            .check_circle
+                                                                        : Icons
+                                                                            .flag_circle,
                                                                     size: 16,
-                                                                    color: kThemeColor),
+                                                                    color:
+                                                                        kThemeColor),
                                                                 Text(
                                                                   '${product.status['statusDisplay'] ?? "To Buy"}',
                                                                   style: const TextStyle(
-                                                                      color:
-                                                                      Colors.black45),
+                                                                      color: Colors
+                                                                          .black45),
                                                                 ),
                                                               ],
                                                             ),

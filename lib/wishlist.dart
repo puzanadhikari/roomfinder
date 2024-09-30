@@ -125,7 +125,7 @@ class _WishlistPageState extends State<WishlistPage> {
                           );
                         },
                         child: Visibility(
-                          visible: room.status.isEmpty||room.status['statusDisplay']=="Sold"?true:false,
+                          visible: room.status.isEmpty||room.status['statusDisplay']=="To Buy"?true:false,
                           child: Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(16.0),
