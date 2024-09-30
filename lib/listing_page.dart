@@ -478,7 +478,17 @@ class _ListingState extends State<Listing> {
                                                                   color:
                                                                       kThemeColor),
                                                               Text(
-                                                                displayedProducts[index].status['statusDisplay'] == "To Buy" ? "Booked" : displayedProducts[index].status['statusDisplay'] == "Sold" ? "Sold" : displayedProducts[index].status['statusDisplay'] == "Owned" ? "Owned" : "To Buy",
+                                                                displayedProducts[index].status[
+                                                                            'statusDisplay'] ==
+                                                                        "To Buy"
+                                                                    ? "Booked"
+                                                                    : displayedProducts[index].status['statusDisplay'] ==
+                                                                            "Sold"
+                                                                        ? "Sold"
+                                                                        : displayedProducts[index].status['statusDisplay'] ==
+                                                                                "Owned"
+                                                                            ? "Owned"
+                                                                            : "To Buy",
                                                                 style: const TextStyle(
                                                                     color: Colors
                                                                         .black45),
@@ -803,7 +813,16 @@ class _ListingState extends State<Listing> {
                                                                   color:
                                                                       kThemeColor),
                                                               Text(
-                                                                room.status['statusDisplay'] == "To Buy" ? "Booked" : room.status['statusDisplay'] == "Sold" ? "Sold" : room.status['statusDisplay'] == "Owned" ? "Owned" : "To Buy",
+                                                                room.status['statusDisplay'] ==
+                                                                        "To Buy"
+                                                                    ? "Booked"
+                                                                    : room.status['statusDisplay'] ==
+                                                                            "Sold"
+                                                                        ? "Sold"
+                                                                        : room.status['statusDisplay'] ==
+                                                                                "Owned"
+                                                                            ? "Owned"
+                                                                            : "To Buy",
                                                                 style: const TextStyle(
                                                                     color: Colors
                                                                         .black45),
@@ -1068,7 +1087,7 @@ class _ListingState extends State<Listing> {
                                                               fontWeight:
                                                                   FontWeight
                                                                       .bold,
-                                                              fontSize: 18,
+                                                              fontSize: 16,
                                                             ),
                                                           ),
                                                           const SizedBox(
@@ -1084,7 +1103,7 @@ class _ListingState extends State<Listing> {
                                                           const SizedBox(
                                                               height: 8),
                                                           Text(
-                                                            "Capacity: ${room.capacity}",
+                                                            "${room.price}/ per month",
                                                             style: TextStyle(
                                                               color:
                                                                   kThemeColor,
@@ -1095,47 +1114,51 @@ class _ListingState extends State<Listing> {
                                                             ),
                                                           ),
                                                           const SizedBox(
-                                                              height: 20),
+                                                              height: 10),
                                                           Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .spaceBetween,
                                                             children: [
-                                                              Row(
-                                                                children: [
-                                                                  Icon(
-                                                                      Icons
-                                                                          .location_on_rounded,
-                                                                      size: 16,
-                                                                      color:
-                                                                          kThemeColor),
-                                                                  Text(
-                                                                    "$distance km from you.",
-                                                                    style: const TextStyle(
-                                                                        color: Colors
-                                                                            .black45),
-                                                                  ),
-                                                                ],
+                                                              Icon(
+                                                                  Icons
+                                                                      .location_on_rounded,
+                                                                  size: 16,
+                                                                  color:
+                                                                      kThemeColor),
+                                                              Text(
+                                                                "$distance km from you.",
+                                                                style: const TextStyle(
+                                                                    color: Colors
+                                                                        .black45),
                                                               ),
-                                                              Row(
-                                                                children: [
-                                                                  Icon(
-                                                                      room.status['statusDisplay'] ==
-                                                                              "Owned"
-                                                                          ? Icons
-                                                                              .check_circle
-                                                                          : Icons
-                                                                              .flag_circle,
-                                                                      size: 16,
-                                                                      color:
-                                                                          kThemeColor),
-                                                                  Text(
-                                                                    room.status['statusDisplay'] == "To Buy" ? "Booked" : room.status['statusDisplay'] == "Sold" ? "Sold" : room.status['statusDisplay'] == "Owned" ? "Owned" : "To Buy",
-                                                                    style: const TextStyle(
-                                                                        color: Colors
-                                                                            .black45),
-                                                                  ),
-                                                                ],
+                                                            ],
+                                                          ),
+                                                          const SizedBox(
+                                                              height: 10),
+                                                          Row(
+                                                            children: [
+                                                              Icon(
+                                                                  room.status['statusDisplay'] ==
+                                                                          "Owned"
+                                                                      ? Icons
+                                                                          .check_circle
+                                                                      : Icons
+                                                                          .flag_circle,
+                                                                  size: 16,
+                                                                  color:
+                                                                      kThemeColor),
+                                                              Text(
+                                                                room.status['statusDisplay'] ==
+                                                                        "To Buy"
+                                                                    ? "Booked"
+                                                                    : room.status['statusDisplay'] ==
+                                                                            "Sold"
+                                                                        ? "Sold"
+                                                                        : room.status['statusDisplay'] ==
+                                                                                "Owned"
+                                                                            ? "Owned"
+                                                                            : "To Buy",
+                                                                style: const TextStyle(
+                                                                    color: Colors
+                                                                        .black45),
                                                               ),
                                                             ],
                                                           ),
@@ -1371,7 +1394,7 @@ class _ListingState extends State<Listing> {
                                                             color: kThemeColor,
                                                             fontWeight:
                                                                 FontWeight.bold,
-                                                            fontSize: 18,
+                                                            fontSize: 16,
                                                           ),
                                                         ),
                                                         const SizedBox(
@@ -1396,50 +1419,58 @@ class _ListingState extends State<Listing> {
                                                           ),
                                                         ),
                                                         const SizedBox(
-                                                            height: 20),
+                                                            height: 10),
                                                         Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
                                                           children: [
-                                                            Row(
-                                                              children: [
-                                                                Icon(
-                                                                    Icons
-                                                                        .location_on_rounded,
-                                                                    size: 16,
-                                                                    color:
-                                                                        kThemeColor),
-                                                                Text(
-                                                                  "$distance km from you.",
-                                                                  style: const TextStyle(
-                                                                      color: Colors
-                                                                          .black45),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                            Row(
-                                                              children: [
-                                                                Icon(
-                                                                    product.status['statusDisplay'] ==
-                                                                            "Owned"
-                                                                        ? Icons
-                                                                            .check_circle
-                                                                        : Icons
-                                                                            .flag_circle,
-                                                                    size: 16,
-                                                                    color:
-                                                                        kThemeColor),
-                                                                Text(
-                                                                  product.status['statusDisplay'] == "To Buy" ? "Booked" : product.status['statusDisplay'] == "Sold" ? "Sold" : product.status['statusDisplay'] == "Owned" ? "Owned" : "To Buy",
-                                                                  style: const TextStyle(
-                                                                      color: Colors
-                                                                          .black45),
-                                                                ),
-                                                              ],
+                                                            Icon(
+                                                                Icons
+                                                                    .location_on_rounded,
+                                                                size: 16,
+                                                                color:
+                                                                    kThemeColor),
+                                                            Text(
+                                                              "$distance km from you.",
+                                                              style: const TextStyle(
+                                                                  color: Colors
+                                                                      .black45),
                                                             ),
                                                           ],
-                                                        )
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 10),
+                                                        Row(
+                                                          children: [
+                                                            Icon(
+                                                                displayedProducts[index].status[
+                                                                            'statusDisplay'] ==
+                                                                        "Owned"
+                                                                    ? Icons
+                                                                        .check_circle
+                                                                    : Icons
+                                                                        .flag_circle,
+                                                                size: 16,
+                                                                color:
+                                                                    kThemeColor),
+                                                            Text(
+                                                              displayedProducts[index]
+                                                                              .status[
+                                                                          'statusDisplay'] ==
+                                                                      "To Buy"
+                                                                  ? "Booked"
+                                                                  : displayedProducts[index].status[
+                                                                              'statusDisplay'] ==
+                                                                          "Sold"
+                                                                      ? "Sold"
+                                                                      : displayedProducts[index].status['statusDisplay'] ==
+                                                                              "Owned"
+                                                                          ? "Owned"
+                                                                          : "To Buy",
+                                                              style: const TextStyle(
+                                                                  color: Colors
+                                                                      .black45),
+                                                            ),
+                                                          ],
+                                                        ),
                                                       ],
                                                     ),
                                                   ),
