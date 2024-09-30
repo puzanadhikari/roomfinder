@@ -478,7 +478,7 @@ class _ListingState extends State<Listing> {
                                                                   color:
                                                                       kThemeColor),
                                                               Text(
-                                                                '${displayedProducts[index].status['statusDisplay'] ?? "To Buy"}',
+                                                                displayedProducts[index].status['statusDisplay'] == "To Buy" ? "Booked" : displayedProducts[index].status['statusDisplay'] == "Sold" ? "Sold" : displayedProducts[index].status['statusDisplay'] == "Owned" ? "Owned" : "To Buy",
                                                                 style: const TextStyle(
                                                                     color: Colors
                                                                         .black45),
@@ -803,7 +803,7 @@ class _ListingState extends State<Listing> {
                                                                   color:
                                                                       kThemeColor),
                                                               Text(
-                                                                '${room.status['statusDisplay'] ?? "To Buy"}',
+                                                                room.status['statusDisplay'] == "To Buy" ? "Booked" : room.status['statusDisplay'] == "Sold" ? "Sold" : room.status['statusDisplay'] == "Owned" ? "Owned" : "To Buy",
                                                                 style: const TextStyle(
                                                                     color: Colors
                                                                         .black45),
@@ -1132,7 +1132,7 @@ class _ListingState extends State<Listing> {
                                                                       color:
                                                                           kThemeColor),
                                                                   Text(
-                                                                    '${room.status['statusDisplay'] ?? "To Buy"}',
+                                                                    room.status['statusDisplay'] == "To Buy" ? "Booked" : room.status['statusDisplay'] == "Sold" ? "Sold" : room.status['statusDisplay'] == "Owned" ? "Owned" : "To Buy",
                                                                     style: const TextStyle(
                                                                         color: Colors
                                                                             .black45),
@@ -1433,7 +1433,7 @@ class _ListingState extends State<Listing> {
                                                                     color:
                                                                         kThemeColor),
                                                                 Text(
-                                                                  '${product.status['statusDisplay'] ?? "To Buy"}',
+                                                                  product.status['statusDisplay'] == "To Buy" ? "Booked" : product.status['statusDisplay'] == "Sold" ? "Sold" : product.status['statusDisplay'] == "Owned" ? "Owned" : "To Buy",
                                                                   style: const TextStyle(
                                                                       color: Colors
                                                                           .black45),

@@ -31,6 +31,7 @@ class _AgreementPageState extends State<AgreementPage> {
         'ownedBy': user?.displayName,
         'ownerId': user?.uid,
         'ownerEmail': user?.email,
+        'ownerNumber': user?.phoneNumber,
         'statusDisplay': 'Owned',
       };
 

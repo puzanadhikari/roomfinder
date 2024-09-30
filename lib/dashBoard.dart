@@ -512,7 +512,7 @@ class _DashBoardState extends State<DashBoard> {
                                                             color:
                                                             kThemeColor),
                                                         Text(
-                                                          '${room.status['statusDisplay'] ?? "To Buy"}',
+                                                          room.status['statusDisplay'] == "To Buy" ? "Booked" : room.status['statusDisplay'] == "Sold" ? "Sold" : room.status['statusDisplay'] == "Owned" ? "Owned" : "To Buy",
                                                           style: const TextStyle(
                                                               color: Colors
                                                                   .black45),
@@ -702,7 +702,7 @@ class _DashBoardState extends State<DashBoard> {
                         TextButton(
                           onPressed: () {
                             setState(() {
-                              pageProvider.setPage(1); // Set the page for navigation
+                              pageProvider.setPage(1);
                               pageProvider.setChoice("From homepage");
                             });
                           },
@@ -872,7 +872,7 @@ class _DashBoardState extends State<DashBoard> {
                                                             color: kThemeColor,
                                                           ),
                                                           Text(
-                                                            product.status['statusDisplay'] ?? "To Buy",
+                                                            product.status['statusDisplay'] == "To Buy" ? "Booked" : product.status['statusDisplay'] == "Sold" ? "Sold" : product.status['statusDisplay'] == "Owned" ? "Owned" : "To Buy",
                                                             style: const TextStyle(
                                                               color: Colors.black45,
                                                             ),
@@ -1084,7 +1084,7 @@ class _DashBoardState extends State<DashBoard> {
                                                             color: kThemeColor,
                                                           ),
                                                           Text(
-                                                            '${room.status['statusDisplay'] ?? "To Buy"}',
+                                                            room.status['statusDisplay'] == "To Buy" ? "Booked" : room.status['statusDisplay'] == "Sold" ? "Sold" : room.status['statusDisplay'] == "Owned" ? "Owned" : "To Buy",
                                                             style: const TextStyle(color: Colors.black45),
                                                           ),
                                                         ],

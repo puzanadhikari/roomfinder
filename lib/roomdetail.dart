@@ -422,7 +422,7 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                                         size: 16,
                                         color: kThemeColor),
                                     Text(
-                                      '${widget.room.status['statusDisplay'] ?? "To Buy"}',
+                                      widget.room.status['statusDisplay'] == "To Buy" ? "Booked" : widget.room.status['statusDisplay'] == "Sold" ? "Sold" : widget.room.status['statusDisplay'] == "Owned" ? "Owned" : "To Buy",
                                       style: const TextStyle(
                                           color: Colors.black45),
                                     ),
