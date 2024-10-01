@@ -486,7 +486,7 @@ class _AdminRoomDetailsState extends State<AdminRoomDetails> {
       children: [
         Icon(
           icon,
-          color: Color(0xFF072A2E), // Themed color for icons
+          color: const Color(0xFF072A2E), // Themed color for icons
         ),
         const SizedBox(width: 10),
         Expanded(

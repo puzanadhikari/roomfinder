@@ -52,14 +52,14 @@ class _RegisterPageState extends State<RegisterPage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              title: Text("Gallery"),
+              title: const Text("Gallery"),
               onTap: () {
                 Navigator.pop(context);
                 _pickImage(ImageSource.gallery); // Pick from gallery
               },
             ),
             ListTile(
-              title: Text("Camera"),
+              title: const Text("Camera"),
               onTap: () {
                 Navigator.pop(context);
                 _pickImage(ImageSource.camera); // Capture with camera
@@ -267,7 +267,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(12),
                                     ),
-                                    padding: EdgeInsets.symmetric(vertical: 15),
+                                    padding: const EdgeInsets.symmetric(vertical: 15),
                                     elevation: 5,
                                   ),
                                   child: Row(

@@ -7,7 +7,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:khalti_flutter/khalti_flutter.dart';
 import 'package:shimmer/shimmer.dart';
 
-import 'Constants/paymentPage.dart';
 import 'Constants/styleConsts.dart';
 import 'aggreement.dart';
 

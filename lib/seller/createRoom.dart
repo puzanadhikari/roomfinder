@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:location/location.dart';
-import 'package:meroapp/admin/dashboard.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:panorama/panorama.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,7 +13,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../Auth/firebase_auth.dart';
 import '../Constants/styleConsts.dart';
 import 'getLocation.dart';
-import 'myOpenings.dart';
 
 class CreateRoom extends StatefulWidget {
   const CreateRoom({super.key});
@@ -289,7 +287,7 @@ class _CreateRoomState extends State<CreateRoom> {
                                                   },
                                                 ),
                                               ),
-                                              SizedBox(width: 10),
+                                              const SizedBox(width: 10),
                                               Expanded(
                                                 child: TextFormField(
                                                   decoration: kFormFieldDecoration
@@ -340,7 +338,7 @@ class _CreateRoomState extends State<CreateRoom> {
                                                   },
                                                 ),
                                               ),
-                                              SizedBox(width: 10),
+                                              const SizedBox(width: 10),
                                               Expanded(
                                                 child: TextFormField(
                                                   decoration: kFormFieldDecoration
@@ -393,7 +391,7 @@ class _CreateRoomState extends State<CreateRoom> {
                                                   },
                                                 ),
                                               ),
-                                              SizedBox(width: 10),
+                                              const SizedBox(width: 10),
                                               Expanded(
                                                 child: TextFormField(
                                                   decoration: kFormFieldDecoration

@@ -149,7 +149,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     icon: Icons.supervised_user_circle_outlined,
                     title: 'Users',
                     onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => UserListing()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const UserListing()));
                     },
                   ),
                   _buildProfileOption(
