@@ -248,6 +248,16 @@ class _InformationDetailsState extends State<InformationDetails> {
     required Function onEdit,
     bool enabled = true,
   }) {
+    // Set the keyboard type based on the title
+    TextInputType keyboardType;
+    if (title == 'Email') {
+      keyboardType = TextInputType.emailAddress;
+    } else if (title == 'Phone') {
+      keyboardType = TextInputType.phone;
+    } else {
+      keyboardType = TextInputType.text; // Default for Name
+    }
+
     return ListTile(
       title: Text(
         title,
@@ -258,6 +268,7 @@ class _InformationDetailsState extends State<InformationDetails> {
         ),
       ),
       subtitle: TextField(
+        keyboardType: keyboardType,
         controller: controller,
         enabled: enabled,
         decoration: InputDecoration(

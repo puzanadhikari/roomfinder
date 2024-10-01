@@ -354,27 +354,19 @@ class _OrderPageState extends State<OrderPage> {
                                                 Row(
                                                   children: [
                                                     Icon(
-                                                      roomStatus['status'][
-                                                                  'statusDisplay'] ==
-                                                              'Owned'
+                                                      roomStatus['status']?['statusDisplay'] == 'Owned'
                                                           ? Icons.check_circle
                                                           : Icons.flag_circle,
-                                                      color: roomStatus[
-                                                                      'status'][
-                                                                  'statusDisplay'] ==
-                                                              'Owned'
+                                                      color: roomStatus['status']?['statusDisplay'] == 'Owned'
                                                           ? Colors.green
-                                                          : roomStatus['status']
-                                                                      [
-                                                                      'statusDisplay'] ==
-                                                                  'Sold'
-                                                              ? Colors.red
-                                                              : Colors.orange,
+                                                          : roomStatus['status']?['statusDisplay'] == 'Sold'
+                                                          ? Colors.red
+                                                          : Colors.orange,
                                                       size: 14,
                                                     ),
                                                     const SizedBox(width: 4),
                                                     Text(
-                                                      'Status: ${roomStatus['status']['statusDisplay']}',
+                                                      'Status: ${roomStatus['status']?['statusDisplay'] ?? 'To Buy'}',
                                                       style: const TextStyle(
                                                         fontSize: 14,
                                                         color: Colors.grey,
@@ -383,9 +375,7 @@ class _OrderPageState extends State<OrderPage> {
                                                   ],
                                                 ),
                                                 Visibility(
-                                                  visible: roomStatus['status']
-                                                          ['statusDisplay'] ==
-                                                      "Owned",
+                                                  visible: roomStatus['status']?['statusDisplay'] == "Owned",
                                                   child: GestureDetector(
                                                     onTap: () {
                                                       if (roomStatus['report']
@@ -581,7 +571,7 @@ class _OrderPageState extends State<OrderPage> {
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Visibility(
-                                    visible: roomStatus['status']
+                                    visible: roomStatus['status']?
                                             ['statusDisplay'] ==
                                         "Sold",
                                     child: Text(
