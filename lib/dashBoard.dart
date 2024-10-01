@@ -78,7 +78,7 @@ class _DashBoardState extends State<DashBoard> {
       if (room.uid != selectedRoom.uid) { // Avoid recommending the same room
         double similarity = calculateSimilarity(selectedRoom, room);
         print("Checking room: ${room.name}, Similarity: $similarity"); // Debugging line
-        if (room.status.isEmpty && similarity > 0.1) { // Filter based on status and similarity threshold
+        if (room.status.isEmpty && similarity > 0.59) { // Filter based on status and similarity threshold
           recommendedRooms.add(room);
           print("Recommended room added: ${room.name}, Status: ${room.status['statusDisplay']}"); // Debugging line
         } else {
@@ -1222,6 +1222,154 @@ class _DashBoardState extends State<DashBoard> {
                               },
                             ),
                           ],
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 30),
+                    const Align(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        "Recommended",
+                        style: TextStyle(
+                          color: Color(0xFF072A2E),
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    FutureBuilder<List<Room>>(
+                      future: fetchRooms(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return Shimmer.fromColors(
+                            baseColor: Colors.grey.shade300,
+                            highlightColor: Colors.grey.shade100,
+                            child: Container(
+                              height: 350,
+                              padding: const EdgeInsets.symmetric(vertical: 10),
+                              child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: 3, // Number of shimmer items to show
+                                itemBuilder: (context, index) => Container(
+                                  width: 200,
+                                  margin: const EdgeInsets.symmetric(horizontal: 8),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+                        if (snapshot.hasError) {
+                          return Center(child: Text('Error: ${snapshot.error}'));
+                        }
+                        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                          return const Center(child: Text('No rooms available'));
+                        }
+
+                        final allRooms = snapshot.data!;
+                        final Room selectedRoom = allRooms.first; // Replace with actual selected room logic
+
+                        // Get recommended rooms using the recommendSimilarRooms function
+                        final recommendedRooms = recommendSimilarRooms(selectedRoom, allRooms);
+
+                        if (recommendedRooms.isEmpty) {
+                          return const Center(child: Text('No recommended rooms available'));
+                        }
+
+                        return Container(
+                          height: 350,
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: recommendedRooms.length,
+                            itemBuilder: (context, index) {
+                              final room = recommendedRooms[index];
+                              final distance = calculateDistance(
+                                widget.lat,
+                                widget.lng,
+                                room.lat,
+                                room.lng,
+                              ).toStringAsFixed(1);
+
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => RoomDetailPage(room: room, distance: distance),
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  width: 200,
+                                  margin: const EdgeInsets.symmetric(horizontal: 8),
+                                  child: Stack(
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(12),
+                                        child: Image.network(
+                                          room.photo.isNotEmpty ? room.photo[0] : '',
+                                          width: 200,
+                                          height: 350,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      Positioned(
+                                        right: 10,
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(backgroundColor: kThemeColor),
+                                          child: const Text("For Rent"),
+                                          onPressed: () {},
+                                        ),
+                                      ),
+                                      Positioned(
+                                        bottom: 0,
+                                        left: 0,
+                                        right: 0,
+                                        child: Container(
+                                          padding: const EdgeInsets.all(12),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                room.name.toUpperCase(),
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 20,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 4),
+                                              Row(
+                                                children: [
+                                                  const Icon(
+                                                    Icons.location_on_rounded,
+                                                    color: Colors.white,
+                                                  ),
+                                                  Expanded(
+                                                    child: Text(
+                                                      room.locationName,
+                                                      style: const TextStyle(
+                                                        fontSize: 12,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
                         );
                       },
                     ),
