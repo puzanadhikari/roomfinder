@@ -309,9 +309,9 @@ class _ListingState extends State<Listing> {
                           }
                           final uniqueProducts = snapshot.data!.toSet().toList();
 
-                          final displayedProducts = showAllMostSearch
-                              ? uniqueProducts
-                              : uniqueProducts.take(3).toList();
+                          final displayedProducts = uniqueProducts;
+                              // ? uniqueProducts
+                              // : uniqueProducts.take(3).toList();
                           return Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: Column(
@@ -1299,9 +1299,9 @@ class _ListingState extends State<Listing> {
                       }
                       final uniqueProducts = snapshot.data!.toSet().toList();
 
-                      final displayedProducts = showAllMostSearch
-                          ? uniqueProducts
-                          : uniqueProducts.take(3).toList();
+                      final displayedProducts = uniqueProducts;
+                          // ? uniqueProducts
+                          // : uniqueProducts.take(3).toList();
                       return NotificationListener<
                           OverscrollIndicatorNotification>(
                         onNotification: (overscroll) {
