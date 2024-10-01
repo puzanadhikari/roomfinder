@@ -254,7 +254,6 @@ class _OrderPageState extends State<OrderPage> {
                       }
 
                       final roomStatus = roomSnapshot.data!;
-
                       return GestureDetector(
                         onTap: () {
                           log(roomId);
@@ -587,7 +586,7 @@ class _OrderPageState extends State<OrderPage> {
                                             ['statusDisplay'] ==
                                         "Sold",
                                     child: Text(
-                                      'Please Approve our agreement paper to own this property.',
+                                      'Please Approve our agreement paper to own this property.Otherwise Seller will cancel your booking after 1 day.',
                                       style: TextStyle(
                                         fontSize: 15,
                                         fontWeight: FontWeight.bold,

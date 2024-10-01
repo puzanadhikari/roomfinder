@@ -442,13 +442,13 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
                               ),
                             ),
                             const SizedBox(height: 20),
-                            Visibility(
-                              visible: widget.room.status["statusDisplay"] == "To Buy",
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  children: [
-                                    Expanded(
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                children: [
+                                  Visibility(
+                                    visible: widget.room.status["statusDisplay"] == "To Buy",
+                                    child: Expanded(
                                       child: SizedBox(
                                         height: 45,
                                         child: ElevatedButton(
@@ -469,8 +469,11 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
                                         ),
                                       ),
                                     ),
-                                    const SizedBox(width: 10),  // Add some spacing between the buttons
-                                    Expanded(
+                                  ),
+                                  const SizedBox(width: 10),  // Add some spacing between the buttons
+                                  Visibility(
+                                    visible: widget.room.status["statusDisplay"] == "To Buy" || widget.room.status["statusDisplay"] == "Sold",
+                                    child: Expanded(
                                       child: SizedBox(
                                         height: 45,
                                         child: ElevatedButton(
@@ -491,8 +494,8 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
                                         ),
                                       ),
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             )
                           ],

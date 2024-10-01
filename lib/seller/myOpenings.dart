@@ -230,7 +230,11 @@ class _MyListingsPageState extends State<MyListingsPage> {
                                                       color: kThemeColor),
                                                   Flexible(
                                                     child: Text(
-                                                      '${roomStatus[index].status['statusDisplay'] ?? "To Buy"}''  (${roomStatus[index].status['ownedBy'] ?? "Pending to sign the agreement"})',
+                                                      '${roomStatus[index].status['statusDisplay'] ?? "To Buy"}''  (${ roomStatus[index].status.isEmpty
+                                                          ? "No booking yet"
+                                                          : roomStatus[index].status['statusDisplay'] == "To Buy"
+                                                          ? "Approve the request"
+                                                          : roomStatus[index].status['ownedBy'] ?? "Pending to sign the agreement"})',
                                                       style: const TextStyle(
                                                         fontSize: 13,
                                                         fontWeight: FontWeight.bold,
