@@ -56,6 +56,41 @@ class _DashBoardState extends State<DashBoard> {
     return userSnapshot['photoUrl'];
   }
 
+
+  double calculateSimilarity(Room room1, Room room2) {
+    // Calculate similarity based on price, capacity, and location
+    double priceSimilarity = 1 - (room1.price - room2.price).abs() / (room1.price + room2.price);
+    double capacitySimilarity = 1 - (room1.capacity - room2.capacity).abs() / (room1.capacity + room2.capacity);
+
+    // Optional: You can also compare more attributes like facilities or location
+    double locationSimilarity = (room1.locationName == room2.locationName) ? 1.0 : 0.0;
+
+    // You can give different weights to each similarity measure if needed
+    double similarityScore = (priceSimilarity + capacitySimilarity + locationSimilarity) / 3;
+    return similarityScore;
+  }
+
+  List<Room> recommendSimilarRooms(Room selectedRoom, List<Room> allRooms) {
+    List<Room> recommendedRooms = [];
+
+    for (Room room in allRooms) {
+      if (room.uid != selectedRoom.uid) { // Avoid recommending the same room
+        double similarity = calculateSimilarity(selectedRoom, room);
+        print("Checking room: ${room.name}, Similarity: $similarity"); // Debugging line
+        if (similarity > 0.3) { // Use a threshold to filter out low similarity
+          recommendedRooms.add(room);
+          print("Recommended room added: ${room.name}"); // Debugging line
+        }
+      }
+    }
+
+    // Sort recommended rooms by similarity score if needed (optional)
+    recommendedRooms.sort((a, b) => calculateSimilarity(selectedRoom, b).compareTo(calculateSimilarity(selectedRoom, a)));
+
+    print("Total recommended rooms: ${recommendedRooms.length}"); // Debugging line
+    return recommendedRooms;
+  }
+
   bool showAllMostSearch = false;
   bool showAllNearYou = false;
   TextEditingController searchController = TextEditingController();
@@ -181,6 +216,53 @@ class _DashBoardState extends State<DashBoard> {
       }
     }
     return mostSearchedProducts;
+  }
+
+  showRecommendedRooms(context, recommendations) {
+    print("Recommended rooms: ${recommendations.map((r) => r.name).toList()}");
+    if (recommendations.isEmpty) {
+      print("No recommendations to show."); // Debugging line
+    }
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Recommended Rooms'),
+          content: SizedBox(
+            height: 400,
+            width: 300,
+            child: ListView.builder(
+              itemCount: recommendations.length,
+              itemBuilder: (context, index) {
+                final recommendedRoom = recommendations[index];
+                return ListTile(
+                  title: Text(recommendedRoom.name),
+                  subtitle: Text(recommendedRoom.locationName),
+                  onTap: () {
+                    // Navigate to the selected room detail page
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => RoomDetailPage(room: recommendedRoom, distance: '',),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close dialog
+              },
+              child: Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   late Future<List<Room>> rooms;
@@ -787,7 +869,12 @@ class _DashBoardState extends State<DashBoard> {
                                       MaterialPageRoute(
                                         builder: (context) => RoomDetailPage(room: product, distance: distance),
                                       ),
-                                    );
+                                    ).then((_) {
+                                      // After navigating back, fetch recommended rooms
+                                      List<Room> recommendations = recommendSimilarRooms(product, uniqueProducts);
+                                      // Show recommendations in a dialog or a new page
+                                      showRecommendedRooms(context, recommendations);
+                                    });
                                   },
                                   child: Visibility(
                                     visible: product.status.isEmpty ||
@@ -1434,4 +1521,5 @@ class _PriceRangeScreenState extends State<PriceRangeScreen> {
       ),
     );
   }
+
 }
