@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:meroapp/Constants/styleConsts.dart';
+import 'package:meroapp/profilePage.dart';
 import 'package:meroapp/provider/pageProvider.dart';
 import 'package:meroapp/roomdetail.dart';
 import 'package:provider/provider.dart';
@@ -242,12 +243,17 @@ class _DashBoardState extends State<DashBoard> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        CircleAvatar(
-                          radius: 20,
-                          backgroundColor: kThemeColor,
-                          backgroundImage: profilePhotoUrl != null
-                              ? NetworkImage(profilePhotoUrl!)
-                              : const AssetImage('assets/pic1.jpg') as ImageProvider,
+                        GestureDetector(
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage(widget.lat,widget.lng)));
+                          },
+                          child: CircleAvatar(
+                            radius: 20,
+                            backgroundColor: kThemeColor,
+                            backgroundImage: profilePhotoUrl != null
+                                ? NetworkImage(profilePhotoUrl!)
+                                : const AssetImage('assets/pic1.jpg') as ImageProvider,
+                          ),
                         ),
                         Text("Home",
                             style: TextStyle(

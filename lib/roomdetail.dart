@@ -503,7 +503,15 @@ class _RoomDetailPageState extends State<RoomDetailPage> {
                                 width: double.infinity,
                                 height: 45,
                                 child: ElevatedButton(
-                                  onPressed: _bookRoom,
+                                  onPressed: (){
+                                    widget.room.status["statusDisplay"] == "To Buy" ?Fluttertoast.showToast(
+                                      msg: "Room already Booked. Check the status.",
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.BOTTOM,
+                                      backgroundColor: Colors.red,
+                                      textColor: Colors.white,
+                                    ) :_bookRoom();
+                                  },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xFF072A2E),
                                     shape: RoundedRectangleBorder(
