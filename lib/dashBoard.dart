@@ -1317,97 +1317,89 @@ class _PriceRangeScreenState extends State<PriceRangeScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Text(
-              'Select Price Range',
-              style: TextStyle(
-                  color: Color(0xAA616161),
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16),
-            ),
-            RangeSlider(
-              values: _currentRangeValues,
-              min: 0,
-              max: 100000,
-              divisions: 100, // Divides the slider into intervals
-              labels: RangeLabels(
-                _currentRangeValues.start.round().toString(),
-                _currentRangeValues.end.round().toString(),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Text(
+                'Select Price Range',
+                style: TextStyle(
+                    color: Color(0xAA616161),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16),
               ),
-              onChanged: (RangeValues values) {
-                setState(() {
-                  _currentRangeValues = values;
-                });
-              },
-            ),
-            Text(
-              'Price: \Rs.${_currentRangeValues.start.round()} - \Rs.${_currentRangeValues.end.round()}',
-              style: TextStyle(
-                  color: Color(0xAA616161),
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16),
-            ),
-            const SizedBox(height: 30),
+              RangeSlider(
+                values: _currentRangeValues,
+                min: 0,
+                max: 100000,
+                divisions: 100, // Divides the slider into intervals
+                labels: RangeLabels(
+                  _currentRangeValues.start.round().toString(),
+                  _currentRangeValues.end.round().toString(),
+                ),
+                onChanged: (RangeValues values) {
+                  setState(() {
+                    _currentRangeValues = values;
+                  });
+                },
+              ),
+              Text(
+                'Price: \Rs.${_currentRangeValues.start.round()} - \Rs.${_currentRangeValues.end.round()}',
+                style: TextStyle(
+                    color: Color(0xAA616161),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16),
+              ),
+              const SizedBox(height: 30),
+              ElevatedButton(
+                child: Text('Confirm'),
+                onPressed: () {
+                  startPrice = _currentRangeValues.start;
+                  endPrice = _currentRangeValues.end;
+                  fetchRoomsForFilter();
+                  print('Selected Price Range: ${_currentRangeValues.start} - ${_currentRangeValues.end}');
+                  setState(() {
 
-            ElevatedButton(
-              child: Text('Confirm'),
-              onPressed: () {
-                startPrice = _currentRangeValues.start;
-                endPrice = _currentRangeValues.end;
-                fetchRoomsForFilter();
-                print('Selected Price Range: ${_currentRangeValues.start} - ${_currentRangeValues.end}');
-                setState(() {
-
-                });
-                // Navigator.pop(context); // Go back to the previous screen
-              },
-            ),
-            SizedBox(
-              child: FutureBuilder<List<Room>>(
+                  });
+                  // Navigator.pop(context); // Go back to the previous screen
+                },
+              ),
+              FutureBuilder<List<Room>>(
                 future: fetchRoomsForFilter(),
                 builder: (context, snapshot) {
-                  if (snapshot.connectionState ==
-                      ConnectionState.waiting) {
-
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasError) {
-                    return Center(
-                        child: Text('Error: ${snapshot.error}'));
-                  } else if (!snapshot.hasData ||
-                      snapshot.data!.isEmpty ||snapshot.data=="null") {
-                    return const Center(
-                        child: Text('No rooms available.'));
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty || snapshot.data == "null") {
+                    return const Center(child: Text('No rooms available.'));
                   }
-                  print("data:"+snapshot.data.toString());
-                  List<Room> filteredRooms1 = [];
 
-                 snapshot.data == null?"":  filteredRooms1  = snapshot.data!
-                        .where((room) => room.price >= (startPrice??100.0)! && room.price <= (endPrice??1000.0)!)
-                        .toList();
+                  List<Room> filteredRooms1 = [];
+                  snapshot.data == null ? "" : filteredRooms1 = snapshot.data!
+                      .where((room) => room.price >= (startPrice ?? 100.0) && room.price <= (endPrice ?? 1000.0))
+                      .toList();
 
                   return ListView.builder(
-                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(), // Disable inner scrolling to avoid conflicts
+                    shrinkWrap: true, // Allow ListView to take only necessary space
                     itemCount: filteredRooms1.length,
                     itemBuilder: (context, index) {
                       final room = filteredRooms1[index];
                       final distance = calculateDistance(
-                        widget.lat,
-                        widget.lng,
-                        room.lat,
-                        room.lng,
+                        widget.lat, widget.lng, room.lat, room.lng,
                       ).toStringAsFixed(1);
+
                       return GestureDetector(
                         onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  RoomDetailPage(room: room,distance: distance),
+                              builder: (context) => RoomDetailPage(room: room, distance: distance),
                             ),
                           );
                         },
                         child: Visibility(
-                          visible: room.status.isEmpty || room.status['statusDisplay']=="To Buy"?true:false,
+                          visible: room.status.isEmpty || room.status['statusDisplay'] == "To Buy" ? true : false,
                           child: Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(16.0),
@@ -1424,13 +1416,11 @@ class _PriceRangeScreenState extends State<PriceRangeScreen> {
                                 borderRadius: BorderRadius.circular(16.0),
                               ),
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 8.0),
+                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
                                 child: Row(
                                   children: [
                                     ClipRRect(
-                                      borderRadius:
-                                      const BorderRadius.horizontal(
+                                      borderRadius: const BorderRadius.horizontal(
                                         left: Radius.circular(16.0),
                                         right: Radius.circular(16.0),
                                       ),
@@ -1445,20 +1435,16 @@ class _PriceRangeScreenState extends State<PriceRangeScreen> {
                                     ),
                                     Expanded(
                                       child: Padding(
-                                        padding:
-                                        const EdgeInsets.all(16.0),
+                                        padding: const EdgeInsets.all(16.0),
                                         child: Column(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                          mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
                                             Text(
                                               room.name.toUpperCase(),
                                               style: TextStyle(
                                                 color: kThemeColor,
-                                                fontWeight:
-                                                FontWeight.bold,
+                                                fontWeight: FontWeight.bold,
                                                 fontSize: 16,
                                               ),
                                             ),
@@ -1466,8 +1452,7 @@ class _PriceRangeScreenState extends State<PriceRangeScreen> {
                                             Text(
                                               room.locationName,
                                               style: TextStyle(
-                                                color:
-                                                Colors.grey.shade700,
+                                                color: Colors.grey.shade700,
                                                 fontSize: 14,
                                               ),
                                             ),
@@ -1477,24 +1462,16 @@ class _PriceRangeScreenState extends State<PriceRangeScreen> {
                                               style: TextStyle(
                                                 color: kThemeColor,
                                                 fontSize: 14,
-                                                fontWeight:
-                                                FontWeight.w600,
+                                                fontWeight: FontWeight.w600,
                                               ),
                                             ),
                                             const SizedBox(height: 10),
                                             Row(
                                               children: [
-                                                Icon(
-                                                    Icons
-                                                        .location_on_rounded,
-                                                    size: 16,
-                                                    color:
-                                                    kThemeColor),
+                                                Icon(Icons.location_on_rounded, size: 16, color: kThemeColor),
                                                 Text(
                                                   "$distance km from you.",
-                                                  style: const TextStyle(
-                                                      color: Colors
-                                                          .black45),
+                                                  style: const TextStyle(color: Colors.black45),
                                                 ),
                                               ],
                                             ),
@@ -1502,20 +1479,15 @@ class _PriceRangeScreenState extends State<PriceRangeScreen> {
                                             Row(
                                               children: [
                                                 Icon(
-                                                    room.status['statusDisplay'] ==
-                                                        "Owned"
-                                                        ? Icons
-                                                        .check_circle
-                                                        : Icons
-                                                        .flag_circle,
-                                                    size: 16,
-                                                    color:
-                                                    kThemeColor),
+                                                  room.status['statusDisplay'] == "Owned"
+                                                      ? Icons.check_circle
+                                                      : Icons.flag_circle,
+                                                  size: 16,
+                                                  color: kThemeColor,
+                                                ),
                                                 Text(
                                                   '${room.status['statusDisplay'] ?? "To Buy"}',
-                                                  style: const TextStyle(
-                                                      color: Colors
-                                                          .black45),
+                                                  style: const TextStyle(color: Colors.black45),
                                                 ),
                                               ],
                                             ),
@@ -1533,9 +1505,9 @@ class _PriceRangeScreenState extends State<PriceRangeScreen> {
                     },
                   );
                 },
-              ),
-            ),
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );
