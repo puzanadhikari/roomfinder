@@ -158,7 +158,7 @@ class _DashBoardState extends State<DashBoard> {
           kitchenbreadth: productSnapshot['kitchenBreadth'],
           kitchenLength: productSnapshot['kitchenLength'],
           photo: List<String>.from(productData['photo']),
-          panoramaImg: productData['panoramaImg'],
+          panoramaImg: List<String>.from(productData['panoramaImg']),
           electricity: productData['electricity'],
           fohor: productData['fohor'],
           lat: productData['lat'],

@@ -85,7 +85,7 @@ class _ListingState extends State<Listing> {
           kitchenbreadth: productData['kitchenBreadth'],
           kitchenLength: productData['kitchenLength'],
           photo: List<String>.from(productData['photo']),
-          panoramaImg: productData['panoramaImg'],
+          panoramaImg: List<String>.from(productData['panoramaImg']),
           electricity: productData['electricity'],
           fohor: productData['fohor'],
           lat: productData['lat'],
