@@ -21,7 +21,7 @@ class Listing extends StatefulWidget {
 
 class _ListingState extends State<Listing> {
   String searchQuery = '';
-
+  bool showAllMostSearch = false;
   double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
     const R = 6371;
     final dLat = _deg2rad(lat2 - lat1);
@@ -307,7 +307,11 @@ class _ListingState extends State<Listing> {
                             return const Center(
                                 child: Text('No products found.'));
                           }
-                          final displayedProducts = snapshot.data!;
+                          final uniqueProducts = snapshot.data!.toSet().toList();
+
+                          final displayedProducts = showAllMostSearch
+                              ? uniqueProducts
+                              : uniqueProducts.take(3).toList();
                           return Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: Column(
@@ -1293,7 +1297,11 @@ class _ListingState extends State<Listing> {
                       } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                         return const Center(child: Text('No products found.'));
                       }
-                      final displayedProducts = snapshot.data!;
+                      final uniqueProducts = snapshot.data!.toSet().toList();
+
+                      final displayedProducts = showAllMostSearch
+                          ? uniqueProducts
+                          : uniqueProducts.take(3).toList();
                       return NotificationListener<
                           OverscrollIndicatorNotification>(
                         onNotification: (overscroll) {
@@ -1301,190 +1309,202 @@ class _ListingState extends State<Listing> {
                           return true;
                         },
                         child: SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              ListView.builder(
-                                itemCount: displayedProducts.length,
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemBuilder: (context, index) {
-                                  final product = displayedProducts[index];
-                                  final distance = calculateDistance(
-                                    widget.lat,
-                                    widget.lng,
-                                    product.lat,
-                                    product.lng,
-                                  ).toStringAsFixed(1);
-                                  return GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => RoomDetailPage(
-                                              room: product,
-                                              distance: distance),
-                                        ),
-                                      );
-                                    },
-                                    child: Visibility(
-                                      visible: displayedProducts[index]
-                                                  .status
-                                                  .isEmpty ||
-                                              displayedProducts[index].status[
-                                                      'statusDisplay'] ==
-                                                  "To Buy"
-                                          ? true
-                                          : false,
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(16.0),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Colors.grey.shade300,
-                                              blurRadius: 5,
-                                              offset: const Offset(0, 4),
-                                            ),
-                                          ],
-                                        ),
-                                        child: Card(
-                                          shape: RoundedRectangleBorder(
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  "Most Searched",
+                                  style: TextStyle(
+                                    color: Color(0xFF072A2E),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                ListView.builder(
+                                  itemCount: displayedProducts.length,
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemBuilder: (context, index) {
+                                    final product = displayedProducts[index];
+                                    final distance = calculateDistance(
+                                      widget.lat,
+                                      widget.lng,
+                                      product.lat,
+                                      product.lng,
+                                    ).toStringAsFixed(1);
+                                    return GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => RoomDetailPage(
+                                                room: product,
+                                                distance: distance),
+                                          ),
+                                        );
+                                      },
+                                      child: Visibility(
+                                        visible: displayedProducts[index]
+                                                    .status
+                                                    .isEmpty ||
+                                                displayedProducts[index].status[
+                                                        'statusDisplay'] ==
+                                                    "To Buy"
+                                            ? true
+                                            : false,
+                                        child: Container(
+                                          decoration: BoxDecoration(
                                             borderRadius:
                                                 BorderRadius.circular(16.0),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.grey.shade300,
+                                                blurRadius: 5,
+                                                offset: const Offset(0, 4),
+                                              ),
+                                            ],
                                           ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 8.0),
-                                            child: Row(
-                                              children: [
-                                                ClipRRect(
-                                                  borderRadius:
-                                                      const BorderRadius
-                                                          .horizontal(
-                                                    left: Radius.circular(16.0),
-                                                    right:
-                                                        Radius.circular(16.0),
-                                                  ),
-                                                  child: Image.network(
-                                                    product.photo.isNotEmpty
-                                                        ? product.photo[0]
-                                                        : 'https://via.placeholder.com/150',
-                                                    height: 100,
-                                                    width: 100,
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            16.0),
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        Text(
-                                                          product.name
-                                                              .toUpperCase(),
-                                                          style: TextStyle(
-                                                            color: kThemeColor,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize: 16,
-                                                          ),
-                                                        ),
-                                                        const SizedBox(
-                                                            height: 8),
-                                                        Text(
-                                                          product.locationName,
-                                                          style: TextStyle(
-                                                            color: Colors
-                                                                .grey.shade700,
-                                                            fontSize: 14,
-                                                          ),
-                                                        ),
-                                                        const SizedBox(
-                                                            height: 8),
-                                                        Text(
-                                                          "${product.price}/ per month",
-                                                          style: TextStyle(
-                                                            color: kThemeColor,
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                          ),
-                                                        ),
-                                                        const SizedBox(
-                                                            height: 10),
-                                                        Row(
-                                                          children: [
-                                                            Icon(
-                                                                Icons
-                                                                    .location_on_rounded,
-                                                                size: 16,
-                                                                color:
-                                                                    kThemeColor),
-                                                            Text(
-                                                              "$distance km from you.",
-                                                              style: const TextStyle(
-                                                                  color: Colors
-                                                                      .black45),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        const SizedBox(
-                                                            height: 10),
-                                                        Row(
-                                                          children: [
-                                                            Icon(
-                                                                displayedProducts[index].status[
-                                                                            'statusDisplay'] ==
-                                                                        "Owned"
-                                                                    ? Icons
-                                                                        .check_circle
-                                                                    : Icons
-                                                                        .flag_circle,
-                                                                size: 16,
-                                                                color:
-                                                                    kThemeColor),
-                                                            Text(
-                                                              displayedProducts[index]
-                                                                              .status[
-                                                                          'statusDisplay'] ==
-                                                                      "To Buy"
-                                                                  ? "Booked"
-                                                                  : displayedProducts[index].status[
-                                                                              'statusDisplay'] ==
-                                                                          "Sold"
-                                                                      ? "Sold"
-                                                                      : displayedProducts[index].status['statusDisplay'] ==
-                                                                              "Owned"
-                                                                          ? "Owned"
-                                                                          : "To Buy",
-                                                              style: const TextStyle(
-                                                                  color: Colors
-                                                                      .black45),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ],
+                                          child: Card(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(16.0),
+                                            ),
+                                            child: Padding(
+                                              padding: const EdgeInsets.symmetric(
+                                                  horizontal: 8.0),
+                                              child: Row(
+                                                children: [
+                                                  ClipRRect(
+                                                    borderRadius:
+                                                        const BorderRadius
+                                                            .horizontal(
+                                                      left: Radius.circular(16.0),
+                                                      right:
+                                                          Radius.circular(16.0),
+                                                    ),
+                                                    child: Image.network(
+                                                      product.photo.isNotEmpty
+                                                          ? product.photo[0]
+                                                          : 'https://via.placeholder.com/150',
+                                                      height: 100,
+                                                      width: 100,
+                                                      fit: BoxFit.cover,
                                                     ),
                                                   ),
-                                                ),
-                                              ],
+                                                  Expanded(
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              16.0),
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Text(
+                                                            product.name
+                                                                .toUpperCase(),
+                                                            style: TextStyle(
+                                                              color: kThemeColor,
+                                                              fontWeight:
+                                                                  FontWeight.bold,
+                                                              fontSize: 16,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                              height: 8),
+                                                          Text(
+                                                            product.locationName,
+                                                            style: TextStyle(
+                                                              color: Colors
+                                                                  .grey.shade700,
+                                                              fontSize: 14,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                              height: 8),
+                                                          Text(
+                                                            "${product.price}/ per month",
+                                                            style: TextStyle(
+                                                              color: kThemeColor,
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                                  FontWeight.w600,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                              height: 10),
+                                                          Row(
+                                                            children: [
+                                                              Icon(
+                                                                  Icons
+                                                                      .location_on_rounded,
+                                                                  size: 16,
+                                                                  color:
+                                                                      kThemeColor),
+                                                              Text(
+                                                                "$distance km from you.",
+                                                                style: const TextStyle(
+                                                                    color: Colors
+                                                                        .black45),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          const SizedBox(
+                                                              height: 10),
+                                                          Row(
+                                                            children: [
+                                                              Icon(
+                                                                  displayedProducts[index].status[
+                                                                              'statusDisplay'] ==
+                                                                          "Owned"
+                                                                      ? Icons
+                                                                          .check_circle
+                                                                      : Icons
+                                                                          .flag_circle,
+                                                                  size: 16,
+                                                                  color:
+                                                                      kThemeColor),
+                                                              Text(
+                                                                displayedProducts[index]
+                                                                                .status[
+                                                                            'statusDisplay'] ==
+                                                                        "To Buy"
+                                                                    ? "Booked"
+                                                                    : displayedProducts[index].status[
+                                                                                'statusDisplay'] ==
+                                                                            "Sold"
+                                                                        ? "Sold"
+                                                                        : displayedProducts[index].status['statusDisplay'] ==
+                                                                                "Owned"
+                                                                            ? "Owned"
+                                                                            : "To Buy",
+                                                                style: const TextStyle(
+                                                                    color: Colors
+                                                                        .black45),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ],
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       );
