@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:meroapp/Constants/styleConsts.dart';
 import 'package:meroapp/profilePage.dart';
 import 'package:meroapp/provider/pageProvider.dart';
+import 'package:meroapp/recommendedPage.dart';
 import 'package:meroapp/roomdetail.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -77,19 +78,32 @@ class _DashBoardState extends State<DashBoard> {
       if (room.uid != selectedRoom.uid) { // Avoid recommending the same room
         double similarity = calculateSimilarity(selectedRoom, room);
         print("Checking room: ${room.name}, Similarity: $similarity"); // Debugging line
-        if (similarity > 0.3) { // Use a threshold to filter out low similarity
+        if (room.status.isEmpty && similarity > 0.1) { // Filter based on status and similarity threshold
           recommendedRooms.add(room);
-          print("Recommended room added: ${room.name}"); // Debugging line
+          print("Recommended room added: ${room.name}, Status: ${room.status['statusDisplay']}"); // Debugging line
+        } else {
+          print("Room ${room.name} was not recommended. Status: ${room.status['statusDisplay']} or low similarity");
         }
+      } else {
+        print("Skipping the same room: ${room.name}"); // Debugging line
       }
     }
 
-    // Sort recommended rooms by similarity score if needed (optional)
-    recommendedRooms.sort((a, b) => calculateSimilarity(selectedRoom, b).compareTo(calculateSimilarity(selectedRoom, a)));
+    // Sort recommended rooms by similarity score (optional but useful for ranking)
+    recommendedRooms.sort((a, b) {
+      double similarityA = calculateSimilarity(selectedRoom, a);
+      double similarityB = calculateSimilarity(selectedRoom, b);
+      return similarityB.compareTo(similarityA); // Descending order
+    });
 
     print("Total recommended rooms: ${recommendedRooms.length}"); // Debugging line
+    for (var room in recommendedRooms) {
+      print("Final recommended room: ${room.name}, Similarity: ${calculateSimilarity(selectedRoom, room)}");
+    }
+
     return recommendedRooms;
   }
+
 
   bool showAllMostSearch = false;
   bool showAllNearYou = false;
@@ -873,7 +887,12 @@ class _DashBoardState extends State<DashBoard> {
                                       // After navigating back, fetch recommended rooms
                                       List<Room> recommendations = recommendSimilarRooms(product, uniqueProducts);
                                       // Show recommendations in a dialog or a new page
-                                      showRecommendedRooms(context, recommendations);
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => RecommendedRoomsPage(recommendations: recommendations,userLat: widget.lat,userLng: widget.lng),
+                                        ),
+                                      );
                                     });
                                   },
                                   child: Visibility(
