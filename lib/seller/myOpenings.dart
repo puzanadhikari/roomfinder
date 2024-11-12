@@ -39,7 +39,7 @@ Future<List<Room>> fetchMyListings() async {
       kitchenLength: data['kitchenLength'],
       water: doc['water'],
       photo: List<String>.from(data['photo']),
-      panoramaImg: data['panoramaImg'],
+      panoramaImg: List<String>.from(data['panoramaImg']),
       electricity: data['electricity'],
       fohor: data['fohor'],
       lat: data['lat'],
@@ -218,22 +218,6 @@ class _MyListingsPageState extends State<MyListingsPage> {
                                               Row(
                                                 children: [
                                                   Icon(
-                                                      Icons
-                                                          .location_on_rounded,
-                                                      size: 16,
-                                                      color: kThemeColor),
-                                                  Text(
-                                                    "${(rooms[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
-                                                    style: const TextStyle(
-                                                        color:
-                                                            Colors.black45),
-                                                  ),
-                                                ],
-                                              ),
-                                              const SizedBox(height: 10),
-                                              Row(
-                                                children: [
-                                                  Icon(
                                                       roomStatus[index]
                                                           .status[
                                                       'statusDisplay'] ==
@@ -246,7 +230,11 @@ class _MyListingsPageState extends State<MyListingsPage> {
                                                       color: kThemeColor),
                                                   Flexible(
                                                     child: Text(
-                                                      '${roomStatus[index].status['statusDisplay'] ?? "To Buy"}''  (${roomStatus[index].status['ownedBy'] ?? "Pending to sign the agreement"})',
+                                                      '${roomStatus[index].status['statusDisplay'] ?? "To Buy"}''  (${ roomStatus[index].status.isEmpty
+                                                          ? "No booking yet"
+                                                          : roomStatus[index].status['statusDisplay'] == "To Buy"
+                                                          ? "Approve the request"
+                                                          : roomStatus[index].status['ownedBy'] ?? "Pending to sign the agreement"})',
                                                       style: const TextStyle(
                                                         fontSize: 13,
                                                         fontWeight: FontWeight.bold,

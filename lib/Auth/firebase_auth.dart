@@ -36,7 +36,7 @@ class FirebaseAuthService {
   }
 
   Future<User?> register(BuildContext context, String name, String email,
-      String password,String contactNumber, String userType) async {
+      String password,String contactNumber, String userType, String photoUrl) async {
     try {
       UserCredential userCredential =
           await _auth.createUserWithEmailAndPassword(
@@ -44,7 +44,7 @@ class FirebaseAuthService {
         password: password,
       );
       await userCredential.user?.updateDisplayName(name);
-      await addUserData(email, name, password,contactNumber, userType);
+      await addUserData(email, name, password,contactNumber, userType,photoUrl);
       Fluttertoast.showToast(
           msg: 'Register successfully',
           backgroundColor: appBarColor,
@@ -62,7 +62,7 @@ class FirebaseAuthService {
   }
 
   Future addUserData(
-      String email, String name, String password, String contactNumber, String userType) async {
+      String email, String name, String password, String contactNumber, String userType, String photoUrl) async {
     try {
       User? user = FirebaseAuth.instance.currentUser;
 
@@ -75,6 +75,7 @@ class FirebaseAuthService {
           "password": password,
           "contactNumber": contactNumber,
           "userType": userType,
+          "photoUrl": photoUrl
         };
 
         DocumentReference userRef =
@@ -188,7 +189,7 @@ class FirebaseAuthService {
       double kitchenLength,
       double kitchenbreadth,
       List<String> photo,
-      String? panorama,
+      List<String> panorama,
       double electricity,
       double fohor,
       double lat,
@@ -198,7 +199,7 @@ class FirebaseAuthService {
       String sellerEmail,
       String sellerPhone,
       double water,
-      List<String> facilities
+      List<String> facilities,
       ) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -208,7 +209,7 @@ class FirebaseAuthService {
         String uid = user.uid;
         Map<String, dynamic> userData = {
           "name": name,
-          "price":price,
+          "price": price,
           "capacity": capacity,
           "description": description,
           "roomLength": roomLength,
@@ -218,7 +219,7 @@ class FirebaseAuthService {
           "kitchenLength": kitchenLength,
           "kitchenBreadth": kitchenbreadth,
           "photo": photo,
-          "panoramaImg": panorama, // Store panorama URL
+          "panoramaImg": panorama, // Store multiple panorama URLs
           "electricity": electricity,
           "active": false,
           "fohor": fohor,
@@ -227,13 +228,13 @@ class FirebaseAuthService {
           "locationName": locName,
           "featured": false,
           "userId": uid,
-          "statusByAdmin":"Pending",
-          "water":water,
+          "statusByAdmin": "Pending",
+          "water": water,
           "facilities": facilities,
-          "detail":{
-            "sellerName":sellerName,
-            "sellerEmail":sellerEmail,
-            "sellerPhone":sellerPhone
+          "detail": {
+            "sellerName": sellerName,
+            "sellerEmail": sellerEmail,
+            "sellerPhone": sellerPhone
           }
         };
 

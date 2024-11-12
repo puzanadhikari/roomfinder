@@ -7,7 +7,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:khalti_flutter/khalti_flutter.dart';
 import 'package:shimmer/shimmer.dart';
 
-import 'Constants/paymentPage.dart';
 import 'Constants/styleConsts.dart';
 import 'aggreement.dart';
 
@@ -254,7 +253,6 @@ class _OrderPageState extends State<OrderPage> {
                       }
 
                       final roomStatus = roomSnapshot.data!;
-
                       return GestureDetector(
                         onTap: () {
                           log(roomId);
@@ -356,27 +354,19 @@ class _OrderPageState extends State<OrderPage> {
                                                 Row(
                                                   children: [
                                                     Icon(
-                                                      roomStatus['status'][
-                                                                  'statusDisplay'] ==
-                                                              'Owned'
+                                                      roomStatus['status']?['statusDisplay'] == 'Owned'
                                                           ? Icons.check_circle
                                                           : Icons.flag_circle,
-                                                      color: roomStatus[
-                                                                      'status'][
-                                                                  'statusDisplay'] ==
-                                                              'Owned'
+                                                      color: roomStatus['status']?['statusDisplay'] == 'Owned'
                                                           ? Colors.green
-                                                          : roomStatus['status']
-                                                                      [
-                                                                      'statusDisplay'] ==
-                                                                  'Sold'
-                                                              ? Colors.red
-                                                              : Colors.orange,
+                                                          : roomStatus['status']?['statusDisplay'] == 'Sold'
+                                                          ? Colors.red
+                                                          : Colors.orange,
                                                       size: 14,
                                                     ),
                                                     const SizedBox(width: 4),
                                                     Text(
-                                                      'Status: ${roomStatus['status']['statusDisplay']}',
+                                                      'Status: ${roomStatus['status']?['statusDisplay'] ?? 'To Buy'}',
                                                       style: const TextStyle(
                                                         fontSize: 14,
                                                         color: Colors.grey,
@@ -385,9 +375,7 @@ class _OrderPageState extends State<OrderPage> {
                                                   ],
                                                 ),
                                                 Visibility(
-                                                  visible: roomStatus['status']
-                                                          ['statusDisplay'] ==
-                                                      "Owned",
+                                                  visible: roomStatus['status']?['statusDisplay'] == "Owned",
                                                   child: GestureDetector(
                                                     onTap: () {
                                                       if (roomStatus['report']
@@ -583,11 +571,11 @@ class _OrderPageState extends State<OrderPage> {
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: Visibility(
-                                    visible: roomStatus['status']
+                                    visible: roomStatus['status']?
                                             ['statusDisplay'] ==
                                         "Sold",
                                     child: Text(
-                                      'Please Approve our agreement paper to own this property.',
+                                      'Please Approve our agreement paper to own this property.Otherwise Seller will cancel your booking after 1 day.',
                                       style: TextStyle(
                                         fontSize: 15,
                                         fontWeight: FontWeight.bold,

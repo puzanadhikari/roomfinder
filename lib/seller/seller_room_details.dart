@@ -9,6 +9,7 @@ import 'package:meroapp/Constants/styleConsts.dart';
 import 'package:meroapp/provider/wishlistProvider.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../PanoramaFull.dart';
 import '../model/onSaleModel.dart';
@@ -25,6 +26,18 @@ class SellerRoomDetails extends StatefulWidget {
 class _SellerRoomDetailsState extends State<SellerRoomDetails> {
   final bool _isBooking = false;
   final String _mapApiKey = 'AIzaSyAGFdLuw0m2pCFxNxmFA5EzJia6IzUM3iU';
+
+  Future<void> _openGoogleMap(String lat, String lng) async {
+    final String googleMapsUrl = 'https://www.google.com/maps/search/?api=1&query=$lat,$lng';
+    final Uri url = Uri.parse(googleMapsUrl);
+
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+    } else {
+      throw 'Could not launch $googleMapsUrl';
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -139,13 +152,6 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
                                   color: Color(0xFF4D4D4D),
                                   fontSize: 16),
                             ),
-                            const SizedBox(height: 8),
-                            const Text(
-                              "1.5 km from Gwarko",
-                              style: TextStyle(
-                                  color: Color(0xFF4D4D4D),
-                                  fontSize: 16),
-                            ),
                             const SizedBox(height: 16),
                             const Divider(color: Colors.grey),
                             const SizedBox(height: 15),
@@ -165,7 +171,7 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
                                           const Icon(Icons.king_bed, color: Colors.black), // Icon for room
                                           const SizedBox(width: 8), // Space between icon and text
                                           Text(
-                                            "Room: ${widget.room.roomLength}m x ${widget.room.roomBreath}m",
+                                            "Room: ${widget.room.roomLength}ft x ${widget.room.roomBreath}ft",
                                             style: const TextStyle(
                                               color: Color(0xFF4D4D4D),
                                               fontSize: 16,
@@ -180,7 +186,7 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
                                           const Icon(Icons.kitchen, color: Colors.black),
                                           const SizedBox(width: 8),
                                           Text(
-                                            "Kitchen: ${widget.room.kitchenLength}m x ${widget.room.kitchenbreadth}m",
+                                            "Kitchen: ${widget.room.kitchenLength}ft x ${widget.room.kitchenbreadth}ft",
                                             style: const TextStyle(
                                               color: Color(0xFF4D4D4D),
                                               fontSize: 16,
@@ -197,7 +203,7 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
                                           const Icon(Icons.tv, color: Colors.black), // Icon for hall
                                           const SizedBox(width: 8),
                                           Text(
-                                            "Hall: ${widget.room.hallLength}m x ${widget.room.hallBreadth}m",
+                                            "Hall: ${widget.room.hallLength}ft x ${widget.room.hallBreadth}ft",
                                             style: const TextStyle(
                                               color: Color(0xFF4D4D4D),
                                               fontSize: 16,
@@ -253,23 +259,26 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
                                 constraints: BoxConstraints(
                                   maxWidth: MediaQuery.of(context).size.width * 0.9, // Use 90% of screen width
                                 ),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(16.0), // Rounded corners for the image
-                                  ),
-                                  clipBehavior: Clip.hardEdge, // Clip the image to rounded corners
-                                  child: mapImageUrl.isNotEmpty
-                                      ? Image.network(
-                                    mapImageUrl,
-                                    width: MediaQuery.of(context).size.width, // Make the image full width
-                                    height: 200, // Adjust the height to maintain the aspect ratio
-                                    fit: BoxFit.cover, // Cover to ensure the image fills the container
-                                  )
-                                      : Image.network(
-                                    "https://media.licdn.com/dms/image/D5603AQFD6ld3NWc2HQ/profile-displayphoto-shrink_200_200/0/1684164054868?e=2147483647&v=beta&t=cwQoyfhgAl_91URX5FTEXLwLDEHWe1H337EMebpgntQ",
-                                    width: MediaQuery.of(context).size.width,
-                                    height: 200,
-                                    fit: BoxFit.cover,
+                                child: GestureDetector(
+                                  onTap: () => _openGoogleMap(widget.room.lat.toString(), widget.room.lng.toString()),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(16.0), // Rounded corners for the image
+                                    ),
+                                    clipBehavior: Clip.hardEdge, // Clip the image to rounded corners
+                                    child: mapImageUrl.isNotEmpty
+                                        ? Image.network(
+                                      mapImageUrl,
+                                      width: MediaQuery.of(context).size.width, // Make the image full width
+                                      height: 200, // Adjust the height to maintain the aspect ratio
+                                      fit: BoxFit.cover, // Cover to ensure the image fills the container
+                                    )
+                                        : Image.network(
+                                      "https://media.licdn.com/dms/image/D5603AQFD6ld3NWc2HQ/profile-displayphoto-shrink_200_200/0/1684164054868?e=2147483647&v=beta&t=cwQoyfhgAl_91URX5FTEXLwLDEHWe1H337EMebpgntQ",
+                                      width: MediaQuery.of(context).size.width,
+                                      height: 200,
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -397,29 +406,98 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
                             ],
                             const SizedBox(height: 20),
                             Visibility(
-                              visible: widget.room.status["statusDisplay"] == "To Buy",
-                              child: SizedBox(
-                                width: double.infinity,
-                                height: 45,
-                                child: ElevatedButton(
-                                  onPressed: (){
-                                    _approveRoomStatus(widget.room.uid, widget.room);
-                                    Navigator.of(context).pop();
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFF072A2E),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(5.0),
-                                    ),
-                                  ),
-                                  child: const Text(
-                                    "Approve",
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 18),
-                                  ),
+                              visible:  widget.room.status['statusDisplay'] == "Owned",
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(16),
+                                    border: Border.all(
+                                        width: 1
+                                    )
                                 ),
+                                padding: const EdgeInsets.all(16),
+                                margin: const EdgeInsets.symmetric(vertical: 10),
+                                child:Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      "Owner Details",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20,
+                                        color: Color(0xFF072A2E),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    buildDetailRow(Icons.person, "Name:",
+                                        widget.room.status["ownedBy"]),
+                                    const SizedBox(height:5),
+                                    buildDetailRow(Icons.email, "Email:",
+                                        widget.room.status["ownerEmail"]),
+                                    const SizedBox(height: 5),
+                                    buildDetailRow(Icons.phone, "Phone No:",
+                                        widget.room.status["ownerNumber"]),
+                                  ],
+                                )
                               ),
                             ),
+                            const SizedBox(height: 20),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                children: [
+                                  Visibility(
+                                    visible: widget.room.status["statusDisplay"] == "To Buy",
+                                    child: Expanded(
+                                      child: SizedBox(
+                                        height: 45,
+                                        child: ElevatedButton(
+                                          onPressed: () {
+                                            _approveRoomStatus(widget.room.uid, widget.room);
+                                            Navigator.of(context).pop();
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: const Color(0xFF072A2E),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(5.0),
+                                            ),
+                                          ),
+                                          child: const Text(
+                                            "Approve",
+                                            style: TextStyle(color: Colors.white, fontSize: 18),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),  // Add some spacing between the buttons
+                                  Visibility(
+                                    visible: widget.room.status["statusDisplay"] == "To Buy" || widget.room.status["statusDisplay"] == "Sold",
+                                    child: Expanded(
+                                      child: SizedBox(
+                                        height: 45,
+                                        child: ElevatedButton(
+                                          onPressed: () {
+                                            _rejectRoomStatus(widget.room.uid, widget.room);
+                                            Navigator.of(context).pop();
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.red,  // You can choose any color you want for Reject
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(5.0),
+                                            ),
+                                          ),
+                                          child: const Text(
+                                            "Reject",
+                                            style: TextStyle(color: Colors.white, fontSize: 18),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
                           ],
                         ),
                       ),
@@ -448,6 +526,28 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
       ),
     );
   }
+
+  Widget buildDetailRow(IconData icon, String title, String? value) {
+    return Row(
+      children: [
+        Icon(
+          icon,
+          color: Color(0xFF072A2E), // Themed color for icons
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text(
+            "$title  ${value ?? 'N/A'}",
+            style: TextStyle(
+              color: Colors.grey.shade900,
+              fontSize: 16,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   void _approveRoomStatus(String roomUid, Room room) async {
     try {
       User? user = FirebaseAuth.instance.currentUser;
@@ -508,5 +608,11 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
       //   fontSize: 16.0,
       // );
     }
+  }
+  Future<void> _rejectRoomStatus(String roomUid, Room room) async {
+    await FirebaseFirestore.instance.collection("onSale").doc(roomUid).update({
+      "status": FieldValue.delete(),
+    });
+    Fluttertoast.showToast(msg: "Room request rejected, and status cleared.");
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:meroapp/provider/pageProvider.dart';
@@ -19,6 +21,25 @@ class Listing extends StatefulWidget {
 
 class _ListingState extends State<Listing> {
   String searchQuery = '';
+  bool showAllMostSearch = false;
+  double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+    const R = 6371;
+    final dLat = _deg2rad(lat2 - lat1);
+    final dLon = _deg2rad(lon2 - lon1);
+
+    final a = sin(dLat / 2) * sin(dLat / 2) +
+        cos(_deg2rad(lat1)) *
+            cos(_deg2rad(lat2)) *
+            sin(dLon / 2) *
+            sin(dLon / 2);
+    final c = 2 * atan2(sqrt(a), sqrt(1 - a));
+    final distance = R * c;
+    return distance;
+  }
+
+  double _deg2rad(double deg) {
+    return deg * (pi / 180);
+  }
 
   List<Room> sortedRoomsByDistance(
       List<Room> rooms, double userLat, double userLng) {
@@ -64,7 +85,7 @@ class _ListingState extends State<Listing> {
           kitchenbreadth: productData['kitchenBreadth'],
           kitchenLength: productData['kitchenLength'],
           photo: List<String>.from(productData['photo']),
-          panoramaImg: productData['panoramaImg'],
+          panoramaImg: List<String>.from(productData['panoramaImg']),
           electricity: productData['electricity'],
           fohor: productData['fohor'],
           lat: productData['lat'],
@@ -76,8 +97,12 @@ class _ListingState extends State<Listing> {
           status: productData['status'] != null
               ? Map<String, dynamic>.from(productData['status'])
               : {},
-          report: productData['report'] != null ? Map<String, dynamic>.from(productData['report']) : {},
-          facilities: productData['facilities'] != null ? List<String>.from(productData['facilities']) : [],
+          report: productData['report'] != null
+              ? Map<String, dynamic>.from(productData['report'])
+              : {},
+          facilities: productData['facilities'] != null
+              ? List<String>.from(productData['facilities'])
+              : [],
         ));
       }
     }
@@ -107,9 +132,8 @@ class _ListingState extends State<Listing> {
         kitchenbreadth: data['kitchenBreadth'],
         kitchenLength: data['kitchenLength'],
         statusByAdmin: data["statusByAdmin"],
-
         photo: List<String>.from(data['photo']),
-        panoramaImg: data['panoramaImg'],
+        panoramaImg: List<String>.from(data['panoramaImg']),
         electricity: data['electricity'],
         fohor: data['fohor'],
         lat: data['lat'],
@@ -120,8 +144,12 @@ class _ListingState extends State<Listing> {
         status: data['status'] != null
             ? Map<String, dynamic>.from(data['status'])
             : {},
-        report: data['report'] != null ? Map<String, dynamic>.from(data['report']) : {},
-        facilities: data['facilities'] != null ? List<String>.from(data['facilities']) : [],
+        report: data['report'] != null
+            ? Map<String, dynamic>.from(data['report'])
+            : {},
+        facilities: data['facilities'] != null
+            ? List<String>.from(data['facilities'])
+            : [],
       );
     }).toList();
   }
@@ -279,7 +307,11 @@ class _ListingState extends State<Listing> {
                             return const Center(
                                 child: Text('No products found.'));
                           }
-                          final displayedProducts = snapshot.data!;
+                          final uniqueProducts = snapshot.data!.toSet().toList();
+
+                          final displayedProducts = uniqueProducts;
+                              // ? uniqueProducts
+                              // : uniqueProducts.take(3).toList();
                           return Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: Column(
@@ -299,18 +331,33 @@ class _ListingState extends State<Listing> {
                                   physics: const NeverScrollableScrollPhysics(),
                                   itemBuilder: (context, index) {
                                     final product = displayedProducts[index];
+                                    final distance = calculateDistance(
+                                      widget.lat,
+                                      widget.lng,
+                                      product.lat,
+                                      product.lng,
+                                    ).toStringAsFixed(1);
                                     return GestureDetector(
                                       onTap: () {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) =>
-                                                RoomDetailPage(room: product),
+                                                RoomDetailPage(
+                                                    room: product,
+                                                    distance: distance),
                                           ),
                                         );
                                       },
                                       child: Visibility(
-                                        visible: displayedProducts[index].status.isEmpty||displayedProducts[index].status['statusDisplay']=="Sold" || displayedProducts[index].status['statusDisplay']=="To Buy"?true:false,
+                                        visible: displayedProducts[index]
+                                                    .status
+                                                    .isEmpty ||
+                                                displayedProducts[index].status[
+                                                        'statusDisplay'] ==
+                                                    "To Buy"
+                                            ? true
+                                            : false,
                                         child: Container(
                                           decoration: BoxDecoration(
                                             borderRadius:
@@ -329,15 +376,17 @@ class _ListingState extends State<Listing> {
                                                   BorderRadius.circular(16.0),
                                             ),
                                             child: Padding(
-                                              padding: const EdgeInsets.symmetric(
-                                                  horizontal: 8.0),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 8.0),
                                               child: Row(
                                                 children: [
                                                   ClipRRect(
                                                     borderRadius:
                                                         const BorderRadius
                                                             .horizontal(
-                                                      left: Radius.circular(16.0),
+                                                      left:
+                                                          Radius.circular(16.0),
                                                       right:
                                                           Radius.circular(16.0),
                                                     ),
@@ -367,19 +416,22 @@ class _ListingState extends State<Listing> {
                                                             product.name
                                                                 .toUpperCase(),
                                                             style: TextStyle(
-                                                              color: kThemeColor,
+                                                              color:
+                                                                  kThemeColor,
                                                               fontWeight:
-                                                                  FontWeight.bold,
+                                                                  FontWeight
+                                                                      .bold,
                                                               fontSize: 16,
                                                             ),
                                                           ),
                                                           const SizedBox(
                                                               height: 8),
                                                           Text(
-                                                            product.locationName,
+                                                            product
+                                                                .locationName,
                                                             style: TextStyle(
-                                                              color: Colors
-                                                                  .grey.shade700,
+                                                              color: Colors.grey
+                                                                  .shade700,
                                                               fontSize: 14,
                                                             ),
                                                           ),
@@ -388,10 +440,12 @@ class _ListingState extends State<Listing> {
                                                           Text(
                                                             "${product.price}/ per month",
                                                             style: TextStyle(
-                                                              color: kThemeColor,
+                                                              color:
+                                                                  kThemeColor,
                                                               fontSize: 14,
                                                               fontWeight:
-                                                              FontWeight.w600,
+                                                                  FontWeight
+                                                                      .w600,
                                                             ),
                                                           ),
                                                           const SizedBox(
@@ -399,31 +453,49 @@ class _ListingState extends State<Listing> {
                                                           Row(
                                                             children: [
                                                               Icon(
-                                                                Icons
-                                                                    .location_on_rounded,
-                                                                size: 16,
-                                                                color:
-                                                                    kThemeColor,
+                                                                  Icons
+                                                                      .location_on_rounded,
+                                                                  size: 16,
+                                                                  color:
+                                                                      kThemeColor),
+                                                              Text(
+                                                                "$distance km from you.",
+                                                                style: const TextStyle(
+                                                                    color: Colors
+                                                                        .black45),
                                                               ),
                                                             ],
                                                           ),
-                                                          const SizedBox(height: 10),
+                                                          const SizedBox(
+                                                              height: 10),
                                                           Row(
                                                             children: [
-                                                              Icon(displayedProducts[index].status[
-                                                              'statusDisplay'] ==
-                                                                  "Owned"
-                                                                  ? Icons
-                                                                  .check_circle
-                                                                  : Icons
-                                                                  .flag_circle,
+                                                              Icon(
+                                                                  displayedProducts[index].status[
+                                                                              'statusDisplay'] ==
+                                                                          "Owned"
+                                                                      ? Icons
+                                                                          .check_circle
+                                                                      : Icons
+                                                                          .flag_circle,
                                                                   size: 16,
-                                                                  color: kThemeColor),
+                                                                  color:
+                                                                      kThemeColor),
                                                               Text(
-                                                                '${displayedProducts[index].status['statusDisplay']??"To Buy"}',
+                                                                displayedProducts[index].status[
+                                                                            'statusDisplay'] ==
+                                                                        "To Buy"
+                                                                    ? "Booked"
+                                                                    : displayedProducts[index].status['statusDisplay'] ==
+                                                                            "Sold"
+                                                                        ? "Sold"
+                                                                        : displayedProducts[index].status['statusDisplay'] ==
+                                                                                "Owned"
+                                                                            ? "Owned"
+                                                                            : "To Buy",
                                                                 style: const TextStyle(
-                                                                    color:
-                                                                    Colors.black45),
+                                                                    color: Colors
+                                                                        .black45),
                                                               ),
                                                             ],
                                                           ),
@@ -578,7 +650,7 @@ class _ListingState extends State<Listing> {
                           List<Room> sortedRooms = sortedRoomsByDistance(
                               filteredRooms, widget.lat, widget.lng);
 
-                          sortedRooms = snapshot.data!;
+                          // sortedRooms = snapshot.data!;
 
                           return Padding(
                             padding: const EdgeInsets.all(16.0),
@@ -586,7 +658,7 @@ class _ListingState extends State<Listing> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const Text(
-                                  "Suggested",
+                                  "Suggested Near You",
                                   style: TextStyle(
                                     color: Color(0xFF072A2E),
                                     fontSize: 16,
@@ -599,18 +671,30 @@ class _ListingState extends State<Listing> {
                                   physics: const NeverScrollableScrollPhysics(),
                                   itemBuilder: (context, index) {
                                     final room = sortedRooms[index];
+                                    final distance = calculateDistance(
+                                      widget.lat,
+                                      widget.lng,
+                                      room.lat,
+                                      room.lng,
+                                    ).toStringAsFixed(1);
                                     return GestureDetector(
                                       onTap: () {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) =>
-                                                RoomDetailPage(room: room),
+                                                RoomDetailPage(
+                                                    room: room,
+                                                    distance: distance),
                                           ),
                                         );
                                       },
                                       child: Visibility(
-                                        visible: room.status.isEmpty||room.status['statusDisplay']=="Sold" || room.status['statusDisplay']=="To Buy"?true:false,
+                                        visible: room.status.isEmpty ||
+                                                room.status['statusDisplay'] ==
+                                                    "To Buy"
+                                            ? true
+                                            : false,
                                         child: Container(
                                           decoration: BoxDecoration(
                                             borderRadius:
@@ -629,15 +713,17 @@ class _ListingState extends State<Listing> {
                                                   BorderRadius.circular(16.0),
                                             ),
                                             child: Padding(
-                                              padding: const EdgeInsets.symmetric(
-                                                  horizontal: 8.0),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 8.0),
                                               child: Row(
                                                 children: [
                                                   ClipRRect(
                                                     borderRadius:
                                                         const BorderRadius
                                                             .horizontal(
-                                                      left: Radius.circular(16.0),
+                                                      left:
+                                                          Radius.circular(16.0),
                                                       right:
                                                           Radius.circular(16.0),
                                                     ),
@@ -667,9 +753,11 @@ class _ListingState extends State<Listing> {
                                                             room.name
                                                                 .toUpperCase(),
                                                             style: TextStyle(
-                                                              color: kThemeColor,
+                                                              color:
+                                                                  kThemeColor,
                                                               fontWeight:
-                                                                  FontWeight.bold,
+                                                                  FontWeight
+                                                                      .bold,
                                                               fontSize: 16,
                                                             ),
                                                           ),
@@ -678,8 +766,8 @@ class _ListingState extends State<Listing> {
                                                           Text(
                                                             room.locationName,
                                                             style: TextStyle(
-                                                              color: Colors
-                                                                  .grey.shade700,
+                                                              color: Colors.grey
+                                                                  .shade700,
                                                               fontSize: 14,
                                                             ),
                                                           ),
@@ -688,10 +776,12 @@ class _ListingState extends State<Listing> {
                                                           Text(
                                                             "${room.price}/ per month",
                                                             style: TextStyle(
-                                                              color: kThemeColor,
+                                                              color:
+                                                                  kThemeColor,
                                                               fontSize: 14,
                                                               fontWeight:
-                                                              FontWeight.w600,
+                                                                  FontWeight
+                                                                      .w600,
                                                             ),
                                                           ),
                                                           const SizedBox(
@@ -704,31 +794,42 @@ class _ListingState extends State<Listing> {
                                                                   size: 16,
                                                                   color:
                                                                       kThemeColor),
-                                                              // Text(
-                                                              //   "${(sortedRooms[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
-                                                              //   style: TextStyle(
-                                                              //       color: Colors
-                                                              //           .black45),
-                                                              // ),
+                                                              Text(
+                                                                "$distance km from you.",
+                                                                style: const TextStyle(
+                                                                    color: Colors
+                                                                        .black45),
+                                                              ),
                                                             ],
                                                           ),
-                                                          const SizedBox(height: 10),
+                                                          const SizedBox(
+                                                              height: 10),
                                                           Row(
                                                             children: [
-                                                              Icon(room.status[
-                                                              'statusDisplay'] ==
-                                                                  "Owned"
-                                                                  ? Icons
-                                                                  .check_circle
-                                                                  : Icons
-                                                                  .flag_circle,
+                                                              Icon(
+                                                                  room.status['statusDisplay'] ==
+                                                                          "Owned"
+                                                                      ? Icons
+                                                                          .check_circle
+                                                                      : Icons
+                                                                          .flag_circle,
                                                                   size: 16,
-                                                                  color: kThemeColor),
+                                                                  color:
+                                                                      kThemeColor),
                                                               Text(
-                                                                '${room.status['statusDisplay'] ?? "To Buy"}',
+                                                                room.status['statusDisplay'] ==
+                                                                        "To Buy"
+                                                                    ? "Booked"
+                                                                    : room.status['statusDisplay'] ==
+                                                                            "Sold"
+                                                                        ? "Sold"
+                                                                        : room.status['statusDisplay'] ==
+                                                                                "Owned"
+                                                                            ? "Owned"
+                                                                            : "To Buy",
                                                                 style: const TextStyle(
-                                                                    color:
-                                                                    Colors.black45),
+                                                                    color: Colors
+                                                                        .black45),
                                                               ),
                                                             ],
                                                           ),
@@ -877,8 +978,6 @@ class _ListingState extends State<Listing> {
                       List<Room> sortedRooms = sortedRoomsByDistance(
                           filteredRooms, widget.lat, widget.lng);
 
-                      sortedRooms = snapshot.data!;
-
                       return NotificationListener<
                           OverscrollIndicatorNotification>(
                         onNotification: (overscroll) {
@@ -886,162 +985,202 @@ class _ListingState extends State<Listing> {
                           return true;
                         },
                         child: SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              const Text("Suggested"),
-                              ListView.builder(
-                                itemCount: sortedRooms.length,
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemBuilder: (context, index) {
-                                  final room = sortedRooms[index];
-                                  return GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              RoomDetailPage(room: room),
-                                        ),
-                                      );
-                                    },
-                                    child: Visibility(
-                                      visible: room.status.isEmpty||room.status['statusDisplay']=="Sold" || room.status['statusDisplay']=="To Buy"?true:false,
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(16.0),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Colors.grey.shade300,
-                                              blurRadius: 5,
-                                              offset: const Offset(0, 4),
-                                            ),
-                                          ],
-                                        ),
-                                        child: Card(
-                                          shape: RoundedRectangleBorder(
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  "Suggested Near You",
+                                  style: TextStyle(
+                                    color: Color(0xFF072A2E),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                ListView.builder(
+                                  itemCount: sortedRooms.length,
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemBuilder: (context, index) {
+                                    final room = sortedRooms[index];
+                                    final distance = calculateDistance(
+                                      widget.lat,
+                                      widget.lng,
+                                      room.lat,
+                                      room.lng,
+                                    ).toStringAsFixed(1);
+                                    return GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                RoomDetailPage(
+                                                    room: room,
+                                                    distance: distance),
+                                          ),
+                                        );
+                                      },
+                                      child: Visibility(
+                                        visible: room.status.isEmpty ||
+                                                room.status['statusDisplay'] ==
+                                                    "To Buy"
+                                            ? true
+                                            : false,
+                                        child: Container(
+                                          decoration: BoxDecoration(
                                             borderRadius:
                                                 BorderRadius.circular(16.0),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.grey.shade300,
+                                                blurRadius: 5,
+                                                offset: const Offset(0, 4),
+                                              ),
+                                            ],
                                           ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 8.0),
-                                            child: Row(
-                                              children: [
-                                                ClipRRect(
-                                                  borderRadius: const BorderRadius
-                                                      .horizontal(
-                                                    left: Radius.circular(16.0),
-                                                    right: Radius.circular(16.0),
-                                                  ),
-                                                  child: Image.network(
-                                                    room.photo.isNotEmpty
-                                                        ? room.photo[0]
-                                                        : 'https://via.placeholder.com/150',
-                                                    height: 100,
-                                                    width: 100,
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.all(
-                                                        16.0),
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        Text(
-                                                          room.name.toUpperCase(),
-                                                          style: TextStyle(
-                                                            color: kThemeColor,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize: 18,
-                                                          ),
-                                                        ),
-                                                        const SizedBox(height: 8),
-                                                        Text(
-                                                          room.locationName,
-                                                          style: TextStyle(
-                                                            color: Colors
-                                                                .grey.shade700,
-                                                            fontSize: 14,
-                                                          ),
-                                                        ),
-                                                        const SizedBox(height: 8),
-                                                        Text(
-                                                          "Capacity: ${room.capacity}",
-                                                          style: TextStyle(
-                                                            color: kThemeColor,
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                          ),
-                                                        ),
-                                                        const SizedBox(
-                                                            height: 20),
-                                                        Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          children: [
-                                                            Row(
-                                                              children: [
-                                                                Icon(
-                                                                    Icons
-                                                                        .location_on_rounded,
-                                                                    size: 16,
-                                                                    color:
-                                                                        kThemeColor),
-                                                                // Text(
-                                                                //   "${(sortedRooms[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
-                                                                //   style: TextStyle(
-                                                                //       color: Colors
-                                                                //           .black45),
-                                                                // ),
-                                                              ],
-                                                            ),
-                                                            Row(
-                                                              children: [
-                                                                Icon(room.status[
-                                                                'statusDisplay'] ==
-                                                                    "Owned"
-                                                                    ? Icons
-                                                                    .check_circle
-                                                                    : Icons
-                                                                    .flag_circle,
-                                                                    size: 16,
-                                                                    color: kThemeColor),
-                                                                Text(
-                                                                  '${room.status['statusDisplay'] ?? "To Buy"}',
-                                                                  style: const TextStyle(
-                                                                      color:
-                                                                      Colors.black45),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ],
+                                          child: Card(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(16.0),
+                                            ),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 8.0),
+                                              child: Row(
+                                                children: [
+                                                  ClipRRect(
+                                                    borderRadius:
+                                                        const BorderRadius
+                                                            .horizontal(
+                                                      left:
+                                                          Radius.circular(16.0),
+                                                      right:
+                                                          Radius.circular(16.0),
+                                                    ),
+                                                    child: Image.network(
+                                                      room.photo.isNotEmpty
+                                                          ? room.photo[0]
+                                                          : 'https://via.placeholder.com/150',
+                                                      height: 100,
+                                                      width: 100,
+                                                      fit: BoxFit.cover,
                                                     ),
                                                   ),
-                                                ),
-                                              ],
+                                                  Expanded(
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              16.0),
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Text(
+                                                            room.name
+                                                                .toUpperCase(),
+                                                            style: TextStyle(
+                                                              color:
+                                                                  kThemeColor,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontSize: 16,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                              height: 8),
+                                                          Text(
+                                                            room.locationName,
+                                                            style: TextStyle(
+                                                              color: Colors.grey
+                                                                  .shade700,
+                                                              fontSize: 14,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                              height: 8),
+                                                          Text(
+                                                            "${room.price}/ per month",
+                                                            style: TextStyle(
+                                                              color:
+                                                                  kThemeColor,
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                              height: 10),
+                                                          Row(
+                                                            children: [
+                                                              Icon(
+                                                                  Icons
+                                                                      .location_on_rounded,
+                                                                  size: 16,
+                                                                  color:
+                                                                      kThemeColor),
+                                                              Text(
+                                                                "$distance km from you.",
+                                                                style: const TextStyle(
+                                                                    color: Colors
+                                                                        .black45),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          const SizedBox(
+                                                              height: 10),
+                                                          Row(
+                                                            children: [
+                                                              Icon(
+                                                                  room.status['statusDisplay'] ==
+                                                                          "Owned"
+                                                                      ? Icons
+                                                                          .check_circle
+                                                                      : Icons
+                                                                          .flag_circle,
+                                                                  size: 16,
+                                                                  color:
+                                                                      kThemeColor),
+                                                              Text(
+                                                                room.status['statusDisplay'] ==
+                                                                        "To Buy"
+                                                                    ? "Booked"
+                                                                    : room.status['statusDisplay'] ==
+                                                                            "Sold"
+                                                                        ? "Sold"
+                                                                        : room.status['statusDisplay'] ==
+                                                                                "Owned"
+                                                                            ? "Owned"
+                                                                            : "To Buy",
+                                                                style: const TextStyle(
+                                                                    color: Colors
+                                                                        .black45),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ],
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       );
@@ -1158,7 +1297,11 @@ class _ListingState extends State<Listing> {
                       } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                         return const Center(child: Text('No products found.'));
                       }
-                      final displayedProducts = snapshot.data!;
+                      final uniqueProducts = snapshot.data!.toSet().toList();
+
+                      final displayedProducts = uniqueProducts;
+                          // ? uniqueProducts
+                          // : uniqueProducts.take(3).toList();
                       return NotificationListener<
                           OverscrollIndicatorNotification>(
                         onNotification: (overscroll) {
@@ -1166,157 +1309,202 @@ class _ListingState extends State<Listing> {
                           return true;
                         },
                         child: SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              ListView.builder(
-                                itemCount: displayedProducts.length,
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemBuilder: (context, index) {
-                                  final product = displayedProducts[index];
-                                  return GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              RoomDetailPage(room: product),
-                                        ),
-                                      );
-                                    },
-                                    child: Visibility(
-                                      visible: displayedProducts[index].status.isEmpty||displayedProducts[index].status['statusDisplay']=="Sold" || displayedProducts[index].status['statusDisplay']=="To Buy"?true:false,
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(16.0),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Colors.grey.shade300,
-                                              blurRadius: 5,
-                                              offset: const Offset(0, 4),
-                                            ),
-                                          ],
-                                        ),
-                                        child: Card(
-                                          shape: RoundedRectangleBorder(
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  "Most Searched",
+                                  style: TextStyle(
+                                    color: Color(0xFF072A2E),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                ListView.builder(
+                                  itemCount: displayedProducts.length,
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemBuilder: (context, index) {
+                                    final product = displayedProducts[index];
+                                    final distance = calculateDistance(
+                                      widget.lat,
+                                      widget.lng,
+                                      product.lat,
+                                      product.lng,
+                                    ).toStringAsFixed(1);
+                                    return GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => RoomDetailPage(
+                                                room: product,
+                                                distance: distance),
+                                          ),
+                                        );
+                                      },
+                                      child: Visibility(
+                                        visible: displayedProducts[index]
+                                                    .status
+                                                    .isEmpty ||
+                                                displayedProducts[index].status[
+                                                        'statusDisplay'] ==
+                                                    "To Buy"
+                                            ? true
+                                            : false,
+                                        child: Container(
+                                          decoration: BoxDecoration(
                                             borderRadius:
                                                 BorderRadius.circular(16.0),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.grey.shade300,
+                                                blurRadius: 5,
+                                                offset: const Offset(0, 4),
+                                              ),
+                                            ],
                                           ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 8.0),
-                                            child: Row(
-                                              children: [
-                                                ClipRRect(
-                                                  borderRadius: const BorderRadius
-                                                      .horizontal(
-                                                    left: Radius.circular(16.0),
-                                                    right: Radius.circular(16.0),
+                                          child: Card(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(16.0),
+                                            ),
+                                            child: Padding(
+                                              padding: const EdgeInsets.symmetric(
+                                                  horizontal: 8.0),
+                                              child: Row(
+                                                children: [
+                                                  ClipRRect(
+                                                    borderRadius:
+                                                        const BorderRadius
+                                                            .horizontal(
+                                                      left: Radius.circular(16.0),
+                                                      right:
+                                                          Radius.circular(16.0),
+                                                    ),
+                                                    child: Image.network(
+                                                      product.photo.isNotEmpty
+                                                          ? product.photo[0]
+                                                          : 'https://via.placeholder.com/150',
+                                                      height: 100,
+                                                      width: 100,
+                                                      fit: BoxFit.cover,
+                                                    ),
                                                   ),
-                                                  child: Image.network(
-                                                    product.photo.isNotEmpty
-                                                        ? product.photo[0]
-                                                        : 'https://via.placeholder.com/150',
-                                                    height: 100,
-                                                    width: 100,
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.all(
-                                                        16.0),
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        Text(
-                                                          product.name
-                                                              .toUpperCase(),
-                                                          style: TextStyle(
-                                                            color: kThemeColor,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            fontSize: 18,
+                                                  Expanded(
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              16.0),
+                                                      child: Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Text(
+                                                            product.name
+                                                                .toUpperCase(),
+                                                            style: TextStyle(
+                                                              color: kThemeColor,
+                                                              fontWeight:
+                                                                  FontWeight.bold,
+                                                              fontSize: 16,
+                                                            ),
                                                           ),
-                                                        ),
-                                                        const SizedBox(height: 8),
-                                                        Text(
-                                                          product.locationName,
-                                                          style: TextStyle(
-                                                            color: Colors
-                                                                .grey.shade700,
-                                                            fontSize: 14,
+                                                          const SizedBox(
+                                                              height: 8),
+                                                          Text(
+                                                            product.locationName,
+                                                            style: TextStyle(
+                                                              color: Colors
+                                                                  .grey.shade700,
+                                                              fontSize: 14,
+                                                            ),
                                                           ),
-                                                        ),
-                                                        const SizedBox(height: 8),
-                                                        Text(
-                                                          "${product.price}/ per month",
-                                                          style: TextStyle(
-                                                            color: kThemeColor,
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                            FontWeight.w600,
+                                                          const SizedBox(
+                                                              height: 8),
+                                                          Text(
+                                                            "${product.price}/ per month",
+                                                            style: TextStyle(
+                                                              color: kThemeColor,
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                                  FontWeight.w600,
+                                                            ),
                                                           ),
-                                                        ),
-                                                        const SizedBox(
-                                                            height: 20),
-                                                        Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
-                                                          children: [
-                                                            Row(
-                                                              children: [
-                                                                Icon(
+                                                          const SizedBox(
+                                                              height: 10),
+                                                          Row(
+                                                            children: [
+                                                              Icon(
                                                                   Icons
                                                                       .location_on_rounded,
                                                                   size: 16,
                                                                   color:
-                                                                      kThemeColor,
-                                                                ),
-                                                              ],
-                                                            ),
-                                                            Row(
-                                                              children: [
-                                                                Icon(product.status[
-                                                                'statusDisplay'] ==
-                                                                    "Owned"
-                                                                    ? Icons
-                                                                    .check_circle
-                                                                    : Icons
-                                                                    .flag_circle,
-                                                                    size: 16,
-                                                                    color: kThemeColor),
-                                                                Text(
-                                                                  '${product.status['statusDisplay'] ?? "To Buy"}',
-                                                                  style: const TextStyle(
-                                                                      color:
-                                                                      Colors.black45),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        )
-                                                      ],
+                                                                      kThemeColor),
+                                                              Text(
+                                                                "$distance km from you.",
+                                                                style: const TextStyle(
+                                                                    color: Colors
+                                                                        .black45),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          const SizedBox(
+                                                              height: 10),
+                                                          Row(
+                                                            children: [
+                                                              Icon(
+                                                                  displayedProducts[index].status[
+                                                                              'statusDisplay'] ==
+                                                                          "Owned"
+                                                                      ? Icons
+                                                                          .check_circle
+                                                                      : Icons
+                                                                          .flag_circle,
+                                                                  size: 16,
+                                                                  color:
+                                                                      kThemeColor),
+                                                              Text(
+                                                                displayedProducts[index]
+                                                                                .status[
+                                                                            'statusDisplay'] ==
+                                                                        "To Buy"
+                                                                    ? "Booked"
+                                                                    : displayedProducts[index].status[
+                                                                                'statusDisplay'] ==
+                                                                            "Sold"
+                                                                        ? "Sold"
+                                                                        : displayedProducts[index].status['statusDisplay'] ==
+                                                                                "Owned"
+                                                                            ? "Owned"
+                                                                            : "To Buy",
+                                                                style: const TextStyle(
+                                                                    color: Colors
+                                                                        .black45),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
                                                     ),
                                                   ),
-                                                ),
-                                              ],
+                                                ],
+                                              ),
                                             ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ],
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       );

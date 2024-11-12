@@ -18,7 +18,6 @@ Stream<List<Room>> fetchEnquiries() async* {
 
   // Listen for updates on the collection
   await for (var snapshot in roomsCollection.where('userId', isEqualTo: user.uid).snapshots()) {
-    // Map the documents to the Room model
     List<Room> rooms = snapshot.docs.map((doc) {
       final data = doc.data() as Map<String, dynamic>;
       return Room(
@@ -34,7 +33,7 @@ Stream<List<Room>> fetchEnquiries() async* {
         kitchenbreadth: data['kitchenBreadth'],
         kitchenLength: data['kitchenLength'],
         photo: List<String>.from(data['photo']),
-        panoramaImg: data['panoramaImg'],
+        panoramaImg: List<String>.from(data['panoramaImg']),
         water: data['water'],
         electricity: data['electricity'],
         fohor: data['fohor'],
@@ -51,13 +50,11 @@ Stream<List<Room>> fetchEnquiries() async* {
       );
     }).toList();
 
-    // Filter based on status
     rooms = rooms.where((room) => room.status.isNotEmpty && room.status['statusDisplay'] == "To Buy").toList();
 
-    yield rooms; // Emit the filtered list
+    yield rooms;
   }
 }
-
 
 class EnquiriesPage extends StatefulWidget {
   final double lat, lng;
@@ -89,7 +86,7 @@ class _EnquiriesPageState extends State<EnquiriesPage> {
             style: TextStyle(
                 color: kThemeColor, fontWeight: FontWeight.bold, fontSize: 20)),
       ),
-      body:  StreamBuilder<List<Room>>(
+      body: StreamBuilder<List<Room>>(
         stream: enquiries,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -114,10 +111,12 @@ class _EnquiriesPageState extends State<EnquiriesPage> {
                     return GestureDetector(
                       onTap: () {
                         Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    SellerRoomDetails(room: room)));
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                SellerRoomDetails(room: room),
+                          ),
+                        );
                       },
                       child: Container(
                         decoration: BoxDecoration(
@@ -128,8 +127,7 @@ class _EnquiriesPageState extends State<EnquiriesPage> {
                             borderRadius: BorderRadius.circular(16.0),
                           ),
                           child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
                             child: Row(
                               children: [
                                 ClipRRect(
@@ -151,9 +149,8 @@ class _EnquiriesPageState extends State<EnquiriesPage> {
                                     padding: const EdgeInsets.all(16.0),
                                     child: Column(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                      CrossAxisAlignment.start,
+                                      mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Text(
                                           room.name.toUpperCase(),
@@ -182,127 +179,183 @@ class _EnquiriesPageState extends State<EnquiriesPage> {
                                         ),
                                         const SizedBox(height: 10),
                                         Row(
-                                          children: [
-                                            Icon(Icons.location_on_rounded,
-                                                size: 16,
-                                                color: kThemeColor),
-                                            Text(
-                                              "${(rooms[index].lat - widget.lat).abs().toStringAsFixed(1)} km from you.",
-                                              style: const TextStyle(
-                                                  color: Colors.black45),
-                                            ),
-                                          ],
-                                        ),
-                                        const SizedBox(height: 10),
-                                        Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                          MainAxisAlignment.spaceBetween,
                                           children: [
                                             Row(
                                               children: [
-                                                Icon(room.status[
-                                                'statusDisplay'] ==
-                                                    "Owned"
-                                                    ? Icons
-                                                    .check_circle
-                                                    : Icons
-                                                    .flag_circle,
-                                                    size: 16,
-                                                    color: kThemeColor),
+                                                Icon(
+                                                  room.status['statusDisplay'] ==
+                                                      "Owned"
+                                                      ? Icons.check_circle
+                                                      : Icons.flag_circle,
+                                                  size: 16,
+                                                  color: kThemeColor,
+                                                ),
                                                 Text(
                                                   '${room.status['statusDisplay']}',
                                                   style: const TextStyle(
-                                                      color:
-                                                      Colors.black45),
+                                                      color: Colors.black45),
                                                 ),
                                               ],
                                             ),
-                                              SizedBox(
-                                                height: 30,
-                                                child: ElevatedButton(
-                                                  onPressed: () {
-                                                    showDialog(
-                                                      context: context,
-                                                      builder: (BuildContext context) {
-                                                        return AlertDialog(
-                                                          shape: RoundedRectangleBorder(
-                                                            borderRadius: BorderRadius.circular(20.0),
-                                                          ),
-                                                          contentPadding: const EdgeInsets.all(20.0),
-                                                          title: Row(
-                                                            children: [
-                                                              Icon(Icons.info, color: kThemeColor),
-                                                              const SizedBox(width: 8),
-                                                              Text(
-                                                                "Approve Room Status",
-                                                                style: TextStyle(
-                                                                  color: kThemeColor,
-                                                                  fontWeight: FontWeight.bold,
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          content: Column(
-                                                            mainAxisSize: MainAxisSize.min,
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                            children: [
-                                                              const SizedBox(height: 10),
-                                                              Row(
-                                                                children: [
-                                                                  Icon(Icons.person, color: kThemeColor),
-                                                                  const SizedBox(width: 8),
-                                                                  Flexible(child: Text(room.status["By"] ?? "")),
-                                                                ],
-                                                              ),
-                                                              const SizedBox(height: 10),
-                                                              Row(
-                                                                children: [
-                                                                  Icon(Icons.email, color: kThemeColor),
-                                                                  const SizedBox(width: 8),
-                                                                  Flexible(child: Text(room.status["userEmail"] ?? "")),
-                                                                ],
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          actionsPadding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-                                                          actions: [
-                                                            ElevatedButton(
-                                                              onPressed: () {
-                                                                _approveRoomStatus(room.uid, room);
-                                                                Navigator.of(context).pop(); // Close the dialog
-                                                              },
-                                                              style: ElevatedButton.styleFrom(
-                                                                backgroundColor: kThemeColor,
-                                                                shape: RoundedRectangleBorder(
-                                                                  borderRadius: BorderRadius.circular(10.0),
-                                                                ),
-                                                              ),
-                                                              child: const Text("Approve"),
-                                                            ),
-                                                            OutlinedButton(
-                                                              onPressed: () {
-                                                                Navigator.of(context).pop();
-                                                              },
-                                                              style: OutlinedButton.styleFrom(
-                                                                side: BorderSide(color: kThemeColor),
-                                                                shape: RoundedRectangleBorder(
-                                                                  borderRadius: BorderRadius.circular(10.0),
-                                                                ),
-                                                              ),
-                                                              child: Text(
-                                                                "Cancel",
-                                                                style: TextStyle(color: kThemeColor),
+                                            SizedBox(
+                                              height: 30,
+                                              child: ElevatedButton(
+                                                onPressed: () {
+                                                  showDialog(
+                                                    context: context,
+                                                    builder: (BuildContext context) {
+                                                      return AlertDialog(
+                                                        shape: RoundedRectangleBorder(
+                                                          borderRadius:
+                                                          BorderRadius.circular(
+                                                              20.0),
+                                                        ),
+                                                        contentPadding:
+                                                        const EdgeInsets.all(
+                                                            20.0),
+                                                        title: Row(
+                                                          children: [
+                                                            Icon(Icons.info,
+                                                                color:
+                                                                kThemeColor),
+                                                            const SizedBox(
+                                                                width: 8),
+                                                            Text(
+                                                              "Approve or Reject Room",
+                                                              style: TextStyle(
+                                                                color:
+                                                                kThemeColor,
+                                                                fontWeight:
+                                                                FontWeight
+                                                                    .bold,
                                                               ),
                                                             ),
                                                           ],
-                                                        );
-                                                      },
-                                                    );
-                                                  },
-                                                  style: ElevatedButton.styleFrom(backgroundColor: kThemeColor),
-                                                  child: const Text("Approve"),
+                                                        ),
+                                                        content: Column(
+                                                          mainAxisSize:
+                                                          MainAxisSize.min,
+                                                          crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                          children: [
+                                                            const SizedBox(
+                                                                height: 10),
+                                                            Row(
+                                                              children: [
+                                                                Icon(Icons.person,
+                                                                    color:
+                                                                    kThemeColor),
+                                                                const SizedBox(
+                                                                    width: 8),
+                                                                Flexible(
+                                                                    child: Text(room
+                                                                        .status[
+                                                                    "By"] ??
+                                                                        "")),
+                                                              ],
+                                                            ),
+                                                            const SizedBox(
+                                                                height: 10),
+                                                            Row(
+                                                              children: [
+                                                                Icon(Icons.email,
+                                                                    color:
+                                                                    kThemeColor),
+                                                                const SizedBox(
+                                                                    width: 8),
+                                                                Flexible(
+                                                                    child: Text(room
+                                                                        .status[
+                                                                    "userEmail"] ??
+                                                                        "")),
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        actionsPadding:
+                                                        const EdgeInsets
+                                                            .symmetric(
+                                                            horizontal: 10.0,
+                                                            vertical: 5.0),
+                                                        actions: [
+                                                          ElevatedButton(
+                                                            onPressed: () {
+                                                              _approveRoomStatus(
+                                                                  room.uid,
+                                                                  room);
+                                                              Navigator.of(
+                                                                  context)
+                                                                  .pop();
+                                                            },
+                                                            style: ElevatedButton
+                                                                .styleFrom(
+                                                              backgroundColor:
+                                                              kThemeColor,
+                                                              shape:
+                                                              RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                    10.0),
+                                                              ),
+                                                            ),
+                                                            child:
+                                                            const Text("Approve"),
+                                                          ),
+                                                          OutlinedButton(
+                                                            onPressed: () {
+                                                              _rejectRoomStatus(
+                                                                  room.uid,
+                                                                  room);
+                                                              Navigator.of(
+                                                                  context)
+                                                                  .pop();
+                                                            },
+                                                            style: OutlinedButton
+                                                                .styleFrom(
+                                                              side: BorderSide(
+                                                                  color:
+                                                                  kThemeColor),
+                                                              shape:
+                                                              RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                    10.0),
+                                                              ),
+                                                            ),
+                                                            child: Text(
+                                                              "Reject",
+                                                              style: TextStyle(
+                                                                  color:
+                                                                  kThemeColor),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      );
+                                                    },
+                                                  );
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor:
+                                                  kThemeColor.withOpacity(0.3),
+                                                  foregroundColor: kThemeColor,
+                                                  elevation: 0,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                    BorderRadius.circular(8.0),
+                                                  ),
                                                 ),
-                                              )
+                                                child: const Text(
+                                                  "Action",
+                                                  style:
+                                                  TextStyle(fontSize: 10.0),
+                                                ),
+                                              ),
+                                            ),
                                           ],
                                         ),
                                       ],
@@ -325,45 +378,22 @@ class _EnquiriesPageState extends State<EnquiriesPage> {
     );
   }
 
-  void _approveRoomStatus(String roomUid, Room room) async {
-    try {
-      User? user = FirebaseAuth.instance.currentUser;
+  Future<void> _approveRoomStatus(String roomUid, Room room) async {
+    await FirebaseFirestore.instance.collection("onSale").doc(roomUid).update({
+      "status.statusDisplay": "Owned",
+      "status.statusApproved": true,
+      "status.By": room.status["By"],
+      "status.userEmail": room.status["userEmail"],
+    });
 
-      Map<String, dynamic> newStatus = {
-        'SoldBy': user?.displayName,
-        'sellerId': user?.uid,
-        'SellerEmail': user?.email,
-        'statusDisplay': 'Sold',
-      };
+    Fluttertoast.showToast(msg: "Room status approved.");
+  }
 
-      await FirebaseFirestore.instance
-          .collection('onSale')
-          .doc(roomUid)
-          .update({'status': newStatus});
+  Future<void> _rejectRoomStatus(String roomUid, Room room) async {
+    await FirebaseFirestore.instance.collection("onSale").doc(roomUid).update({
+      "status": FieldValue.delete(),  // This deletes the entire 'status' field
+    });
 
-      Fluttertoast.showToast(
-        msg: "Room status updated to Sold!",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.green,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
-
-      setState(() {
-        room.status = newStatus;
-      });
-    } catch (e) {
-      Fluttertoast.showToast(
-        msg: "Failed to update status: $e",
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 2,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
-    }
+    Fluttertoast.showToast(msg: "Room request rejected, and status cleared.");
   }
 }

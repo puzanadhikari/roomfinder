@@ -52,8 +52,8 @@ class _HomePageState extends State<HomePage> {
       if (_latitude != null && _longitude != null)
         DashBoard(_latitude, _longitude),
        Listing(_latitude, _longitude),
-      const WishlistPage(),
-      const ProfilePage(),
+      WishlistPage(_latitude, _longitude),
+      ProfilePage(_latitude, _longitude),
     ];
   }
 

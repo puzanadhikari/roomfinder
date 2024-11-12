@@ -31,6 +31,7 @@ class _AgreementPageState extends State<AgreementPage> {
         'ownedBy': user?.displayName,
         'ownerId': user?.uid,
         'ownerEmail': user?.email,
+        'ownerNumber': user?.phoneNumber ?? "N/A",
         'statusDisplay': 'Owned',
       };
 
@@ -39,7 +40,7 @@ class _AgreementPageState extends State<AgreementPage> {
           .doc(roomUid)
           .update({'status': newStatus});
       Fluttertoast.showToast(
-        msg: "Room status updated to Owned!",
+        msg: "Congratulations!!!  You are the Owner of the room.",
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
