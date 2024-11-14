@@ -78,7 +78,7 @@ class _DashBoardState extends State<DashBoard> {
       if (room.uid != selectedRoom.uid) { // Avoid recommending the same room
         double similarity = calculateSimilarity(selectedRoom, room);
         print("Checking room: ${room.name}, Similarity: $similarity"); // Debugging line
-        if (room.status.isEmpty && similarity > 0.59) { // Filter based on status and similarity threshold
+        if (room.status.isEmpty && similarity > 0.2) { // Filter based on status and similarity threshold
           recommendedRooms.add(room);
           print("Recommended room added: ${room.name}, Status: ${room.status['statusDisplay']}"); // Debugging line
         } else {
@@ -133,7 +133,7 @@ class _DashBoardState extends State<DashBoard> {
         kitchenLength: data['kitchenLength'],
         photo: List<String>.from(data['photo']),
         statusByAdmin: data["statusByAdmin"],
-        panoramaImg: List<String>.from(data['panoramaImg']),
+        // panoramaImg: List<String>.from(data['panoramaImg']),
         electricity: data['electricity'],
         fohor: data['fohor'],
         lat: data['lat'],
@@ -208,7 +208,7 @@ class _DashBoardState extends State<DashBoard> {
           kitchenbreadth: productSnapshot['kitchenBreadth'],
           kitchenLength: productSnapshot['kitchenLength'],
           photo: List<String>.from(productData['photo']),
-          panoramaImg: List<String>.from(productData['panoramaImg']),
+          // panoramaImg: List<String>.from(productData['panoramaImg']),
           electricity: productData['electricity'],
           fohor: productData['fohor'],
           lat: productData['lat'],
@@ -1418,7 +1418,7 @@ class _PriceRangeScreenState extends State<PriceRangeScreen> {
         kitchenLength: data['kitchenLength'],
         photo: List<String>.from(data['photo']),
         statusByAdmin: data["statusByAdmin"],
-        panoramaImg: List<String>.from(data['panoramaImg']),
+        // panoramaImg: List<String>.from(data['panoramaImg']),
         electricity: data['electricity'],
         fohor: data['fohor'],
         lat: data['lat'],

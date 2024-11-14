@@ -11,7 +11,7 @@ class Room {
   final  double kitchenLength;
   final     double kitchenbreadth;
   final List<String> photo;
-  final List<String> panoramaImg;
+  // final List<String> panoramaImg;
   final double electricity;
   final double fohor;
   final double water;
@@ -40,7 +40,7 @@ class Room {
     required this.kitchenLength,
     required this.kitchenbreadth,
     required this.photo,
-    required this.panoramaImg,
+    // required this.panoramaImg,
     required this.electricity,
     required this.fohor,
     required this.water,

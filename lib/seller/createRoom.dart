@@ -7,7 +7,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:location/location.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-import 'package:panorama/panorama.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Auth/firebase_auth.dart';
@@ -707,111 +706,111 @@ class _CreateRoomState extends State<CreateRoom> {
                         ],
                       ),
                     ),
-                    kHeightSmall,
-                    Container(
-                      padding: const EdgeInsets.all(16.0),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [Colors.white, Colors.grey.shade100],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        borderRadius: BorderRadius.circular(15.0),
-                        border: Border.all(
-                          color: Colors.blue.shade100,
-                          width: 1.0,
-                        ),
-                      ),
-                      child: ExpandablePanel(
-                        header: const Text(
-                          'Property Panorama Image',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xFF072A2E),
-                            letterSpacing: 0.5,
-                          ),
-                        ),
-                        collapsed: Center(
-                          child: SizedBox(
-                            width: MediaQuery.of(context).size.width / 1.5,
-                            height: 50,
-                            child: ElevatedButton.icon(
-                              onPressed: _pickPanoramaImage,
-                              icon: const Icon(Icons.photo_camera_back,
-                                  color: Colors.white),
-                              label: const Text('Pick Panorama'),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: kThemeColor,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 14.0, horizontal: 20.0),
-                                textStyle: const TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.w500),
-                              ),
-                            ),
-                          ),
-                        ),
-                        expanded: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (_panoramaImagePaths != null)
-                              ..._panoramaImagePaths!.map((path) => Container(
-                                height: 500,
-                                margin: const EdgeInsets.only(top: 10),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12.0),
-                                  border: Border.all(
-                                    color: Colors.grey.shade300,
-                                    width: 1.5,
-                                  ),
-                                ),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(12.0),
-                                  child: Panorama(
-                                    child: Image.file(
-                                      File(path),
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                              )).toList(),
-                            const SizedBox(height: 20.0),
-                            Center(
-                              child: SizedBox(
-                                width: MediaQuery.of(context).size.width / 1.5,
-                                height: 50,
-                                child: ElevatedButton.icon(
-                                  onPressed: _pickPanoramaImage,
-                                  icon: const Icon(Icons.photo_camera_back, color: Colors.white),
-                                  label: const Text('Pick Panorama'),
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: kThemeColor,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8.0),
-                                    ),
-                                    padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 20.0),
-                                    textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        theme: const ExpandableThemeData(
-                          hasIcon: true,
-                          iconColor: Color(0xFF0A3D40),
-                          expandIcon: Icons.expand_more,
-                          collapseIcon: Icons.expand_less,
-                          tapBodyToExpand: true,
-                          tapBodyToCollapse: true,
-                          headerAlignment:
-                          ExpandablePanelHeaderAlignment.center,
-                        ),
-                      ),
-                    ),
+                    // kHeightSmall,
+                    // Container(
+                    //   padding: const EdgeInsets.all(16.0),
+                    //   decoration: BoxDecoration(
+                    //     gradient: LinearGradient(
+                    //       colors: [Colors.white, Colors.grey.shade100],
+                    //       begin: Alignment.topLeft,
+                    //       end: Alignment.bottomRight,
+                    //     ),
+                    //     borderRadius: BorderRadius.circular(15.0),
+                    //     border: Border.all(
+                    //       color: Colors.blue.shade100,
+                    //       width: 1.0,
+                    //     ),
+                    //   ),
+                    //   child: ExpandablePanel(
+                    //     header: const Text(
+                    //       'Property Panorama Image',
+                    //       style: TextStyle(
+                    //         fontSize: 18,
+                    //         fontWeight: FontWeight.w600,
+                    //         color: Color(0xFF072A2E),
+                    //         letterSpacing: 0.5,
+                    //       ),
+                    //     ),
+                    //     collapsed: Center(
+                    //       child: SizedBox(
+                    //         width: MediaQuery.of(context).size.width / 1.5,
+                    //         height: 50,
+                    //         child: ElevatedButton.icon(
+                    //           onPressed: _pickPanoramaImage,
+                    //           icon: const Icon(Icons.photo_camera_back,
+                    //               color: Colors.white),
+                    //           label: const Text('Pick Panorama'),
+                    //           style: ElevatedButton.styleFrom(
+                    //             backgroundColor: kThemeColor,
+                    //             shape: RoundedRectangleBorder(
+                    //               borderRadius: BorderRadius.circular(8.0),
+                    //             ),
+                    //             padding: const EdgeInsets.symmetric(
+                    //                 vertical: 14.0, horizontal: 20.0),
+                    //             textStyle: const TextStyle(
+                    //                 fontSize: 16, fontWeight: FontWeight.w500),
+                    //           ),
+                    //         ),
+                    //       ),
+                    //     ),
+                    //     expanded: Column(
+                    //       crossAxisAlignment: CrossAxisAlignment.start,
+                    //       children: [
+                    //         if (_panoramaImagePaths != null)
+                    //           ..._panoramaImagePaths!.map((path) => Container(
+                    //             height: 500,
+                    //             margin: const EdgeInsets.only(top: 10),
+                    //             decoration: BoxDecoration(
+                    //               borderRadius: BorderRadius.circular(12.0),
+                    //               border: Border.all(
+                    //                 color: Colors.grey.shade300,
+                    //                 width: 1.5,
+                    //               ),
+                    //             ),
+                    //             child: ClipRRect(
+                    //               borderRadius: BorderRadius.circular(12.0),
+                    //               child: Panorama(
+                    //                 child: Image.file(
+                    //                   File(path),
+                    //                   fit: BoxFit.cover,
+                    //                 ),
+                    //               ),
+                    //             ),
+                    //           )).toList(),
+                    //         const SizedBox(height: 20.0),
+                    //         Center(
+                    //           child: SizedBox(
+                    //             width: MediaQuery.of(context).size.width / 1.5,
+                    //             height: 50,
+                    //             child: ElevatedButton.icon(
+                    //               onPressed: _pickPanoramaImage,
+                    //               icon: const Icon(Icons.photo_camera_back, color: Colors.white),
+                    //               label: const Text('Pick Panorama'),
+                    //               style: ElevatedButton.styleFrom(
+                    //                 backgroundColor: kThemeColor,
+                    //                 shape: RoundedRectangleBorder(
+                    //                   borderRadius: BorderRadius.circular(8.0),
+                    //                 ),
+                    //                 padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 20.0),
+                    //                 textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                    //               ),
+                    //             ),
+                    //           ),
+                    //         ),
+                    //       ],
+                    //     ),
+                    //     theme: const ExpandableThemeData(
+                    //       hasIcon: true,
+                    //       iconColor: Color(0xFF0A3D40),
+                    //       expandIcon: Icons.expand_more,
+                    //       collapseIcon: Icons.expand_less,
+                    //       tapBodyToExpand: true,
+                    //       tapBodyToCollapse: true,
+                    //       headerAlignment:
+                    //       ExpandablePanelHeaderAlignment.center,
+                    //     ),
+                    //   ),
+                    // ),
                     kHeightSmall,
                     Container(
                       width: MediaQuery.of(context).size.width,
@@ -952,7 +951,7 @@ class _CreateRoomState extends State<CreateRoom> {
                                 _kitchenLength!,
                                 _kitchenBreadth!,
                                 uploadedPhotoUrls,
-                                uploadedPhotoUrlsPanorama, // Updated to send multiple URLs
+                                // uploadedPhotoUrlsPanorama, // Updated to send multiple URLs
                                 _electricity!,
                                 _fohor!,
                                 lat!,

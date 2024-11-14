@@ -33,7 +33,7 @@ Stream<List<Room>> fetchEnquiries() async* {
         kitchenbreadth: data['kitchenBreadth'],
         kitchenLength: data['kitchenLength'],
         photo: List<String>.from(data['photo']),
-        panoramaImg: List<String>.from(data['panoramaImg']),
+        // panoramaImg: List<String>.from(data['panoramaImg']),
         water: data['water'],
         electricity: data['electricity'],
         fohor: data['fohor'],

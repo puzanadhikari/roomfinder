@@ -39,7 +39,7 @@ Future<List<Room>> fetchMyListings() async {
       kitchenLength: data['kitchenLength'],
       water: doc['water'],
       photo: List<String>.from(data['photo']),
-      panoramaImg: List<String>.from(data['panoramaImg']),
+      // panoramaImg: List<String>.from(data['panoramaImg']),
       electricity: data['electricity'],
       fohor: data['fohor'],
       lat: data['lat'],
@@ -551,11 +551,11 @@ class _MyListingsPageState extends State<MyListingsPage> {
           .update({'report': report});
 
       Fluttertoast.showToast(
-        msg: "Room status updated to Sold!",
+        msg: "Monthly Electricity unit added successfully!",
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.green,
         textColor: Colors.white,
         fontSize: 16.0,
       );

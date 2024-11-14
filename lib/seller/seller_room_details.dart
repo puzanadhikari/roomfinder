@@ -215,41 +215,41 @@ class _SellerRoomDetailsState extends State<SellerRoomDetails> {
                                     ],
                                   ),
                                 ),
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => PanoramaFullPage(room: widget.room),
-                                      ),
-                                    );
-                                  },
-                                  child: Container(
-                                    padding: const EdgeInsets.all(15), // Adjust padding for a circular button
-                                    decoration: BoxDecoration(
-                                      color: kThemeColor, // Use your theme color
-                                      shape: BoxShape.circle, // Circular shape
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(0.2), // Shadow color
-                                          blurRadius: 8, // Blur radius for the shadow
-                                          offset: const Offset(0, 3), // Shadow offset
-                                        ),
-                                      ],
-                                    ),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min, // To wrap content within the circle
-                                      mainAxisAlignment: MainAxisAlignment.center, // Center items in the circle
-                                      children: const [
-                                        Icon(
-                                          Icons.threed_rotation, // 360 view icon
-                                          color: Colors.white, // Icon color
-                                          size: 30, // Increase icon size
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                )
+                                // GestureDetector(
+                                //   onTap: () {
+                                //     Navigator.push(
+                                //       context,
+                                //       MaterialPageRoute(
+                                //         builder: (context) => PanoramaFullPage(room: widget.room),
+                                //       ),
+                                //     );
+                                //   },
+                                //   child: Container(
+                                //     padding: const EdgeInsets.all(15), // Adjust padding for a circular button
+                                //     decoration: BoxDecoration(
+                                //       color: kThemeColor, // Use your theme color
+                                //       shape: BoxShape.circle, // Circular shape
+                                //       boxShadow: [
+                                //         BoxShadow(
+                                //           color: Colors.black.withOpacity(0.2), // Shadow color
+                                //           blurRadius: 8, // Blur radius for the shadow
+                                //           offset: const Offset(0, 3), // Shadow offset
+                                //         ),
+                                //       ],
+                                //     ),
+                                //     child: Column(
+                                //       mainAxisSize: MainAxisSize.min, // To wrap content within the circle
+                                //       mainAxisAlignment: MainAxisAlignment.center, // Center items in the circle
+                                //       children: const [
+                                //         Icon(
+                                //           Icons.threed_rotation, // 360 view icon
+                                //           color: Colors.white, // Icon color
+                                //           size: 30, // Increase icon size
+                                //         ),
+                                //       ],
+                                //     ),
+                                //   ),
+                                // )
 
                               ],
                             ),

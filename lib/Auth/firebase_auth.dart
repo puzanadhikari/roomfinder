@@ -189,7 +189,7 @@ class FirebaseAuthService {
       double kitchenLength,
       double kitchenbreadth,
       List<String> photo,
-      List<String> panorama,
+      // List<String> panorama,
       double electricity,
       double fohor,
       double lat,
@@ -219,7 +219,7 @@ class FirebaseAuthService {
           "kitchenLength": kitchenLength,
           "kitchenBreadth": kitchenbreadth,
           "photo": photo,
-          "panoramaImg": panorama, // Store multiple panorama URLs
+          // "panoramaImg": panorama, // Store multiple panorama URLs
           "electricity": electricity,
           "active": false,
           "fohor": fohor,
