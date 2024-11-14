@@ -47,7 +47,7 @@ class _UserListingState extends State<UserListing> {
 
             final users = snapshot.data!.docs;
 
-            final adminUsers = users.where((user) => user['userType'] == 'admin').toList();
+            final adminUsers = users.where((user) => user['userType'] == 'Admin').toList();
             final sellerUsers = users.where((user) => user['userType'] == 'Seller').toList();
             final buyerUsers = users.where((user) => user['userType'] == 'Buyer').toList();
 
